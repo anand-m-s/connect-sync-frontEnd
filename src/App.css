@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+.login-Section{
+    width:30rem;
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem;
+    margin: 2rem;
+    background-color: #fff;
+
+}
+.loginOuterBox{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+    
+}
+.loginBtn{
+    display: flex;
+    justify-content: center;
+}
+.loginOuterBox {
+    position: relative;
+    width: 100%;
+  }
+  
+  .BackgroundGradientAnimation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+  }
+
+  .otp-section{
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%,-50%);
+  }
