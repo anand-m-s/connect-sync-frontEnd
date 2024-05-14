@@ -1,4 +1,6 @@
 export default{
     registerUser:'/register',
-    loginUser:'/login   '
+    loginUser:'/login',
+    verifyOtp:'/verifyOtp',
+    googleAuth:'/googleAuth'
 }

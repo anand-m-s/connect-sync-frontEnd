@@ -8,6 +8,7 @@ export const userAxios=axios.create({
     headers:{
       "Content-Type":"application/json"
     },
+    withCredentials: true
   })
   
   userAxios.interceptors.request.use(config=>{
@@ -19,7 +20,7 @@ export const userAxios=axios.create({
   })
   
   userAxios.interceptors.response.use((response) => {
-    return response;
+    return response;  
   }, (error) => {
     if (error.response) {
       // The request was made and the server responded with a status code

@@ -5,40 +5,33 @@ import { BackgroundGradientAnimation } from '../../components/ui/background-grad
 import { validationSchema, initialValues } from '../../utils/validation/loginValidation';
 import { userAxios } from '../../constraints/axios/userAxios';
 import userApi from '../../constraints/api/userApi';
-import { Link, useNavigate,Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserCredentials } from '../../services/redux/slices/userAuthSlice';
 import { Toaster, toast } from 'sonner';
-import { GoogleLogin } from '@react-oauth/google';
-import { useGoogleOneTapLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from "jwt-decode";
+import { useEffect } from 'react';
 
 function Login() {
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const selectUser = (state) => state.userAuth.userInfo
   const user = useSelector(selectUser)
 
-if(user){
-  return <Navigate to={'/home'}/>
-}
 
-  useGoogleOneTapLogin({
-    onSuccess: credentialResponse => {
-      console.log(credentialResponse);
-      handleGoogleLoginSuccess(credentialResponse);
-    },
-    onError: () => {
-      console.log('Login Failed');
-    },
-  });
+  useEffect(() => {
+    if (user) {
+      navigate('/home')
+    }
+  }, [user, navigate])
+
   const submit = async (values) => {
     try {
+      
       await new Promise(res => setTimeout(() => { res() }, 500))
+  
       const user = await userAxios.post(userApi.loginUser, values)
       console.log(user.data)
-      toast.success('login success')
-      await new Promise(res => setTimeout(() => { res() }, 1000))
       dispatch(setUserCredentials(user.data))
       navigate('/home')
     } catch (error) {
@@ -48,28 +41,7 @@ if(user){
     }
 
   }
-  const handleGoogleLoginSuccess = async (credentialResponse) => {
-    try {
-      const decoded = jwtDecode(credentialResponse?.credential);
-      console.log(decoded);
-      const res = await userAxios.post(userApi.googleAuth, {
-        email: decoded.email,
-        userName: decoded.name,
-      });
-      console.log(res)
-      console.log(res.data)
-      console.log(res.data.message)
-      if (res.status == 200) {
-        dispatch(setUserCredentials(res.data))
-        navigate('/home')
-        toast.success(res.data.message)
-      }
-    } catch (error) {
-      if (error.response && error.response.data.error) {
-        toast.error(error.response.data.error);
-      }
-    }
-  }
+
 
   return (
     <>
@@ -77,7 +49,7 @@ if(user){
         <BackgroundGradientAnimation />
       </div>
       <div className='loginOuterBox'>
-        <Toaster richColors />
+        <Toaster richColors/>
         <section className='login-Section border'>
           <Formik
             initialValues={initialValues}
@@ -93,7 +65,6 @@ if(user){
                 <Field
                   component={TextField}
                   name="email"
-                  variant='standard'
                   type="email"
                   label="Email"
                   size="small"
@@ -106,7 +77,6 @@ if(user){
                 <br />
                 <Field
                   component={TextField}
-                  variant='standard'
                   type="password"
                   label="Password"
                   name="password"
@@ -115,33 +85,25 @@ if(user){
                     margin: '.5rem',
                     width: { sm: 250, md: 350 },
                   }}
-                />
-                {isSubmitting && <LinearProgress />}
+                />            
+                {isSubmitting && <LinearProgress />}              
                 <div className='loginBtn'>
                   <Button
                     variant="contained"
                     color="primary"
-                    size='small'
                     disabled={isSubmitting}
                     onClick={submitForm}
                     sx={{
                       margin: '1rem',
+
                     }}
                   >
                     Login
                   </Button>
-                </div>
-                <div className="flex justify-center items-center">
-                  <GoogleLogin
-                    size='medium'
-                    onSuccess={handleGoogleLoginSuccess}
-                    onError={() => {
-                      console.log('Login Failed');
-                    }}
-                  />
-                </div>
+                </div>                
                 <br />
-                <div >
+
+                <div className='' >
                   <p>Dont have an account? <Link className='text-blue-500 ' to={'/'}>Signup</Link></p>
                 </div>
               </Form>

@@ -4,7 +4,7 @@ export const initialValues={
     email: '',
     password: '',
     confirmPassword: '',
-    phone: '',
+    // phone: '',
     userName: ''
   }
 
@@ -21,5 +21,5 @@ export const validationSchema = yup.object().shape({
    .string()
    .oneOf([yup.ref('password'), null], 'Passwords must match'),
   userName: yup.string().required('Username is required'),
-  phone: yup.string().required('Phone number is required').matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Invalid phone number'),
+  // phone: yup.string().required('Phone number is required').matches(/^(\+\d{1,3}[- ]?)?\d{10}$/, 'Invalid phone number'),
 });
