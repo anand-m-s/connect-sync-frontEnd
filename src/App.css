@@ -1,13 +1,20 @@
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+body{
+    font-family: "Work Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
 .login-Section{
     width:30rem;
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 2.5rem;
     margin: 2rem;
-    background-color: #fff;
+    /* background-color: #fff; */
 
 }
 .loginOuterBox{
@@ -15,6 +22,7 @@
     justify-content: center;
     align-items: center;
     margin-top: 5rem;
+    
     
 }
 .loginBtn{
@@ -39,3 +47,4 @@
    left: 50%;
    transform: translate(-50%,-50%);
   }
+

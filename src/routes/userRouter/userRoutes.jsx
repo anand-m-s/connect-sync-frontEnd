@@ -4,18 +4,25 @@ import Login from '../../pages/user/Login'
 import OtpInput from '../../pages/user/OtpInput'
 import Home from '../../pages/user/Home'
 import UserPrivateRoutes from './userPrivateRoutes'
+import Profile from '../../pages/user/profile/profile'
+import { ModalProvider } from '../../context/modalContext'
 
 
 const UserRoutes = () => {
     return (
-        <Routes>
-            <Route path='/' element={<Signup />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/otp' element={<OtpInput />} />
-            <Route path='' element={<UserPrivateRoutes />}>
-                <Route path='/home' element={<Home />} />
-            </Route>
-        </Routes>
+        <>
+            <ModalProvider>
+                <Routes>
+                    <Route path='/' element={<Signup />} />
+                    <Route path='/login' element={<Login />} />
+                    <Route path='/otp' element={<OtpInput />} />
+                    <Route path='' element={<UserPrivateRoutes />}>
+                        <Route path='/home' element={<Home />} />
+                        <Route path='/profile' element={<Profile />} />
+                    </Route>
+                </Routes>
+            </ModalProvider>
+        </>
     )
 }
 

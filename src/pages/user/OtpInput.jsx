@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import Button from '@mui/material/Button';
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
 import { userAxios } from "../../constraints/axios/userAxios";
 import userApi from "../../constraints/api/userApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserCredentials } from "../../services/redux/slices/userAuthSlice";
-
-
+import { Toaster, toast } from 'sonner';
+import Paper from '@mui/material/Paper';
 
 
 function OtpInput({
@@ -22,30 +22,79 @@ function OtpInput({
   const navigate = useNavigate()
   const queryParams = new URLSearchParams(location.search)
   const email = queryParams.get("email") || ""
+  const userName = queryParams.get("userName") || ""
   console.log(email)
+  console.log(userName)
 
   const selectUser = (state) => state.userAuth.userInfo
   const user = useSelector(selectUser)
-  useEffect(() => {
-    if (user) {
-      navigate('/home')
-    }
-  }, [user, navigate])
+  const [timer, setTimer] = useState(60)
+  const [resend, setResend] = useState(false)
 
+  if (user) {
+    return <Navigate to={'/home'} />
+  }
+  useEffect(() => {
+    let countInterval;
+    if (timer > 0) {
+      countInterval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else {
+      setResend(true)
+    }
+    // Cleanup function to clear interval
+    return () => {
+      if (countInterval) {
+        clearInterval(countInterval);
+      }
+    };
+  }, [timer]); // Added timer as a dependency
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    const o = otp.join('')
-    const datas = {
-      otp: o,
-      email: email
+    try {
+      e.preventDefault()
+      const o = otp.join('')
+      const datas = {
+        otp: o,
+        email: email
+      }
+      console.log(o)
+      if (o.length < 4) {
+        return toast.error('Invalid Otp')
+      }
+      const res = await userAxios.post(userApi.verifyOtp, datas)
+      toast.success(res.data.message)
+      await new Promise(res => setTimeout(() => { res() }, 500))
+      dispatch(setUserCredentials(res.data))
+      navigate('/home')
+    } catch (error) {
+      if (error.response && error.response.data.error) {
+        toast.error(error.response.data.error);
+      }
     }
-    const res = await userAxios.post(userApi.verifyOtp, datas)
-    console.log(res)
-    console.log(res.data)
-    dispatch(setUserCredentials(res.data))
-    navigate('/home')
   }
+  const handleResendOtp = async (e) => {
+    try {
+      e.preventDefault()
+      setResend(false)
+      setTimer(60)
+      const data = {
+        email,
+        userName
+      }
+      const res = await userAxios.post(userApi.resendOtp, data)
+      console.log(res.data)
+      toast(res.data.message)
+    } catch (error) {
+
+      if (error.response && error.response.data.error) {
+        toast.error(error.response.data.error);
+      }
+    }
+  }
+
+
   const ref = useRef();
   useEffect(() => {
     if (ref.current) {
@@ -73,35 +122,46 @@ function OtpInput({
       }
     }
   };
-
-  console.log(otp)
-
   return (
     <>
-      <div className="otp-section border rounded-xl  p-10">
-        <div className="flex justify-center p-2">
+      <Toaster richColors />
+      <Paper className="otp-section p-12 rounded-full ">
+       
+          <div className="flex justify-center p-4">
+            <h1 className="text-2xl ">Enter Otp</h1>
+          </div>
+          <div className={`flex gap-2 p-4 ${containerClassName}`}>
+            {otp.map((char, i) => (
+              <input
+                key={i}
+                value={char}
+                type={type}
+                maxLength={1}
+                onKeyDown={(e) => handleBackspace(e, i)}
+                className={`flex h-10 w-10 items-center justify-center border border-gray-300 text-center ${inputClassName}`}
+                onChange={(e) => onChange(e, i)}
+                ref={i === 0 ? ref : null}
+              />
+            ))}
+          </div>
+          <div className="flex justify-center">
+            <Button onClick={handleSubmit} variant="contained">Verify Otp</Button>
+          </div>
+          {!resend ? (<div>
+            <p className="p-2 justify-center items-center flex"> OTP expires in <span className="text-blue-400 text-lg"> 00:{timer}</span></p>
+          </div>) : (
+            <div className="flex m-3 justify-center">
+              <Button onClick={handleResendOtp}
+                size="small"
+                color="warning"
+                variant="outlined">
+                Resend Otp
+              </Button>
+            </div>
+          )}
+     
+      </Paper>
 
-        <h1 className="">Enter otp</h1>
-        </div>
-        <div className={`flex gap-2 p-4 ${containerClassName}`}>
-          {otp.map((char, i) => (
-            <input
-              key={i}
-              value={char}
-              type={type}
-              maxLength={1}
-              onKeyDown={(e) => handleBackspace(e, i)}
-              className={`flex h-10 w-10 items-center justify-center border border-gray-300 text-center ${inputClassName}`}
-              onChange={(e) => onChange(e, i)}
-              ref={i === 0 ? ref : null}
-            />
-          ))}
-        </div>
-        <div className="flex justify-center">
-
-        <Button onClick={handleSubmit} variant="contained">Verify Otp</Button>
-        </div>
-      </div>
     </>
   );
 }
