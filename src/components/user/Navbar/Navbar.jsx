@@ -34,12 +34,13 @@ import { useNavigate } from 'react-router';
 import { Toaster, toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import { useModal } from '../../../context/modalContext';
-import IconButton from '@mui/material/IconButton';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import { useContext } from 'react';
 import ColorModeContext from '../../../context/colorModeContext';
 import Switch from '@mui/material/Switch';
+import SearchComponent from '../modal/searchModal';
+import BasicModal from '../modal/Modal';
 
 
 const Navbar = () => {
@@ -51,56 +52,55 @@ const Navbar = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [anchorEl, setAnchorEl] = React.useState(null);
-    const theme = useTheme();
     const colorMode = useContext(ColorModeContext);
+    const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
-
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         width: 62,
         height: 34,
-        padding: 7,
+        padding: 10,
         '& .MuiSwitch-switchBase': {
-          margin: 1,
-          padding: 0,
-          transform: 'translateX(6px)',
-          '&.Mui-checked': {
-            color: '#fff',
-            transform: 'translateX(22px)',
-            '& .MuiSwitch-thumb:before': {
-              backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-                '#fff',
-              )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+            margin: 1,
+            padding: 0,
+            transform: 'translateX(6px)',
+            '&.Mui-checked': {
+                color: '#fff',
+                transform: 'translateX(22px)',
+                '& .MuiSwitch-thumb:before': {
+                    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+                        '#fff',
+                    )}" d="M4.2 2.5l-.7 1.8-1.8.7 1.8.7.7 1.8.6-1.8L6.7 5l-1.9-.7-.6-1.8zm15 8.3a6.7 6.7 0 11-6.6-6.6 5.8 5.8 0 006.6 6.6z"/></svg>')`,
+                },
+                '& + .MuiSwitch-track': {
+                    opacity: 1,
+                    backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+                },
             },
-            '& + .MuiSwitch-track': {
-              opacity: 1,
-              backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
-            },
-          },
         },
         '& .MuiSwitch-thumb': {
-          backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
-          width: 32,
-          height: 32,
-          '&::before': {
-            content: "''",
-            position: 'absolute',
-            width: '100%',
-            height: '100%',
-            left: 0,
-            top: 0,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
-              '#fff',
-            )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
-          },
+            backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
+            width: 32,
+            height: 32,
+            '&::before': {
+                content: "''",
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                left: 0,
+                top: 0,
+                backgroundRepeat: 'no-repeat',
+                backgroundPosition: 'center',
+                backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
+                    '#fff',
+                )}" d="M9.305 1.667V3.75h1.389V1.667h-1.39zm-4.707 1.95l-.982.982L5.09 6.072l.982-.982-1.473-1.473zm10.802 0L13.927 5.09l.982.982 1.473-1.473-.982-.982zM10 5.139a4.872 4.872 0 00-4.862 4.86A4.872 4.872 0 0010 14.862 4.872 4.872 0 0014.86 10 4.872 4.872 0 0010 5.139zm0 1.389A3.462 3.462 0 0113.471 10a3.462 3.462 0 01-3.473 3.472A3.462 3.462 0 016.527 10 3.462 3.462 0 0110 6.528zM1.665 9.305v1.39h2.083v-1.39H1.666zm14.583 0v1.39h2.084v-1.39h-2.084zM5.09 13.928L3.616 15.4l.982.982 1.473-1.473-.982-.982zm9.82 0l-.982.982 1.473 1.473.982-.982-1.473-1.473zM9.305 16.25v2.083h1.389V16.25h-1.39z"/></svg>')`,
+            },
         },
         '& .MuiSwitch-track': {
-          opacity: 1,
-          backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
-          borderRadius: 20 / 2,
+            opacity: 1,
+            backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+            borderRadius: 20 / 2,
         },
-      }));
+    }));
 
     const toggleDrawer = (open) => (event) => {
         if (!isSmallScreen) {
@@ -127,7 +127,7 @@ const Navbar = () => {
     const list = () => (
         <Box
             p={2}
-            sx={{ width: '250px' }}
+            // sx={{ width: '16rem' }}
             role="presentation"
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
@@ -154,7 +154,7 @@ const Navbar = () => {
                 </ListItem>
 
                 <ListItem disablePadding>
-                    <ListItemButton>
+                    <ListItemButton onClick={() => handleOpen('search')} >
                         <ListItemIcon>
                             <SearchOutlinedIcon color='info' />
                         </ListItemIcon>
@@ -170,7 +170,7 @@ const Navbar = () => {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton>
+                    <ListItemButton component={Link} to={'/chat'}>
                         <ListItemIcon>
                             <ChatBubbleOutlineOutlinedIcon color='info' />
                         </ListItemIcon>
@@ -186,7 +186,7 @@ const Navbar = () => {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={handleOpen}>
+                    <ListItemButton onClick={() => handleOpen('create')}>
                         <ListItemIcon>
                             <AddCircleOutlineOutlinedIcon color='primary' />
                         </ListItemIcon>
@@ -201,32 +201,7 @@ const Navbar = () => {
                         <ListItemText primary={"Profile"} />
                     </ListItemButton>
                 </ListItem>
-                {/* <ListItem disablePadding>
-                    <ListItemButton onClick={colorMode.toggleColorMode}>
-                        <ListItemIcon>
-                            {theme.palette.mode === 'light' ? <Brightness7Icon color='primary'/> : <Brightness4Icon color='inherit'/>}
-                        </ListItemIcon>
-                        <ListItemText primary={theme.palette.mode==='light'?'Dark':'Light'} />
-                    </ListItemButton>
-                </ListItem> */}
-                <ListItem disablePadding>
-                    <ListItem>
-                        <ListItemIcon>
-                            {theme.palette.mode === 'light' ? (
-                                <Brightness7Icon color="primary" />
-                            ) : (
-                                <Brightness4Icon color="inherit" />
-                            )}
-                        </ListItemIcon>
-                        <ListItemText primary={theme.palette.mode == 'light' ? 'Dark mode' : 'Light mode'} />
-                        <MaterialUISwitch
-                            size='small'                            
-                            checked={theme.palette.mode === 'dark'}
-                            onChange={colorMode.toggleColorMode}
-                            color="info"
-                        />
-                    </ListItem>
-                </ListItem>
+
             </List>
             <Divider />
             <List>
@@ -269,6 +244,28 @@ const Navbar = () => {
                 </Menu>
 
             </List>
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton>
+
+                        <ListItemIcon>
+                            {theme.palette.mode === 'light' ? (
+                                <Brightness7Icon color="primary" />
+                            ) : (
+                                <Brightness4Icon color="inherit" />
+                            )}
+                        </ListItemIcon>
+                        <ListItemText primary={theme.palette.mode == 'light' ? 'Dark' : 'Light'} />
+                        <MaterialUISwitch
+                            size='small'
+                            checked={theme.palette.mode === 'dark'}
+                            onChange={colorMode.toggleColorMode}
+                            color="info"
+                        />
+                    </ListItemButton>
+
+                </ListItem>
+            </List>
 
 
         </Box>
@@ -282,30 +279,40 @@ const Navbar = () => {
     return (
 
 
-        <Box
-            sx={{ width: '100%' }}>
+        <Box>
             <Toaster richColors />
-            <MenuIcon
-                onClick={toggleDrawer(true)}
-            />
-            {!isSmallScreen ? (<Drawer
-                variant='temporary'
-                anchor={"left"}
-                open={state.left}
-                onClose={toggleDrawer(false)}
-            >
-                {list()}
-            </Drawer>) : (
-                <Drawer
-                    // hideBackdrop='false'
-                    variant='permanent'
-                    anchor={"left"}
-                    open={state.left}
-                    onClose={toggleDrawer(false)}
-                >
+            {!isSmallScreen ? (
+                <>
+                    <MenuIcon
+                        onClick={toggleDrawer(true)}
+                    />
+                    <Drawer
+                        variant='temporary'
+                        anchor={"left"}
+                        open={state.left}
+                        onClose={toggleDrawer(false)}
+                    >
+                        {list()}
+                    </Drawer>
+                </>
+
+            ) : (
+                // <Drawer
+                //     hideBackdrop='false'
+                //     variant='permanent'
+                //     anchor={"left"}
+                //     open={state.left}
+                //     onClose={toggleDrawer(false)}
+                // >
+                //     {list()}
+                // </Drawer>
+                <Box >
                     {list()}
-                </Drawer>
+                </Box>
             )}
+                 {/* <SearchComponent /> */}
+                 <SearchComponent source="navbar" />
+                 <BasicModal />
         </Box>
 
 

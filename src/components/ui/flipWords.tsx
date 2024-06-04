@@ -70,7 +70,7 @@ export const FlipWords = ({
             {
                 'text-neutral-900 dark:text-neutral-100': true,
                 'text-primary-500 dark:text-primary-300': true,
-            },
+            },  
             className
         )}
         key={currentWord}

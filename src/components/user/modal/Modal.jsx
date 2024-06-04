@@ -15,11 +15,12 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { IconButton } from '@mui/material';
 import { userAxios } from '../../../constraints/axios/userAxios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { uploadImages } from '../../../constraints/axios/imageUpload';
 import userApi from '../../../constraints/api/userApi';
 import { initialValues, validationSchema } from '../../../utils/validation/postValidation';
 import { Toaster, toast } from 'sonner';
+import {addUserPost} from '../../../services/redux/slices/userAuthSlice'
 
 
 
@@ -51,7 +52,8 @@ export default function BasicModal() {
 
   const inputRef = useRef()
   const formRef = useRef(null)
-  const { open, handleClose } = useModal();
+  // const { open, handleClose } = useModal();
+  const {modals,handleClose} = useModal()
   const [nextPage, setNextPage] = useState(false)
   const [loading, setLoading] = useState(false)
   const handleNextPage = () => {
@@ -63,6 +65,7 @@ export default function BasicModal() {
   };
 
   const userId = user.id
+  const dispatch = useDispatch()
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -84,10 +87,11 @@ export default function BasicModal() {
         console.log(res)
         console.log(res.data)
         toast.success(res.data.message)
+        dispatch(addUserPost(res.data.message))
         setNextPage(false)
         resetForm()
         setLoading(false)
-        handleClose()
+        handleClose('create')
       } catch (error) {
         console.error('Error uploading image:', error);
         toast.error(error)
@@ -108,8 +112,10 @@ export default function BasicModal() {
     <>
       <Toaster richColors/>
       <Modal
-        open={open}
-        onClose={handleClose}
+        // open={open}
+        // onClose={handleClose}
+        open={modals.create}
+        onClose={()=>handleClose('create')}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >

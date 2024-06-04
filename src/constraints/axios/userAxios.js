@@ -13,6 +13,7 @@ export const userAxios=axios.create({
   
   userAxios.interceptors.request.use(config=>{
     const token=localStorage.getItem("userToken")
+    // console.log(token)
     if(token){
       config.headers.Authorization=token
     }

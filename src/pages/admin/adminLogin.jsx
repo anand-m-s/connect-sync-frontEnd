@@ -1,4 +1,4 @@
-import { Button, LinearProgress } from '@mui/material';
+import { Box, Button, LinearProgress, Paper } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
 import { BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation';
@@ -43,11 +43,12 @@ function Login() {
   return (
     <>
     
-      <div className='BackgroundGradientAnimation'>
+      <Box className='BackgroundGradientAnimation'>
         <BackgroundGradientAnimation />
-      </div>
-      <div className='loginOuterBox'>
+      </Box>
+      <Box className='loginOuterBox'>
         <Toaster richColors />
+        <Paper>
         <section className='login-Section border'>
           <Formik
             initialValues={initialValues}
@@ -56,9 +57,9 @@ function Login() {
           >
             {({ submitForm, isSubmitting }) => (
               <Form>
-                <div className='flex justify-center m-5'>
-                  <h1 className='text-2xl'>CirleSync</h1>
-                </div>
+                <Box className='flex justify-center m-5'>
+                  <h1 className='text-2xl'>Admin Login</h1>
+                </Box>
 
                 <Field
                   component={TextField}
@@ -85,7 +86,7 @@ function Login() {
                   }}
                 />
                 {isSubmitting && <LinearProgress />}
-                <div className='loginBtn'>
+                <Box className='loginBtn'>
                   <Button
                     variant="contained"
                     color="primary"
@@ -97,13 +98,14 @@ function Login() {
                   >
                     Login
                   </Button>
-                </div>
+                </Box>
                 <br />
               </Form>
             )}
           </Formik>
         </section>
-      </div>
+        </Paper>
+      </Box>
     </>
   );
 }

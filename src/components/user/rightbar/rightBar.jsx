@@ -52,10 +52,9 @@ const people = [
 function RightBar() {
     return (
         <Box className=''
-            flex={2}
+            flex={1.5}
 
         >
-
             <Box className='mt-20 fixed'>             
                 <Box className="flex flex-row items-center justify-center  w-full">
                     <AnimatedTooltip items={people} />

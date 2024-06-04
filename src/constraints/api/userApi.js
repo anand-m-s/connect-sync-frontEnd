@@ -1,3 +1,5 @@
+import ForgotPassword from "../../pages/user/ForgotPassword";
+
 export default{
     registerUser:'/register',
     loginUser:'/login',
@@ -7,5 +9,13 @@ export default{
     savePost:'/savePost',
     getUserPost:'/getUserPost',
     editProfile:'/editProfile',
-    getUserDetails:'/getUserDetails'
+    getUserDetails:'/getUserDetails',
+    getAllUsers:'/getAllUsers',
+    followUser:'/followToggle',
+    userFeedPost:'/userFeedPost',
+    loadChat:'/chat',
+    forgotPassword:'/forgotPassword',
+    updatePassword:'/updatePassword',
+    postDelete:'/deletePost',
+    editPost:'/editPost'
 }

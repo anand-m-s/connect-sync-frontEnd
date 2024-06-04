@@ -2,7 +2,7 @@ import React, { createContext, useState, useMemo } from 'react';
 import { createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useEffect } from 'react';
 
-const ColorModeContext = createContext({ toggleColorMode: () => { } });
+const ColorModeContext = createContext({ toggleColorMode: () => { }});
 
 const getDesignTokens = (mode) => ({
     palette: {
@@ -33,6 +33,7 @@ const getDesignTokens = (mode) => ({
                     primary: '#ffffff',
                     secondary: 'rgba(255, 255, 255, 0.7)',
                 },
+                
             }),
     },
     typography: {

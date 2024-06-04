@@ -78,7 +78,7 @@ function Login() {
         <BackgroundGradientAnimation />
       </Box>
       <Box className='loginOuterBox'>
-          <Toaster richColors />
+        <Toaster richColors />
         <Paper>
           <section className='login-Section '>
             <Formik
@@ -133,6 +133,7 @@ function Login() {
                       Login
                     </Button>
                   </Box>
+                   
                   <Box className="flex justify-center items-center">
                     <GoogleLogin
                       size='medium'
@@ -142,10 +143,15 @@ function Login() {
                       }}
                     />
                   </Box>
+                 
                   <br />
+                  <Box >
+                      <p> <Link className='text-blue-500 ' to={'/forgot'}>Forgot Password?</Link></p>
+                    </Box>
                   <Box >
                     <p>Dont have an account? <Link className='text-blue-500 ' to={'/'}>Signup</Link></p>
                   </Box>
+
                 </Form>
               )}
             </Formik>

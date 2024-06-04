@@ -12,17 +12,18 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-import { Box, CardMedia, useTheme } from '@mui/material';
+import { Box, CardMedia, Divider, useTheme } from '@mui/material';
 
-function Post() {
-    const theme= useTheme()
+function Post({ userName, profilePic, imageUrl, location, description }) {
+    const theme = useTheme();
+
     return (
         <Box className='flex justify-center items-center'>
-            <Card sx={{ margin: 3}} elevation={1}>
+            <Card sx={{ marginBottom: 3, width: { xs: '90%', sm: '80%', md: '90%' } }} elevation={1}>
                 <CardHeader
                     avatar={
-                        <Avatar sx={{ bgcolor: "skyblue" }} aria-label="recipe">
-                            D
+                        <Avatar src={profilePic} sx={{ bgcolor: "skyblue" }} aria-label="recipe">
+                            {userName.charAt(0)}
                         </Avatar>
                     }
                     action={
@@ -30,34 +31,38 @@ function Post() {
                             <MoreVertIcon />
                         </IconButton>
                     }
-                    title="Shrimp and Chorizo Paella"
-                    subheader="September 14, 2016"
+                    title={userName}
+                    subheader={location}
                 />
-                <Box className=''
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '30rem',
-                    [theme.breakpoints.down('sm')]: {
-                        height: '10rem', // Height for small screens (mobile devices)
-                      },
-                }}
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: '100%',
+                        padding: '10px',
+                        height: { xs: '200px', sm: '250px', md: '400px' }, // Responsive heights
+                        overflow: 'hidden',
+
+                    }}
                 >
                     <CardMedia
-                        className='bg-slate-200 '
                         component="img"
-                        image="https://images.squarespace-cdn.com/content/v1/5ab926f8a9e0287fbf928015/1528770140316-QLIH41P1HKUWZL0E1U8F/IMG_0217.JPG?format=500w"
-                        alt="dummy"
-                        sx={{ width:'50%'}}
+                        image={imageUrl[0]} // Assuming imageUrl is an array
+                        alt="Post image"
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'contain' // Ensures the image covers the box while maintaining aspect ratio
+                        }}
                     />
                 </Box>
-
+                <Divider/>
                 <CardContent>
                     <Typography variant="body2" color="text.secondary">
-                        This impressive paella is a perfect party dish and a fun meal to cook
-                        together with your guests. Add 1 cup of frozen peas along with the mussels,
-                        if you like.
+                        <Typography>
+                            {userName}
+                        </Typography>{description}
                     </Typography>
                 </CardContent>
                 <CardActions disableSpacing>
@@ -67,12 +72,10 @@ function Post() {
                     <IconButton aria-label="share">
                         <ShareIcon />
                     </IconButton>
-
                 </CardActions>
             </Card>
         </Box>
-
-    )
+    );
 }
 
-export default Post
+export default Post;

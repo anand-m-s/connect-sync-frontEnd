@@ -58,6 +58,7 @@ function Signup() {
       const res = await userAxios.post(userApi.googleAuth, {
         email: decoded.email,
         userName: decoded.name,
+        profilePic:decoded.picture,
       });
       console.log(res.data)
       dispatch(setUserCredentials(res.data))

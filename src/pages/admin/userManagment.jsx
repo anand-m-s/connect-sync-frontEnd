@@ -2,11 +2,11 @@ import React from 'react'
 import UserManagment from '../../components/admin/userManagment/UserManagment'
 import { Box, Divider, Stack } from '@mui/material'
 import SideBar from '../../components/admin/sidebar/SideBar'
-import BasicBars from '../../components/admin/dashboard/Dashboard'
 
 
 
-function AdminDashboard() {
+
+function ManageUser() {
 
   return (
     <>
@@ -19,9 +19,8 @@ function AdminDashboard() {
           >
             <SideBar/>
 
-          </Box>
-          <BasicBars/>
-          {/* <UserManagment /> */}
+          </Box>    
+          <UserManagment />
 
         </Stack>
       </Box>
@@ -29,4 +28,4 @@ function AdminDashboard() {
   )
 }
 
-export default AdminDashboard
+export default ManageUser
