@@ -1,7 +1,7 @@
 import Avatar from "@mui/material/Avatar"
 import IconButton from "@mui/material/IconButton"
 import { Add, Search } from "@mui/icons-material"
-import { Box, useTheme } from "@mui/material"
+import { Box, Divider, Stack, useTheme } from "@mui/material"
 import IndividualChat from "./IndividualChat"
 import { useContext, useEffect, useState } from "react"
 import userApi from "../../../constraints/api/userApi"
@@ -33,7 +33,6 @@ export default function ChatComponent() {
             ...updates
         }));
     };
-    console.log(selectedChat)
 
     // const queryParams = new URLSearchParams(location.search)
     // const userId = queryParams.get('id')
@@ -75,21 +74,24 @@ export default function ChatComponent() {
     useEffect(() => {
         fetchChats()
     }, [])
+    console.log(chats)
 
 
     return (
         <Box
             flex={5}
+            className=' '
         >
-            <Box className="grid min-h-screen w-full grid-cols-[300px_1fr] overflow-hidden">
-                <Box className="flex flex-col border-r ">
+        
+            <Box className="grid min-h-screen w-full grid-cols-[300px_1fr] overflow-hidden ">
+                <Box className="flex flex-col border-r">                
                     <Box className="sticky top-0 flex h-16 items-center justify-end border-b">
                         {/* <Box className="flex items-center gap-2">
                             <Avatar className="h-8 w-8" src="/placeholder-user.jpg" alt="Avatar">JD</Avatar>
                             <span className="font-medium">search</span>
                         </Box> */}
-                        <Box className="flex items-center gap-2" onClick={() => handleOpen('search')}>
-                            <IconButton size="large">
+                        <Box className="flex items-center gap-2" >
+                            <IconButton size="large" onClick={() => handleOpen('search')}>
                                 <Search className="h-5 w-5" />
                             </IconButton>
                             <IconButton size="large">
@@ -97,7 +99,7 @@ export default function ChatComponent() {
                             </IconButton>
                         </Box>
                     </Box>
-                    {chats ? (<Box className="flex-1 overflow-auto">
+                    {chats.length>0 ? (<Box className="flex-1 overflow-auto">
                         {chats.map((chat) => (<Box className="grid gap-2 p-4">
                             {/* <Box className="flex items-center gap-3 rounded-md border p-2 transition-colors "
                                 onClick={() => setSelectedChat(chat)}
@@ -124,7 +126,7 @@ export default function ChatComponent() {
                         ))}
 
                     </Box>) : (
-                        <h1 >No chats yet</h1>
+                        <Box className='className="flex justify-center items-center gap-3 p-5 transition-colors"'>No chats yet...</Box>
                     )}
 
                 </Box>
@@ -133,6 +135,8 @@ export default function ChatComponent() {
 
             </Box>
         </Box>
-    )
-}
+   
+    );
+  }
+
 

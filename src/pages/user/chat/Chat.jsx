@@ -8,7 +8,7 @@ import SideBar from '../../../components/user/sideBar/SideBar';
 function Chat() {
   return (
     <>
-      <Box>
+      <Box >
         <Stack direction="row" spacing={1}
           justifyContent={'space-between'}
           divider=<Divider orientation="vertical" flexItem />>

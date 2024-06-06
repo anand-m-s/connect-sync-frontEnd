@@ -17,5 +17,6 @@ export default{
     forgotPassword:'/forgotPassword',
     updatePassword:'/updatePassword',
     postDelete:'/deletePost',
-    editPost:'/editPost'
+    editPost:'/editPost',
+    sendMessage:'/chat/message'
 }
