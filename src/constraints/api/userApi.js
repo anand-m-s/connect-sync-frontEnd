@@ -18,5 +18,9 @@ export default{
     updatePassword:'/updatePassword',
     postDelete:'/deletePost',
     editPost:'/editPost',
-    sendMessage:'/chat/message'
+    sendMessage:'/chat/message',
+    following:'/following',
+    addComment:'/addComment',
+    loadComments:'/fetchAllComments',
+    addReply:'/addReply'
 }

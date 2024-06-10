@@ -16,6 +16,9 @@ const getDesignTokens = (mode) => ({
                 secondary: {
                     main: '#dc004e',
                 },
+                selectedChat: {
+                    main: '#e6eaeb', // Custom color for selectedChat in light mode
+                },
             }
             : {
                 // palette values for dark mode
@@ -33,7 +36,9 @@ const getDesignTokens = (mode) => ({
                     primary: '#ffffff',
                     secondary: 'rgba(255, 255, 255, 0.7)',
                 },
-                
+                selectedChat: {
+                    main: '#393939', // Custom color for selectedChat in dark mode
+                },
             }),
     },
     typography: {

@@ -2,8 +2,12 @@ export const getSender=(userId,users)=>{
     console.log(userId,users)
     return users[0]._id === userId ? users[1].userName:users[0].userName;
 }
+export const getSenderProfilePic=(userId,users)=>{
+    console.log(userId,users)
+    return users[0]._id === userId ? users[1].profilePic:users[0].profilePic;
+}
 export const getSenderFull=(userId,users)=>{
-    return users[0]._id === userId ? users[1]:users[2];
+    return users[0]._id === userId ? users[1]:users[0];
 }
 
 export const isSameSender = (messages, m, i, userId) => {

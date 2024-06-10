@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles'
 import { ParallaxScroll } from '../../ui/parallaxScroll';
-import { Avatar, Button, Divider, Typography } from '@mui/material';
+import { Avatar, Button, ButtonBase, Divider, Grow, Slide, Typography, Zoom } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import userApi from '../../../constraints/api/userApi';
-import { setUserPosts,resetNewPost } from '../../../services/redux/slices/userAuthSlice';
+import { setUserPosts, resetNewPost } from '../../../services/redux/slices/userAuthSlice';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
@@ -16,6 +16,9 @@ import { Toaster, toast } from 'sonner';
 import { uploadImages } from '../../../constraints/axios/imageUpload';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { useLocation, useNavigate } from 'react-router';
+import UserList from './FollowingAndFollowers';
+
+
 
 const style = {
   position: 'absolute',
@@ -52,6 +55,22 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search)
 }
 
+const icon = (
+  <Paper sx={{ m: 1, width: 200, height: 200 }} elevation={5}>
+    <svg>
+      <Box
+        component="polygon"
+        points="0,100 50,00, 100,100"
+        sx={{
+          fill: (theme) => theme.palette.common.white,
+          stroke: (theme) => theme.palette.divider,
+          strokeWidth: 1,
+        }}
+      />
+    </svg>
+  </Paper>
+);
+
 
 
 function ProfileFeed() {
@@ -72,6 +91,14 @@ function ProfileFeed() {
     initialPic: '',
   });
   const [isFollowing, setIsFollowing] = useState(false)
+  const [followers, setFollowers] = useState(false)
+  const [following, setFollowing] = useState(false)
+  const [connectionData, setConnectionData] = useState([])
+  const [currentUserConnection, setCurrentUserConnection] = useState()
+  const [followersCount, setFollowersCount] = useState(0)
+  const [followingCount, setFollowingCount] = useState(0)
+  const followersRef = useRef(null)
+  const followingRef = useRef(null)
   const navigate = useNavigate()
 
   const updateUserData = (updates) => {
@@ -89,14 +116,17 @@ function ProfileFeed() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
-        const [postRes, userRes] = await Promise.all([
+        const [postRes, userRes, followData, currentUserConnection] = await Promise.all([
           userAxios.get(`${userApi.getUserPost}?id=${determineUser}`),
-          userAxios.get(`${userApi.getUserDetails}?id=${determineUser}`)
+          userAxios.get(`${userApi.getUserDetails}?id=${determineUser}`),
+          userAxios.get(`${userApi.following}?userId=${determineUser}`),
+          userAxios.get(`${userApi.following}?userId=${user.id}`)
         ]);
-       
+        console.log(postRes.data)
+        console.log(followData.data.data)
+        setConnectionData(followData.data.data)
+        setCurrentUserConnection(currentUserConnection.data.data)
         dispatch(setUserPosts(postRes.data.post));
-      
         const userData = userRes.data;
         updateUserData({
           bio: userData.bio || ' ',
@@ -106,7 +136,9 @@ function ProfileFeed() {
           initialPic: userData.profilePic,
         });
         setIsFollowing(userData.isFollowing)
-        if(newPost){
+        setFollowersCount(userData.followers)
+        setFollowingCount(userData.following)
+        if (newPost) {
           dispatch(resetNewPost())
         }
       } catch (error) {
@@ -122,8 +154,9 @@ function ProfileFeed() {
       // const source = axios.CancelToken.source();
       // source.cancel('Operation canceled by the user.');
     };
-  }, [determineUser,newPost]);
-  
+  }, [determineUser, newPost, isFollowing, followersCount]); //need to optimize this isFollowing
+  // todo *inverted problem
+  // optimize differentiate the fetches accordingly
 
 
   const handleOpenModal = () => {
@@ -190,10 +223,10 @@ function ProfileFeed() {
     }
   }
 
-  const handleFollow = async () => {
+
+  const handleFollow = async (userId) => {
     try {
       const res = await userAxios.post(`${userApi.followUser}`, { userIdToToggle: userId })
-
       setIsFollowing((prevVal) => !prevVal)
       toast.info(res.data.message)
     } catch (error) {
@@ -207,6 +240,32 @@ function ProfileFeed() {
     navigate(`/chat?id=${userId}`)
   }
 
+  const showFollowers = () => {
+    setFollowers((prev) => !prev)
+    setFollowing(false)
+  }
+  const showFollowing = () => {
+    setFollowing((prev) => !prev)
+    setFollowers(false)
+  }
+
+  useEffect(() => {
+    setFollowers(false)
+    setFollowing(false)
+  }, [determineUser])
+
+  const handleFollowChange = (userId, isFollowing) => {
+    if (isFollowing) {
+      // User is following now, increment count
+      setFollowersCount(prevCount => prevCount + 1);
+      // setFollowing(prevFollowing => [...prevFollowing, { _id: userId }]);
+    } else {
+      // User is unfollowing, decrement count
+      setFollowersCount(prevCount => prevCount - 1);
+      // setFollowing(prevFollowing => prevFollowing.filter(user => user._id !== userId));
+    }
+  };
+
   return (
     <Box
       flex={5}
@@ -216,61 +275,127 @@ function ProfileFeed() {
       <Stack spacing={1} >
         <Item square elevation={0}>
           <Box sx={{ padding: 1 }} square>
-            <Box className='flex flex-wrap'>
+            <Box className="flex flex-wrap">
               <Avatar
                 src={userData.profilePic || user.profilePic}
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
-              <Box className='mt-10'>
+              <Box className="mt-10">
                 <Box>
-                  <Typography variant='body1' noWrap>
+                  <Typography variant="body1" noWrap>
                     {userData.userName || user.userName}
                   </Typography>
                 </Box>
                 <Box>
-                  <Typography>
-                    {userData.bio || user.bio}
-                  </Typography>
+                  <Typography>{userData.bio || user.bio}</Typography>
                 </Box>
               </Box>
             </Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2, paddingBottom: 2, marginTop: 2 }}>
               <Box sx={{ textAlign: 'center' }}>
-                <Typography variant='h6'>26</Typography>
-                <Typography variant='subtitle2' color='textSecondary'>Posts</Typography>
+                <Typography variant="h6">{posts.length}</Typography>
+                <Typography variant="subtitle2" color="textSecondary">Posts</Typography>
               </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant='h6'>0</Typography>
-                <Typography variant='subtitle2' color='textSecondary'>Followers</Typography>
-              </Box>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant='h6'>0</Typography>
-                <Typography variant='subtitle2' color='textSecondary'>Following</Typography>
-              </Box>
+              <ButtonBase>
+                <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowers} ref={followersRef}>
+                  <Typography variant="h6">{followingCount}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">Followers</Typography>
+                  <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                    {followers && followingCount > 0 && (
+                      // <Grow
+                      //   unmountOnExit
+                      //   in={followers}
+                      //   style={{ transformOrigin: '0 0 0' }}
+                      //   {...(followers ? { timeout: 600 } : {})}
+                      // >
+                      //   <Paper elevation={5}>
+                      //     {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
+                      //     <UserList
+                      //       users={connectionData.followers}
+                      //       currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                      //       onFollowChange={handleFollowChange}
+                      //     />
+                      //   </Paper>
+                      // </Grow>
+                      <Zoom in={followers} container={followersRef.current} style={{ transitionDelay: followers ? '300ms' : '0ms' }}>
+                        <Paper elevation={5}>
+                          {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
+                          <UserList
+                            users={connectionData.followers}
+                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                            onFollowChange={handleFollowChange}
+                          />
+                        </Paper>
+                      </Zoom>
+                    )}
+                  </Box>
+                </Box>
+              </ButtonBase>
+              <ButtonBase>
+                <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowing} ref={followingRef}>
+                  <Typography variant="h6">{followersCount}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">Following</Typography>
+                  <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                    {following && followersCount > 0 && (
+                      <Zoom in={following} container={followingRef.current} style={{ transitionDelay: following ? '300ms' : '0ms' }}>
+                        {/* {icon} */}
+                        <Paper elevation={5}>
+                          {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
+                          <UserList users={connectionData.following}
+                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                            onFollowChange={handleFollowChange}
+                          />
+
+                        </Paper>
+                      </Zoom>
+                      // <Grow
+                      //   unmountOnExit
+                      //   in={following}
+                      //   style={{ transformOrigin: '0 0 0' }}
+                      //   {...(following ? { timeout: 600 } : {})}
+                      // >
+                      //   <Paper elevation={5}>
+                      //     {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
+                      //     <UserList users={connectionData.following}
+                      //       currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                      //       onFollowChange={handleFollowChange}
+                      //     />
+
+                      //   </Paper>
+                      // </Grow>
+                    )}
+                  </Box>
+                </Box>
+              </ButtonBase>
             </Box>
-            {!userId || userId == user.id ? (<Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2 }}>
-              <Button variant='contained' color='info' size='small' onClick={handleOpenModal}>
-                Edit profile
-              </Button>
-              <Button variant='contained' color='info' size='small'>
-                Share profile
-              </Button>
-            </Box>) : (<Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2 }}>
-              <Button variant='contained'
-                color={isFollowing ? 'error' : 'info'}
-                size='small'
-                onClick={handleFollow}
-                sx={{
-                  backgroundColor: isFollowing ? '#e64b40' : '', // light red for 'Unfollow'
-                  transition: 'background-color 0.3s ease, color 0.3s ease'
-                }}
-              >
-                {isFollowing ? 'Unfollow' : 'Follow'}
-              </Button>
-              <Button variant='contained' color='info' size='small' onClick={() => handleDirectMessage(determineUser)}>
-                Message
-              </Button>
-            </Box>)}
+            {!userId || userId === user.id ? (
+              <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2 }}>
+                <Button variant="contained" color="info" size="small" onClick={handleOpenModal}>
+                  Edit profile
+                </Button>
+                <Button variant="contained" color="info" size="small">
+                  Share profile
+                </Button>
+              </Box>
+            ) : (
+              <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2 }}>
+                <Button
+                  variant="contained"
+                  color={isFollowing ? 'error' : 'info'}
+                  size="small"
+                  onClick={() => handleFollow(userId)}
+                  sx={{
+                    backgroundColor: isFollowing ? '#e64b40' : '', // light red for 'Unfollow'
+                    transition: 'background-color 0.3s ease, color 0.3s ease',
+                  }}
+                >
+                  {isFollowing ? 'Unfollow' : 'Follow'}
+                </Button>
+                <Button variant="contained" color="info" size="small" onClick={() => handleDirectMessage(determineUser)}>
+                  Message
+                </Button>
+              </Box>
+            )}
           </Box>
         </Item>
         <Divider />

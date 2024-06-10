@@ -255,7 +255,7 @@ const Navbar = () => {
                                 <Brightness4Icon color="inherit" />
                             )}
                         </ListItemIcon>
-                        <ListItemText primary={theme.palette.mode == 'light' ? 'Dark' : 'Light'} />
+                        {/* <ListItemText primary={theme.palette.mode == 'light' ? 'Dark' : 'Light'} /> */}
                         <MaterialUISwitch
                             size='small'
                             checked={theme.palette.mode === 'dark'}

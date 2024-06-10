@@ -51,11 +51,10 @@ const people = [
 
 function RightBar() {
     return (
-        <Box className=''
-            flex={1.5}
-
+        <Box className=' flex justify-center '
+            flex={1.5}        
         >
-            <Box className='mt-20 fixed'>             
+            <Box className='fixed' sx={{marginTop:'5rem'}} >             
                 <Box className="flex flex-row items-center justify-center  w-full">
                     <AnimatedTooltip items={people} />
                 </Box>

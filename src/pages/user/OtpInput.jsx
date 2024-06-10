@@ -109,6 +109,7 @@ function OtpInput({
       const response = await userAxios.post(userApi.updatePassword, { newPassword,email });
       console.log(response.data)
       toast.success('Password updated successfully');
+      await new Promise(res => setTimeout(() => { res() }, 1000))
       console.log('inside handlesubmit forget')
       setShowInput(false)
       navigate('/login');

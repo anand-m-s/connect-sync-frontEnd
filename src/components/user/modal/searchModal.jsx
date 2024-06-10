@@ -28,7 +28,7 @@ export default function SearchComponent({ source }) {
     const { setSelectedChat, chats, setChats } = ChatState()
 
     const debounceSetSearch = useCallback(
-        debounce((value) => setSearch(value),700),
+        debounce((value) => setSearch(value),600),
         []
     );
 

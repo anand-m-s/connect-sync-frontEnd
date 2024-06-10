@@ -1,21 +1,23 @@
-import * as React from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Global } from '@emotion/react';
 import { styled } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { grey } from '@mui/material/colors';
-import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
-import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
-const drawerBleeding = 56;
+const drawerBleeding = 0;
 
 const Root = styled('div')(({ theme }) => ({
   height: '100%',
   backgroundColor:
     theme.palette.mode === 'light' ? grey[100] : theme.palette.background.default,
+    display:'flex',
+    justifyContent:'center',
+    widht:'100%',   
+
 }));
 
 const StyledBox = styled('div')(({ theme }) => ({
@@ -24,7 +26,7 @@ const StyledBox = styled('div')(({ theme }) => ({
 
 const Puller = styled('div')(({ theme }) => ({
   width: 30,
-  height: 6,
+  height: 1,
   backgroundColor: theme.palette.mode === 'light' ? grey[300] : grey[900],
   borderRadius: 3,
   position: 'absolute',
@@ -32,42 +34,31 @@ const Puller = styled('div')(({ theme }) => ({
   left: 'calc(50% - 15px)',
 }));
 
-function SwipeableEdgeDrawer(props) {
-  const { window } = props;
-  const [open, setOpen] = React.useState(false);
-
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
-
-  // This is used only for the example
-  const container = window !== undefined ? () => window().document.body : undefined;
-
+function SwipeableEdgeDrawer({ open, onClose, onOpen, width, children }) {
   return (
-    <Root>
+    <Root >
       <CssBaseline />
       <Global
         styles={{
           '.MuiDrawer-root > .MuiPaper-root': {
             height: `calc(50% - ${drawerBleeding}px)`,
             overflow: 'visible',
+            width: width,         
           },
         }}
       />
-      <Box sx={{ textAlign: 'center', pt: 1 }}>
-        <Button onClick={toggleDrawer(true)}>Open</Button>
-      </Box>
+    
       <SwipeableDrawer
-        container={container}
         anchor="bottom"
         open={open}
-        onClose={toggleDrawer(false)}
-        onOpen={toggleDrawer(true)}
+        onClose={onClose}
+        onOpen={onOpen}
         swipeAreaWidth={drawerBleeding}
         disableSwipeToOpen={false}
         ModalProps={{
           keepMounted: true,
         }}
+       
       >
         <StyledBox
           sx={{
@@ -81,7 +72,7 @@ function SwipeableEdgeDrawer(props) {
           }}
         >
           <Puller />
-          <Typography sx={{ p: 2, color: 'text.secondary' }}>51 results</Typography>
+          <Typography sx={{ p: 2, color: 'text.secondary' }}>Comments</Typography>
         </StyledBox>
         <StyledBox
           sx={{
@@ -91,19 +82,36 @@ function SwipeableEdgeDrawer(props) {
             overflow: 'auto',
           }}
         >
-          <Skeleton variant="rectangular" height="100%" />
+          {children}
         </StyledBox>
       </SwipeableDrawer>
+
     </Root>
   );
 }
 
 SwipeableEdgeDrawer.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
-  window: PropTypes.func,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  onOpen: PropTypes.func.isRequired,
+  width: PropTypes.string,
+  children: PropTypes.node,
+};
+
+SwipeableEdgeDrawer.defaultProps = {
+  width: '100%',
 };
 
 export default SwipeableEdgeDrawer;
+
+
+
+//used in home feed user post comment section
+{/* <SwipeableEdgeDrawer
+width="50%"
+open={drawerOpen}
+onClose={handleDrawerClose}
+onOpen={handleCommentClick}
+>
+<Typography sx={{ p: 2 }}>This is the content of the drawer</Typography>
+</SwipeableEdgeDrawer> */}

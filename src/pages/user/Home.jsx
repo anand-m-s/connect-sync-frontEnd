@@ -10,21 +10,21 @@ import Divider from '@mui/material/Divider';
 
 
 function Home() {
-  
+
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'&&'md' ));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm' && 'md'));
 
   return (
     <>
       <Toaster />
-      <Box>
-        <Stack direction='row' spacing={2}
+      <Box >
+        <Stack direction='row'
           justifyContent={'space-between'}
           divider={isSmallScreen ? <Divider orientation="vertical" flexItem /> : null}
-        >         
-        <SideBar/>
-          <Feed/>
-          {isSmallScreen && <RightBar/>}                 
+        >
+          <SideBar />
+          <Feed />
+          {isSmallScreen && <RightBar />}
         </Stack>
       </Box>
     </>
