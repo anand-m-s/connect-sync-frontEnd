@@ -1,5 +1,4 @@
 import React from 'react'
-import UserManagment from '../../components/admin/userManagment/UserManagment'
 import { Box, Divider, Stack } from '@mui/material'
 import SideBar from '../../components/admin/sidebar/SideBar'
 import BasicBars from '../../components/admin/dashboard/Dashboard'
@@ -18,11 +17,8 @@ function AdminDashboard() {
           flex={1}
           >
             <SideBar/>
-
           </Box>
-          <BasicBars/>
-          {/* <UserManagment /> */}
-
+          <BasicBars/>       
         </Stack>
       </Box>
     </>

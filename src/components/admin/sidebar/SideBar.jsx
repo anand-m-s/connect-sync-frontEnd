@@ -1,7 +1,5 @@
 import React from 'react'
 import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import ListItem from '@mui/material/ListItem';
@@ -15,9 +13,10 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
-import { Link } from '@mui/material';
+import { Link } from 'react-router-dom'
 import { logout } from '../../../services/redux/slices/adminAuthSlice';
 import { useDispatch } from 'react-redux';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 function SideBar() {
     const [state, setState] = React.useState({
@@ -61,6 +60,14 @@ function SideBar() {
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to={'/admin'}>
                         <ListItemIcon>
+                            <SupervisorAccountIcon color='primary' />
+                        </ListItemIcon>
+                        <ListItemText primary={"CircleSync"} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton component={Link} to={'/admin'}>
+                        <ListItemIcon>
                             <SpaceDashboardIcon color='primary' />
                         </ListItemIcon>
                         <ListItemText primary={"Dashboard"} />
@@ -76,7 +83,7 @@ function SideBar() {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton  >
+                    <ListItemButton component={Link} to={'/admin/report'} >
                         <ListItemIcon>
                             <FlagIcon color='primary' />
                         </ListItemIcon>
@@ -143,3 +150,7 @@ function SideBar() {
 }
 
 export default SideBar
+
+
+
+

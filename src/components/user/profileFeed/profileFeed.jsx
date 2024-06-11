@@ -17,6 +17,7 @@ import { uploadImages } from '../../../constraints/axios/imageUpload';
 import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress';
 import { useLocation, useNavigate } from 'react-router';
 import UserList from './FollowingAndFollowers';
+import { logout } from '../../../services/redux/slices/userAuthSlice';
 
 
 
@@ -113,6 +114,8 @@ function ProfileFeed() {
   const determineUser = userId || user.id
 
 
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -122,8 +125,8 @@ function ProfileFeed() {
           userAxios.get(`${userApi.following}?userId=${determineUser}`),
           userAxios.get(`${userApi.following}?userId=${user.id}`)
         ]);
-        console.log(postRes.data)
-        console.log(followData.data.data)
+        // console.log(postRes.data)
+        // console.log(followData.data.data)
         setConnectionData(followData.data.data)
         setCurrentUserConnection(currentUserConnection.data.data)
         dispatch(setUserPosts(postRes.data.post));
@@ -142,13 +145,20 @@ function ProfileFeed() {
           dispatch(resetNewPost())
         }
       } catch (error) {
-        if (error.response && error.response.data.error) {
-          toast.error(error.response.data.error);
+        if (error.response && error.response.status === 401) {
+          // Redirect to login page if unauthorized
+          toast.error(error.response.data.message);
+          await new Promise(res => setTimeout(() => { res() }, 900))
+          dispatch(logout());
+          navigate('/login');
+          } else {
+            console.error('Error:', error.message);
+            toast.error(error.response.data.error);
         }
+      
       }
     };
     fetchData();
-    // Cleanup
     return () => {
       // Cancel requests if needed 
       // const source = axios.CancelToken.source();
@@ -256,11 +266,11 @@ function ProfileFeed() {
 
   const handleFollowChange = (userId, isFollowing) => {
     if (isFollowing) {
-      // User is following now, increment count
+
       setFollowersCount(prevCount => prevCount + 1);
       // setFollowing(prevFollowing => [...prevFollowing, { _id: userId }]);
     } else {
-      // User is unfollowing, decrement count
+    
       setFollowersCount(prevCount => prevCount - 1);
       // setFollowing(prevFollowing => prevFollowing.filter(user => user._id !== userId));
     }

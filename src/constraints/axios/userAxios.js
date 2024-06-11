@@ -1,3 +1,4 @@
+
 import axios from 'axios'
 
 const userBaseUrl = import.meta.env.VITE_USER_BASE_URL
@@ -38,3 +39,26 @@ export const userAxios=axios.create({
     }
     return Promise.reject(error);
   });
+
+  // userAxios.interceptors.response.use(
+  //   (response) => {
+  //     return response;
+  //   },
+  //   (error) => {
+  //     if (error.response) {
+  //       const { status, data } = error.response;
+  //       if (status === 401 && data.message === 'User Is Blocked') {
+  //         navigateToLogin(); // Redirect to the login page
+  //       } else {
+  //         console.error('Response Error:', data);
+  //         console.error('Status Code:', status);
+  //         console.error('Headers:', error.response.headers);
+  //       }
+  //     } else if (error.request) {
+  //       console.error('Request Error:', error.request);
+  //     } else {
+  //       console.error('Error:', error.message);
+  //     }
+  //     return Promise.reject(error);
+  //   }
+  // );

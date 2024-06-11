@@ -22,5 +22,9 @@ export default{
     following:'/following',
     addComment:'/addComment',
     loadComments:'/fetchAllComments',
-    addReply:'/addReply'
+    addReply:'/addReply',
+    toggleLike:'/likePost',
+    likeStatus:'/likeStatus',
+    reportPost:'/report'
+
 }

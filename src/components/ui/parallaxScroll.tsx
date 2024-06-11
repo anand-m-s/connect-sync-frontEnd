@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "../../utils/cn";
 import PostModal from "../user/profileFeed/viewSelectedPost";
+import { useSelector } from "react-redux";
 
 export const ParallaxScroll = ({
   images,
@@ -13,15 +14,15 @@ export const ParallaxScroll = ({
 }: {
   images: string[];
   className?: string;
-  determineUser:string;
+  determineUser: string;
 }) => {
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [selectedPostId, setSelectedPostId] = useState(null);
 
+
   const openModal = (imageUrl) => {
-    console.log(imageUrl)         
-    setSelectedPostId(imageUrl);
+    setSelectedPostId(imageUrl)
     setModalIsOpen(true);
   };
 
@@ -44,7 +45,7 @@ export const ParallaxScroll = ({
   const firstPart = images.slice(0, third);
   const secondPart = images.slice(third, 2 * third);
   const thirdPart = images.slice(2 * third);
- 
+
 
   return (
     <>
@@ -61,7 +62,7 @@ export const ParallaxScroll = ({
               <motion.div
                 style={{ y: translateFirst }}
                 key={"grid-1" + idx}
-                onClick={() => openModal(el)}                
+                onClick={() => openModal(el)}
               >
                 <img
                   src={el}
@@ -76,7 +77,7 @@ export const ParallaxScroll = ({
           <div className="grid gap-4">
             {secondPart.map((el, idx) => (
               <motion.div style={{ y: translateSecond }} key={"grid-2" + idx}
-              onClick={() => openModal(el)}
+                onClick={() => openModal(el)}
               >
                 <img
                   src={el}
@@ -91,7 +92,7 @@ export const ParallaxScroll = ({
           <div className="grid gap-4">
             {thirdPart.map((el, idx) => (
               <motion.div style={{ y: translateThird }} key={"grid-3" + idx}
-              onClick={() => openModal(el)}
+                onClick={() => openModal(el)}
               >
                 <img
                   src={el}

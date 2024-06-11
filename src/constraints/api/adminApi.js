@@ -1,5 +1,7 @@
 export default{
     adminLogin:'/login',
     getUserData:'/fetchUserData',
-    blockunblock:'/block'
+    blockunblock:'/block',
+    getReport:'/getReport',
+    blockPost:'/blockReportedPost'
 }

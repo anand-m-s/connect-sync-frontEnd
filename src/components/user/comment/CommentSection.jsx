@@ -1,4 +1,4 @@
-import { Box, IconButton, TextField, useTheme } from '@mui/material'
+import { Box, IconButton, TextField, Typography, useTheme } from '@mui/material'
 import React, { useState } from 'react'
 import Comment from './Comment'
 import { Send } from '@mui/icons-material'
@@ -8,9 +8,9 @@ import userApi from '../../../constraints/api/userApi'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
+import { useRef } from 'react'
 
 function CommentSection({ postId }) {
-
     const user = useSelector((state) => state.userAuth.userInfo)
     const [newComment, setNewComment] = useState('')
     const [comments, setComments] = useState([])
@@ -18,8 +18,7 @@ function CommentSection({ postId }) {
     const [replyingTo, setReplyingTo] = useState(null);
     const [parentId,setParentId] = useState('')
     const theme = useTheme()
-
-
+ 
     const handleAddComment = async () => {
         console.log('add comment')
         const commentData = {
@@ -40,10 +39,10 @@ function CommentSection({ postId }) {
         }
     }
 
+
     const fetchAllMessages = async () => {
         try {
-            const res = await userAxios.get(`${userApi.loadComments}?postId=${postId}`)
-            console.log(res.data)
+            const res = await userAxios.get(`${userApi.loadComments}?postId=${postId}`)          
             setComments(res.data)            
         } catch (error) {
             if (error.response && error.response.data.error) {
@@ -93,6 +92,7 @@ function CommentSection({ postId }) {
 
     const handleReplayInput =(commentId,pId=null)=>{
         console.log('inside',commentId)
+       console.log(pId)
         if(replyingTo==commentId){
             setReplyingTo(null)
             }else{
@@ -100,9 +100,7 @@ function CommentSection({ postId }) {
             setParentId(pId)
         }
     }
-    console.log(comments)
-
-
+    // console.log(comments)
     return (
         <Box        
         >
@@ -114,8 +112,9 @@ function CommentSection({ postId }) {
                             fallback={comment.userId.userName.charAt(0)}
                             name={comment.userId.userName}
                             time={formatDate(comment.createdAt)}
-                            text={comment.content}
+                            content={comment.content}
                             onReply={()=>handleReplayInput(comment._id)}
+                            userId={comment.userId._id}
                             // onReply={() => setReplyingTo(comment._id)}
                         />
                         {comment.replies && comment.replies.map((rep) => (
@@ -125,8 +124,9 @@ function CommentSection({ postId }) {
                                     fallback={rep.userId.userName.charAt(0)}
                                     name={rep.userId.userName}
                                     time={formatDate(rep.createdAt)}
-                                    text={rep.reply}
+                                    content={rep.reply}
                                     onReply={()=>handleReplayInput(comment._id,rep._id)}
+                                    userId={rep.userId._id}
                                 />
                             </Box>
                         ))}
@@ -135,6 +135,7 @@ function CommentSection({ postId }) {
                                 <TextField
                                     onChange={(e) => setReplyText(e.target.value)}
                                     value={replyText}
+                                   
                                     variant="outlined"
                                     placeholder="Add a reply..."
                                     fullWidth
@@ -167,15 +168,19 @@ function CommentSection({ postId }) {
                         )}
                     </Box>
                 ))}
+                {comments.length<1 && (
+                    <Typography>No comments yet...</Typography>
+                )}
 
 
             </Box>
-            <Box className="fixed bottom-0 flex backdrop-filter backdrop-blur-md p-6 w-96 rounded-md"
+            <Box className="fixed bottom-0 flex backdrop-filter backdrop-blur-md p-6 w-96  "
             // sx={{ border: `1px solid ${theme.palette.divider}` }}
+            style={{ zIndex: 1200 }}
             >
                 <Box className="flex-1">
                     <TextField
-                        // onKeyDown={addComment}
+                        // onKeyDown={addComment}                        
                         onChange={(e) => setNewComment(e.target.value)}
                         value={newComment}
                         variant="outlined"
@@ -200,8 +205,10 @@ function CommentSection({ postId }) {
                             },
                             style: {
                                 fontSize: '1rem',
+                               
                             },
                         }}
+                        sx={{ zIndex: 2400 }}
                         InputLabelProps={{
                             sx: {
                                 paddingLeft: '15px',

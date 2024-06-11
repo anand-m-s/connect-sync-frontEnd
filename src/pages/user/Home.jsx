@@ -20,7 +20,7 @@ function Home() {
       <Box >
         <Stack direction='row'
           justifyContent={'space-between'}
-          divider={isSmallScreen ? <Divider orientation="vertical" flexItem /> : null}
+          // divider={isSmallScreen ? <Divider orientation="vertical" flexItem /> : null}
         >
           <SideBar />
           <Feed />

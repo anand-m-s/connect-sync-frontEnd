@@ -4,7 +4,7 @@ import IconButton from "@mui/material/IconButton"
 import TextField from "@mui/material/TextField"
 import { Send, VideoCall, Phone, MoreHoriz, Add, Search, AttachFile, InsertEmoticon } from "@mui/icons-material"
 import { styled } from "@mui/system"
-import { Box, Tooltip, useTheme } from "@mui/material"
+import { Box, Tooltip, Typography, useTheme } from "@mui/material"
 import ScrollableFeed from 'react-scrollable-feed'
 import { userAxios } from "../../../constraints/axios/userAxios"
 import userApi from "../../../constraints/api/userApi"
@@ -14,6 +14,8 @@ import { useSelector } from "react-redux"
 import { toast } from "sonner"
 import ChatHeader from "./ChatHeader"
 import io from 'socket.io-client'
+import { format, isToday, isYesterday, isSameDay, differenceInDays, isSameWeek } from 'date-fns';
+
 
 const CustomTextarea = styled(TextField)({
     "& .MuiInputBase-root": {
@@ -157,6 +159,40 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
             }
         }, timerLength)
     }
+
+
+    // const formatDate = (dateString) => {
+    //     const date = new Date(dateString);
+
+    //     if (isToday(date)) {
+    //         return format(date, 'HH:mm');
+    //     }
+    //     if (isYesterday(date)) {
+    //         return 'Yesterday';
+    //     }
+    //     if (isSameWeek(date, new Date())) {
+    //         return format(date, 'EEEE'); // Day of the week
+    //     }
+    //     const daysAgo = differenceInDays(new Date(), date);
+    //     return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
+    // };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+
+        if (isToday(date)) {
+            return format(date, 'HH:mm');
+        }
+        if (isYesterday(date)) {
+            return 'Yesterday';
+        }
+        if (isSameWeek(date, new Date())) {
+            return format(date, 'EEEE'); // Day of the week
+        }
+        return format(date, 'dd/MM/yyyy'); // Day/Month/Year for messages from another week
+    };
+
+
     return (
         <Box flex={3.5}>
             {selectedChat ? (
@@ -168,6 +204,21 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                             <Box className="flex-1 overflow-auto p-4">
                                 {messages && messages.map((m, i) => (
                                     <Box key={m._id} className="grid gap-4 m-1">
+                                        {(i === 0 || !isSameDay(new Date(m.createdAt), new Date(messages[i - 1].createdAt))) && (
+                                            <Box className='flex justify-center my-2 opacity-30 text-sm'>
+                                                {isToday(new Date(m.createdAt))
+                                                    ? 'Today'
+                                                    : isYesterday(new Date(m.createdAt))
+                                                        ? 'Yesterday'
+                                                        : isSameWeek(new Date(m.createdAt), new Date())
+                                                            ? format(new Date(m.createdAt), 'EEEE') // Day of the week
+                                                            : format(new Date(m.createdAt), 'dd/MM/yyyy')  // Day/Month/Year
+                                                }
+                                            </Box>
+                                        )}
+
+
+
                                         <Box className={`flex items-end gap-2 ${m.sender._id === user.id ? 'justify-end' : ''}`}>
                                             {(isSameSender(messages, m, i, user.id) || isLastMessage(messages, i, user.id)) && (
                                                 <Avatar
@@ -187,8 +238,16 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                                             >
                                                 <p>{m.content}</p>
                                                 <Box className={`mt-1 text-xs ${m.sender._id === user.id ? 'text-gray-200' : 'text-gray-500 dark:text-gray-400'}`}>
-                                                    {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                    {/* {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} */}
+                                                    {formatDate(m.createdAt)}
                                                 </Box>
+                                                {/* <Box>
+                                                    <Typography>
+                                                        {formatDate(m.createdAt)}
+                                                    </Typography>
+                                                </Box> */}
+
+
                                             </Box>
                                         </Box>
                                     </Box>

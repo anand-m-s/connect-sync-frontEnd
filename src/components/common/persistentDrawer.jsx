@@ -40,7 +40,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-start',
 }));
 
-export default function PersistentDrawerRight({ open, handleDrawerClose,postId}) {
+export default function PersistentDrawerRight({ open, handleDrawerClose, postId }) {
     const theme = useTheme();
     return (
         <Box sx={{ display: 'flex' }}>
@@ -55,17 +55,17 @@ export default function PersistentDrawerRight({ open, handleDrawerClose,postId})
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
                     },
+                    zIndex: 1301,
                 }}
                 variant="persistent"
                 anchor="right"
                 open={open}
             >
-                <DrawerHeader 
-                  style={{
-                    backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,                  
-                }}
+                <DrawerHeader
+                    style={{
+                        backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
+                    }}
                 >
-
                     <IconButton onClick={handleDrawerClose} className='justify-start'>
 
                         {/* {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />} */}
@@ -73,7 +73,6 @@ export default function PersistentDrawerRight({ open, handleDrawerClose,postId})
                         {/* <Typography>Back</Typography> */}
                     </IconButton>
                     <Typography className='flex justify-center'>Comments</Typography>
-
                 </DrawerHeader>
                 <Divider />
                 <Box className="drawer-content">

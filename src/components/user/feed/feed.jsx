@@ -6,7 +6,7 @@ import userApi from '../../../constraints/api/userApi';
 import { Divider } from '@mui/material';
 import SkeletonLoading from '../../common/skeltonLoading';
 import { Parallax } from 'react-parallax';
-import { Opacity, Padding } from '@mui/icons-material';
+
 
 function Feed() {
   const [postData, setPostData] = useState([]);
@@ -16,13 +16,14 @@ function Feed() {
     try {
       const res = await userAxios.get(userApi.userFeedPost);
       setPostData(res.data);
-      await new Promise(res => setTimeout(res, 900));
+      await new Promise(res => setTimeout(res,900));
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
     }
   };
+ 
 
   useEffect(() => {
     fetchData();
@@ -51,11 +52,9 @@ function Feed() {
             style={{ 
               margin: '4.8rem 0',
                 // padding:'4rem',
-               borderRadius: '1rem' }}
-            
-
+               borderRadius: '1rem' }}            
           >
-            <div className="p-2 mt-9 ml-10 " key={post._id}>
+            <div className="p-2 mt-9 ml-5  " key={post._id}>
               <Post
                 postId={post._id}
                 userName={post.userName}
@@ -65,8 +64,7 @@ function Feed() {
                 description={post.description}
               />
             </div>
-          </Parallax>
-
+            </Parallax>
         ))
       )}
     </Box>
