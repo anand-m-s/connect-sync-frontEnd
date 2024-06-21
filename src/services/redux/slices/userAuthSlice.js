@@ -5,7 +5,8 @@ const initialState = {
     userInfo: localStorage.getItem('userInfo') ? JSON.parse(localStorage.getItem('userInfo') || "")
         : null,
     posts: [],
-    newPost: null
+    newPost: null,
+
 };
 
 const userAuthSlice = createSlice({
@@ -39,9 +40,12 @@ const userAuthSlice = createSlice({
         },
         resetNewPost: (state) => {
             state.newPost = null;
-        }
+        },
+
     }
 })
 
-export const { setUserCredentials, logout, setUserPosts, setEditedUserCredentials, addUserPost, resetNewPost } = userAuthSlice.actions
+export const { setUserCredentials, logout, setUserPosts, setEditedUserCredentials, addUserPost, resetNewPost
+
+ } = userAuthSlice.actions
 export default userAuthSlice.reducer

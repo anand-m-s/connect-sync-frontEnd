@@ -16,7 +16,8 @@ function Feed() {
     try {
       const res = await userAxios.get(userApi.userFeedPost);
       setPostData(res.data);
-      await new Promise(res => setTimeout(res,900));
+      console.log(res.data)
+      await new Promise(res => setTimeout(res,800));
       setLoading(false);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -64,7 +65,7 @@ function Feed() {
                 description={post.description}
               />
             </div>
-            </Parallax>
+              </Parallax>
         ))
       )}
     </Box>

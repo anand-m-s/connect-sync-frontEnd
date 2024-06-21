@@ -114,8 +114,6 @@ function ProfileFeed() {
   const determineUser = userId || user.id
 
 
-
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -284,7 +282,7 @@ function ProfileFeed() {
       <Toaster richColors />
       <Stack spacing={1} >
         <Item square elevation={0}>
-          <Box sx={{ padding: 1 }} square>
+          <Box sx={{ padding: 1 }} >
             <Box className="flex flex-wrap">
               <Avatar
                 src={userData.profilePic || user.profilePic}

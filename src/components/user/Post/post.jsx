@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,lazy,Suspense } from 'react'
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -12,12 +12,14 @@ import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
 import { Box, CardMedia, Divider, Menu,MenuItem, useTheme } from '@mui/material';
-import PersistentDrawerRight from '../../common/persistentDrawer';
+// import PersistentDrawerRight from '../../common/persistentDrawer';
+const PersistentDrawerRight = lazy(()=>import('../../common/persistentDrawer'))
 import { useEffect } from 'react';
 import userApi from '../../../constraints/api/userApi';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import CommentIcon from '@mui/icons-material/Comment';
 import ReportPostModal from '../report/Report';
+import { Link } from 'react-router-dom';
 
 function Post({ userName, profilePic, imageUrl, location, description, postId }) {
     const theme = useTheme();
@@ -65,7 +67,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
             }
         };
         fetchLikeStatus();
-    }, [postId]);
+    }, []);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -93,10 +95,10 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
                     // sx={{background:''}}
                     style={{
                         backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
-                        cursor: 'pointer'
+                        
                     }}
                     avatar={
-                        <Avatar src={profilePic} sx={{ bgcolor: "skyblue" }} aria-label="recipe">
+                        <Avatar  src={profilePic} sx={{ bgcolor: "skyblue",cursor:'pointer' }} aria-label="recipe">
                             {userName.charAt(0)}
                         </Avatar>
                     }
@@ -129,7 +131,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
                             </Menu>
                         </IconButton>
                     }
-                    title={userName}
+                    title={<Box sx={{cursor:'pointer'}} component={Link} to='/profile?userId=${}'>{userName}</Box>}
                     subheader={location}
                 />
                 <Box
@@ -186,9 +188,10 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
                     </CardActions>
                 </Box>
             </Card>
-            <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={postId}
-                // sx={{ width: { xs: '70%', sm: '80%', md: '90%' } }}
+            <Suspense fallback={<>Lodaing...</>}>
+            <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={postId}               
             />
+            </Suspense>
              <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
         </Box>
     );

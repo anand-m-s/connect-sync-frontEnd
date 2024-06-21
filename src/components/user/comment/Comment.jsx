@@ -5,6 +5,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 function Comment({ avatarSrc, fallback, name, time, content, onReply, userId }) {
   const user = useSelector((state) => state.userAuth.userInfo)
@@ -17,7 +18,7 @@ function Comment({ avatarSrc, fallback, name, time, content, onReply, userId }) 
         //  sx={{ display: 'flex', justifyContent: 'space-between' }}
         >
           <Box className='flex justify-between '>
-            <Typography variant="subtitle2" >{name}</Typography>
+            <Typography variant="subtitle2" component={Link} to={`/profile?userId=${userId}`} >{name}</Typography>
             <Typography variant="caption" color="text.secondary"
               sx={{ marginRight: '3rem' }}
             >{time}

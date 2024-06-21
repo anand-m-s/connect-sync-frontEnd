@@ -1,4 +1,3 @@
-import ForgotPassword from "../../pages/user/ForgotPassword";
 
 export default{
     registerUser:'/register',
@@ -25,6 +24,9 @@ export default{
     addReply:'/addReply',
     toggleLike:'/likePost',
     likeStatus:'/likeStatus',
-    reportPost:'/report'
+    reportPost:'/report',
+    upload:'/chat/upload',
+    getSignedUrl:'/chat/signed_url',
+    fileUpload:'/chat/fileUpload'
 
 }

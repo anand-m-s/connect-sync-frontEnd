@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const adminBaseUrl = import.meta.env.VITE_ADMIN_BASE_URL
-console.log(adminBaseUrl)
+
 
 export const adminAxios=axios.create({
     baseURL:adminBaseUrl,

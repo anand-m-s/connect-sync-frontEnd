@@ -1,9 +1,9 @@
 export const getSender=(userId,users)=>{
-    console.log(userId,users)
+  
     return users[0]._id === userId ? users[1].userName:users[0].userName;
 }
 export const getSenderProfilePic=(userId,users)=>{
-    console.log(userId,users)
+
     return users[0]._id === userId ? users[1].profilePic:users[0].profilePic;
 }
 export const getSenderFull=(userId,users)=>{

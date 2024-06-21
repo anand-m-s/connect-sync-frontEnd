@@ -72,7 +72,7 @@ export default function ChatComponent() {
     useEffect(() => {
         fetchChats()
     }, [fetchAgain,fetchChats])
-    console.log(chats)
+ 
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -85,7 +85,7 @@ export default function ChatComponent() {
         const daysAgo = differenceInDays(new Date(), date);
         return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     };
-    console.log(selectedChat)
+  
 
     return (
         <Box

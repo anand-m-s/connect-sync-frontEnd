@@ -75,7 +75,9 @@ function CommentSection({ postId }) {
 
     useEffect(() => {
         fetchAllMessages()
-    }, [postId])
+    }, [])
+
+  
 
 
     const formatDate = (dateString) => {
@@ -100,7 +102,6 @@ function CommentSection({ postId }) {
             setParentId(pId)
         }
     }
-    // console.log(comments)
     return (
         <Box        
         >

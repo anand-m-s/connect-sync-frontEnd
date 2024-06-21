@@ -22,7 +22,7 @@
     "axios": "^1.6.8",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
-    "firebase": "^10.11.1",
+    "firebase": "^10.12.2",
     "formik": "^2.4.6",
     "formik-mui": "^5.0.0-alpha.0",
     "framer-motion": "^11.2.3",

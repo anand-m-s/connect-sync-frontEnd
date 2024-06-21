@@ -57,3 +57,20 @@ body{
     overflow-y: auto;
 }
 
+/* src/App.css */
+.App {
+    text-align: center;
+  }
+  
+  .videos {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+  }
+  
+  video {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+  }
+  
