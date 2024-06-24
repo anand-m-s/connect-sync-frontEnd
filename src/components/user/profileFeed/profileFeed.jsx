@@ -18,6 +18,7 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 import { useLocation, useNavigate } from 'react-router';
 import UserList from './FollowingAndFollowers';
 import { logout } from '../../../services/redux/slices/userAuthSlice';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 
 
@@ -149,11 +150,11 @@ function ProfileFeed() {
           await new Promise(res => setTimeout(() => { res() }, 900))
           dispatch(logout());
           navigate('/login');
-          } else {
-            console.error('Error:', error.message);
-            toast.error(error.response.data.error);
+        } else {
+          console.error('Error:', error.message);
+          toast.error(error.response.data.error);
         }
-      
+
       }
     };
     fetchData();
@@ -268,12 +269,19 @@ function ProfileFeed() {
       setFollowersCount(prevCount => prevCount + 1);
       // setFollowing(prevFollowing => [...prevFollowing, { _id: userId }]);
     } else {
-    
+
       setFollowersCount(prevCount => prevCount - 1);
       // setFollowing(prevFollowing => prevFollowing.filter(user => user._id !== userId));
     }
   };
 
+  const handleClickAwayFollowers = () => {
+    setFollowers(false);
+  };
+
+  const handleClickAwayFollowing = () => {
+    setFollowing(false);
+  }
   return (
     <Box
       flex={5}
@@ -304,77 +312,50 @@ function ProfileFeed() {
                 <Typography variant="h6">{posts.length}</Typography>
                 <Typography variant="subtitle2" color="textSecondary">Posts</Typography>
               </Box>
-              <ButtonBase>
-                <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowers} ref={followersRef}>
-                  <Typography variant="h6">{followingCount}</Typography>
-                  <Typography variant="subtitle2" color="textSecondary">Followers</Typography>
-                  <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
-                    {followers && followingCount > 0 && (
-                      // <Grow
-                      //   unmountOnExit
-                      //   in={followers}
-                      //   style={{ transformOrigin: '0 0 0' }}
-                      //   {...(followers ? { timeout: 600 } : {})}
-                      // >
-                      //   <Paper elevation={5}>
-                      //     {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
-                      //     <UserList
-                      //       users={connectionData.followers}
-                      //       currentUserFollowing={currentUserConnection.following.map(user => user._id)}
-                      //       onFollowChange={handleFollowChange}
-                      //     />
-                      //   </Paper>
-                      // </Grow>
-                      <Zoom in={followers} container={followersRef.current} style={{ transitionDelay: followers ? '300ms' : '0ms' }}>
-                        <Paper elevation={5}>
-                          {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
-                          <UserList
-                            users={connectionData.followers}
-                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
-                            onFollowChange={handleFollowChange}
-                          />
-                        </Paper>
-                      </Zoom>
-                    )}
-                  </Box>
-                </Box>
-              </ButtonBase>
-              <ButtonBase>
-                <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowing} ref={followingRef}>
-                  <Typography variant="h6">{followersCount}</Typography>
-                  <Typography variant="subtitle2" color="textSecondary">Following</Typography>
-                  <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
-                    {following && followersCount > 0 && (
-                      <Zoom in={following} container={followingRef.current} style={{ transitionDelay: following ? '300ms' : '0ms' }}>
-                        {/* {icon} */}
-                        <Paper elevation={5}>
-                          {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
-                          <UserList users={connectionData.following}
-                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
-                            onFollowChange={handleFollowChange}
-                          />
 
-                        </Paper>
-                      </Zoom>
-                      // <Grow
-                      //   unmountOnExit
-                      //   in={following}
-                      //   style={{ transformOrigin: '0 0 0' }}
-                      //   {...(following ? { timeout: 600 } : {})}
-                      // >
-                      //   <Paper elevation={5}>
-                      //     {/* <UserList users={connectionData.following} onFollowClick={handleFollow} isFollowing={isFollowing} /> */}
-                      //     <UserList users={connectionData.following}
-                      //       currentUserFollowing={currentUserConnection.following.map(user => user._id)}
-                      //       onFollowChange={handleFollowChange}
-                      //     />
 
-                      //   </Paper>
-                      // </Grow>
-                    )}
-                  </Box>
-                </Box>
-              </ButtonBase>
+              <ClickAwayListener onClickAway={handleClickAwayFollowers}>
+                <ButtonBase>
+                    <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowers} ref={followersRef}>
+                        <Typography variant="h6">{followingCount}</Typography>
+                        <Typography variant="subtitle2" color="textSecondary">Followers</Typography>
+                        <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                            {followers && followingCount > 0 && (
+                                <Zoom in={followers} container={followersRef.current} style={{ transitionDelay: followers ? '300ms' : '0ms' }}>
+                                    <Paper elevation={5}>
+                                        <UserList
+                                            users={connectionData.followers}
+                                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                                            onFollowChange={handleFollowChange}
+                                        />
+                                    </Paper>
+                                </Zoom>
+                            )}
+                        </Box>
+                    </Box>
+                </ButtonBase>
+            </ClickAwayListener>
+            <ClickAwayListener onClickAway={handleClickAwayFollowing}>
+                <ButtonBase>
+                    <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowing} ref={followingRef}>
+                        <Typography variant="h6">{followersCount}</Typography>
+                        <Typography variant="subtitle2" color="textSecondary">Following</Typography>
+                        <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                            {following && followersCount > 0 && (
+                                <Zoom in={following} container={followingRef.current} style={{ transitionDelay: following ? '300ms' : '0ms' }}>
+                                    <Paper elevation={5}>
+                                        <UserList
+                                            users={connectionData.following}
+                                            currentUserFollowing={currentUserConnection.following.map(user => user._id)}
+                                            onFollowChange={handleFollowChange}
+                                        />
+                                    </Paper>
+                                </Zoom>
+                            )}
+                        </Box>
+                    </Box>
+                </ButtonBase>
+            </ClickAwayListener>
             </Box>
             {!userId || userId === user.id ? (
               <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2 }}>

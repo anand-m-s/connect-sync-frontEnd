@@ -1,33 +1,3 @@
-// import React from 'react';
-// import { Avatar, Box, Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
-// import { isFollowing } from '../../../constraints/config/followLogic';
-
-// const UserList = ({ users,currentUserFollowing }) => {
-//     console.log(currentUserFollowing)
-//     return (
-//         <List>
-//             {users.map((user) => (
-//                 <ListItem key={user._id}>
-//                     <ListItemAvatar>
-//                         <Avatar src={user.profilePic} />
-//                     </ListItemAvatar>
-//                     <ListItemText primary={user.userName} />
-//                     <Button
-//                         variant="text"
-//                         color={isFollowing(user._id,currentUserFollowing) ? 'error' : 'info'}
-
-//                         size='small'
-//                     // onClick={() => onFollowClick(user._id)}
-//                     >
-//                         {isFollowing(user._id,currentUserFollowing) ? 'Unfollow' : 'Follow'}                        
-//                     </Button>
-//                 </ListItem>
-//             ))}
-//         </List>
-//     );
-// };
-
-// export default UserList;
 import React, { useMemo } from 'react';
 import { Avatar, Box, Button, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
 import { isFollowing } from '../../../constraints/config/followLogic';

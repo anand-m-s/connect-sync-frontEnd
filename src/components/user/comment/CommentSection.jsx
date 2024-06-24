@@ -19,6 +19,7 @@ function CommentSection({ postId }) {
     const [parentId,setParentId] = useState('')
     const theme = useTheme()
  
+ 
     const handleAddComment = async () => {
         console.log('add comment')
         const commentData = {

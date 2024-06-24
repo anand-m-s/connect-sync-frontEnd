@@ -1,4 +1,4 @@
-import React, { useState,lazy,Suspense } from 'react'
+import React, { useState, lazy, Suspense, useEffect } from 'react';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
@@ -10,25 +10,26 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import ShareIcon from '@mui/icons-material/Share';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import MapsUgcOutlinedIcon from '@mui/icons-material/MapsUgcOutlined';
-import { Box, CardMedia, Divider, Menu,MenuItem, useTheme } from '@mui/material';
-// import PersistentDrawerRight from '../../common/persistentDrawer';
-const PersistentDrawerRight = lazy(()=>import('../../common/persistentDrawer'))
-import { useEffect } from 'react';
+import { Box, Button, CardMedia, Divider, Menu, MenuItem, useTheme } from '@mui/material';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 import userApi from '../../../constraints/api/userApi';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import CommentIcon from '@mui/icons-material/Comment';
 import ReportPostModal from '../report/Report';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+const PersistentDrawerRight = lazy(() => import('../../common/persistentDrawer'));
 
-function Post({ userName, profilePic, imageUrl, location, description, postId }) {
+function Post({ userName, profilePic, imageUrl, location, description, postId, userId }) {
     const theme = useTheme();
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [isLiked, setIsLiked] = useState(false)
-    const [likeCount, setLikeCount] = useState(0)
+    const [isLiked, setIsLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const user = useSelector((state) => state.userAuth.userInfo);
     const open = Boolean(anchorEl);
+
     const handleCommentClick = () => {
         setDrawerOpen((prev) => !prev);
     };
@@ -36,6 +37,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
     const handleDrawerClose = () => {
         setDrawerOpen(false);
     };
+
     useEffect(() => {
         if (drawerOpen) {
             document.body.classList.add('no-scroll');
@@ -46,92 +48,89 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
 
     const handleLike = async () => {
         try {
-            const res = await userAxios.post(`${userApi.toggleLike}?postId=${postId}`)
-            console.log(res.data)
+            const res = await userAxios.post(`${userApi.toggleLike}?postId=${postId}`);
+            console.log(res.data);
             setIsLiked(!isLiked);
-            setLikeCount(res.data.likeCount)
+            setLikeCount(res.data.likeCount);
         } catch (error) {
             if (error.response && error.response.data.error) {
                 toast.error(error.response.data.error);
             }
         }
-    }
+    };
+
     useEffect(() => {
         const fetchLikeStatus = async () => {
             try {
                 const res = await userAxios.get(`${userApi.likeStatus}?postId=${postId}`);
                 setIsLiked(res.data.isLiked);
-                setLikeCount(res.data.likeCount)
+                setLikeCount(res.data.likeCount);
             } catch (error) {
                 console.error('Error fetching like status:', error);
             }
         };
         fetchLikeStatus();
-    }, []);
+    }, [postId]);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
     const handleOpenModal = () => {
         setModalOpen(true);
-        handleClose()
-      };
-    
-      const handleCloseModal = () => {
+        handleClose();
+    };
+
+    const handleCloseModal = () => {
         setModalOpen(false);
-      };
-
-
+    };
 
     return (
-        <Box className='flex justify-center items-center '>
-
+        <Box className='flex justify-center items-center'>
             <Card sx={{ marginBottom: 3, borderRadius: '1.2rem', width: { xs: '70%', sm: '80%', md: '90%' } }} elevation={1}>
                 <CardHeader
-                    // sx={{background:''}}
                     style={{
                         backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
-                        
                     }}
                     avatar={
-                        <Avatar  src={profilePic} sx={{ bgcolor: "skyblue",cursor:'pointer' }} aria-label="recipe">
+                        <Avatar src={profilePic} sx={{ bgcolor: "skyblue", cursor: 'pointer' }} aria-label="recipe">
                             {userName.charAt(0)}
                         </Avatar>
                     }
                     action={
-                        <IconButton aria-label="settings">
-                            <MoreVertIcon
-                                id="demo-positioned-button"
-                                aria-controls={open ? 'demo-positioned-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={open ? 'true' : undefined}
-                                onClick={handleClick}
-                            />
-                            <Menu
-                                id="demo-positioned-menu"
-                                aria-labelledby="demo-positioned-button"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'left',
-                                }}
-                            >
-                                <MenuItem onClick={handleOpenModal}>Report</MenuItem>
-                                
-                            </Menu>
-                        </IconButton>
+                        <ClickAwayListener onClickAway={handleClose}>
+                            <div>
+                                <Button
+                                    aria-label="settings"
+                                    id="demo-positioned-button"
+                                    aria-controls={open ? 'demo-positioned-menu' : undefined}
+                                    aria-haspopup="true"
+                                    aria-expanded={open ? 'true' : undefined}
+                                    onClick={handleClick}
+                                >
+                                    {userId !== user.id && <MoreVertIcon />}
+                                </Button>
+                                <Menu
+                                    id="demo-positioned-menu"
+                                    aria-labelledby="demo-positioned-button"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'left',
+                                    }}
+                                >
+                                    <MenuItem onClick={handleOpenModal}>Report</MenuItem>
+                                </Menu>
+                            </div>
+                        </ClickAwayListener>
                     }
-                    title={<Box sx={{cursor:'pointer'}} component={Link} to='/profile?userId=${}'>{userName}</Box>}
+                    title={<Box sx={{ cursor: 'pointer' }} component={Link} to={`/profile?userId=${userId}`}>{userName}</Box>}
                     subheader={location}
                 />
                 <Box
@@ -141,11 +140,10 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
                         alignItems: 'center',
                         width: '100%',
                         padding: '10px',
-                        height: { xs: '200px', sm: '250px', md: '400px' }, // Responsive heights
+                        height: { xs: '200px', sm: '250px', md: '400px' },
                         overflow: 'hidden',
                     }}
                 >
-
                     <CardMedia
                         component="img"
                         image={imageUrl[0]}
@@ -153,46 +151,40 @@ function Post({ userName, profilePic, imageUrl, location, description, postId })
                         sx={{
                             width: '100%',
                             height: '100%',
-                            objectFit: 'contain'
+                            objectFit: 'contain',
                         }}
                     />
-
                 </Box>
                 <Box
                     style={{
                         backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
-                        cursor: 'pointer'
+                        cursor: 'pointer',
                     }}
                 >
-                    <CardContent disableSpacing sx={{ padding: '0' }}>
+                    <CardContent sx={{ padding: '0' }}>
                         <Box sx={{ padding: '5px', margin: '5px 6px 0 0' }}>
-                            <Typography >
-                                {userName}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" >
-                                {description}
-                            </Typography>
+                            <Typography>{userName}</Typography>
+                            <Typography variant="body2" color="text.secondary">{description}</Typography>
                         </Box>
                     </CardContent>
-                    <CardActions disableSpacing>
-                        <IconButton size='small' aria-label="like" onClick={handleLike}>
-                            {isLiked ? <FavoriteIcon color='error' /> : <FavoriteBorderOutlinedIcon />}
+                    <CardActions>
+                        <IconButton size="small" aria-label="like" onClick={handleLike}>
+                            {isLiked ? <FavoriteIcon color="error" /> : <FavoriteBorderOutlinedIcon />}
                         </IconButton>
-                        {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
-                        <IconButton size='small' aria-label="comment" onClick={handleCommentClick}>
+                        {likeCount !== 0 && <Typography variant="body2">{likeCount}</Typography>}
+                        <IconButton size="small" aria-label="comment" onClick={handleCommentClick}>
                             <CommentIcon />
                         </IconButton>
-                        <IconButton size='small' aria-label="share">
+                        <IconButton size="small" aria-label="share">
                             <ShareIcon />
                         </IconButton>
                     </CardActions>
                 </Box>
             </Card>
-            <Suspense fallback={<>Lodaing...</>}>
-            <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={postId}               
-            />
+            <Suspense fallback={<>Loading...</>}>
+                <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={postId} />
             </Suspense>
-             <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
+            <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
         </Box>
     );
 }
