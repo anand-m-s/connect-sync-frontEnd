@@ -12,7 +12,6 @@ import Divider from '@mui/material/Divider';
 function Profile() {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm' && 'md'));
-  console.log('profile.......:::::::::::')
   return (
     <>
       <Toaster />

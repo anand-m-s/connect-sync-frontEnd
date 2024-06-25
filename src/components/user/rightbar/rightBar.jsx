@@ -1,6 +1,9 @@
 import React from 'react'
 import Box from '@mui/material/Box';
 import { AnimatedTooltip } from '../../ui/animatedToolTip';
+import { useOnlineUsers } from '../../../context/OnlineUsers';
+
+
 
 
 const people = [
@@ -50,13 +53,22 @@ const people = [
 
 
 function RightBar() {
+    
+
+  
+
+    const {onlineUsers,setOnlineUsers} = useOnlineUsers()
+
+
+
     return (
         <Box className=' flex justify-center '
             flex={1.5}        
         >
-            <Box className='fixed' sx={{marginTop:'5rem'}} >             
+            <Box className='fixed' sx={{marginTop:'5rem'}} >     
+                <Box className='flex justify-center items-center'>Online</Box>        
                 <Box className="flex flex-row items-center justify-center  w-full">
-                    <AnimatedTooltip items={people} />
+                    <AnimatedTooltip items={onlineUsers} />
                 </Box>
             </Box>
 

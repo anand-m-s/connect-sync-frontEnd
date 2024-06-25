@@ -7,6 +7,7 @@ const initialState = {
     posts: [],
     newPost: null,
 
+
 };
 
 const userAuthSlice = createSlice({
@@ -16,6 +17,7 @@ const userAuthSlice = createSlice({
         setUserCredentials: (state, action) => {
             // console.log(action.payload)
             // console.log(action.payload.user)
+
             state.userInfo = action.payload.user
             localStorage.setItem('userInfo', JSON.stringify(action.payload.user))
             localStorage.setItem('userToken', action.payload.token)
@@ -41,11 +43,16 @@ const userAuthSlice = createSlice({
         resetNewPost: (state) => {
             state.newPost = null;
         },
-
+    
     }
 })
 
-export const { setUserCredentials, logout, setUserPosts, setEditedUserCredentials, addUserPost, resetNewPost
-
- } = userAuthSlice.actions
+export const {
+    setUserCredentials,
+    logout,
+    setUserPosts,
+    setEditedUserCredentials,
+    addUserPost,
+    resetNewPost,
+} = userAuthSlice.actions
 export default userAuthSlice.reducer

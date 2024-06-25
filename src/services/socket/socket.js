@@ -1,7 +1,7 @@
-// services/socket.js
-import io from 'socket.io-client';
+// // services/socket.js
+// import io from 'socket.io-client';
 
-const socket = io('http://localhost:3000', {    
-});
+// const socket = io('http://localhost:3000', {    
+// });
 
-export default socket;
+// export default socket;

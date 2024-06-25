@@ -1,5 +1,5 @@
-import { Route, Routes } from 'react-router'
-import { lazy, Suspense } from 'react';
+import { Route, Routes, useNavigate } from 'react-router'
+import { lazy, Suspense, useEffect } from 'react';
 import Signup from '../../pages/user/signup'
 import Login from '../../pages/user/Login'
 import OtpInput from '../../pages/user/OtpInput'
@@ -13,31 +13,45 @@ import ForgotPassword from '../../pages/user/ForgotPassword'
 import VideoChat from '../../pages/user/videocall/VideoChat'
 import { CallProvider } from '../../context/CallContext'
 import CallNotification from '../../components/user/Call/CallNotification'
+import { setupInterceptors } from '../../constraints/axios/userAxios';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../services/redux/slices/userAuthSlice';
+import { toast, Toaster } from 'sonner';
+import { OnlineUsersProvider } from '../../context/OnlineUsers';
+
 
 const UserRoutes = () => {
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        setupInterceptors(navigate, dispatch, logout, toast);
+    }, [navigate, dispatch]);
+
+
     return (
         <>
+            <Toaster richColors />
             <CallProvider>
-
-                <ModalProvider>
-                    <Suspense fallback={<div>Loading...</div>}>
-                        <Routes>
-                            <Route path='/' element={<Signup />} />
-                            <Route path='/login' element={<Login />} />
-                            <Route path='/forgot' element={<ForgotPassword />} />
-                            <Route path='/otp' element={<OtpInput />} />
-                            <Route path='' element={<UserPrivateRoutes />}>
-                                <Route path='/home' element={<Home />} />
-                                <Route path='/profile' element={<Profile />} />
-                                <Route path='/chat' element={<Chat />} />
-                                <Route path='/videoChat' element={<VideoChat />} />
-                                <Route path="/video-call/:roomId" element={<VideoChat />} />
-                            </Route>
-                        </Routes>
-                    </Suspense>
-
-                </ModalProvider>
-                <CallNotification />
+                <OnlineUsersProvider>
+                    <ModalProvider>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Routes>
+                                <Route path='/' element={<Signup />} />
+                                <Route path='/login' element={<Login />} />
+                                <Route path='/forgot' element={<ForgotPassword />} />
+                                <Route path='/otp' element={<OtpInput />} />
+                                <Route path='' element={<UserPrivateRoutes />}>
+                                    <Route path='/home' element={<Home />} />
+                                    <Route path='/profile' element={<Profile />} />
+                                    <Route path='/chat' element={<Chat />} />
+                                    <Route path='/videoChat' element={<VideoChat />} />
+                                    <Route path="/video-call/:roomId" element={<VideoChat />} />
+                                </Route>
+                            </Routes>
+                        </Suspense>
+                    </ModalProvider>
+                    <CallNotification />
+                </OnlineUsersProvider>
             </CallProvider>
         </>
     )

@@ -30,31 +30,6 @@ export default function ChatComponent() {
         }));
     };
 
-    // const queryParams = new URLSearchParams(location.search)
-    // const userId = queryParams.get('id')
-    // useEffect(() => {
-    //     const fetchUserDetails = async () => {
-    //         try {
-    //           userAxios.get(`${userApi.getUserDetails}?id=${userId}`)
-    //                 .then((res) => {
-    //                   console.log(res.data)
-    //                     updateUserData({
-    //                         userName: res.data.userName,
-    //                         profilePic: res.data.profilePic,
-    //                         id:res.data.id                       
-    //                     })
-    //                 })
-
-    //         } catch (error) {
-    //             if (error.response && error.response.data.error) {
-    //                 toast.error(error.response.data.error);
-    //             }
-    //         }
-    //     }     
-    //     if(userId)fetchUserDetails();
-
-    // }, [])
-
     const fetchChats = useCallback(async () => {
         try {
             const res = await userAxios.get(userApi.loadChat)

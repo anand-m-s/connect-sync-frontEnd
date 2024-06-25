@@ -9,12 +9,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import HomeIcon from '@mui/icons-material/Home';
-import InfoIcon from '@mui/icons-material/Info';
-import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import './Navbar.css';
 import { useEffect } from 'react'
@@ -29,7 +25,7 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { logout } from '../../../services/redux/slices/userAuthSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Toaster, toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -41,6 +37,7 @@ import ColorModeContext from '../../../context/colorModeContext';
 import Switch from '@mui/material/Switch';
 import SearchComponent from '../modal/searchModal';
 import BasicModal from '../modal/Modal';
+import { useSocket } from '../../../services/socket';
 
 
 const Navbar = () => {
@@ -54,6 +51,8 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const colorMode = useContext(ColorModeContext);
     const theme = useTheme();
+    const user = useSelector((state)=>state.userAuth.userInfo)
+    const {setSocket,socket} = useSocket()
     const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         width: 62,
@@ -121,6 +120,7 @@ const Navbar = () => {
     };
     const handleLogout = () => {
         dispatch(logout());
+        socket.emit('user-disconnected', { userId: user.id });
         toast.info('logout successfull')
         navigate('/login')
     }

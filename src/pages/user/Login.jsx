@@ -26,7 +26,7 @@ function Login() {
 
   useGoogleOneTapLogin({
     onSuccess: credentialResponse => {
-      console.log(credentialResponse);
+      // console.log(credentialResponse);
       handleGoogleLoginSuccess(credentialResponse);
     },
     onError: () => {
@@ -37,8 +37,8 @@ function Login() {
     try {
       await new Promise(res => setTimeout(() => { res() }, 500))
       const user = await userAxios.post(userApi.loginUser, values)
-      console.log(user.data)
-      toast.success(user.data.message)
+      // console.log(user.data)
+      toast.success('Login success')
       await new Promise(res => setTimeout(() => { res() }, 1000))
       dispatch(setUserCredentials(user.data))
       navigate('/home')
@@ -52,18 +52,18 @@ function Login() {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse?.credential);
-      console.log(decoded);
+      // console.log(decoded);
       const res = await userAxios.post(userApi.googleAuth, {
         email: decoded.email,
-        userName: decoded.name,
+        userName: decoded.name,        
       });
-      console.log(res)
-      console.log(res.data)
-      console.log(res.data.message)
+      // console.log(res)
+      // console.log(res.data)
+      // console.log(res.data.message)
       if (res.status == 200) {
         dispatch(setUserCredentials(res.data))
         navigate('/home')
-        toast.success(res.data.message)
+        toast.success('Login success')
       }
     } catch (error) {
       if (error.response && error.response.data.error) {

@@ -34,6 +34,7 @@ export const userAxios=axios.create({
   
           if (error.response.data.message === 'User Is Blocked') {
             dispatch(logoutAction());
+          //  new Promise(res => setTimeout(res, 1500));
             toast.error('User is blocked');
             navigate('/login');
           }
