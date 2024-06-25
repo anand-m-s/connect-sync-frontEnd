@@ -10,16 +10,16 @@ import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
 import { useRef } from 'react'
 
-function CommentSection({ postId }) {
+function CommentSection({ postId, comments }) {
     const user = useSelector((state) => state.userAuth.userInfo)
     const [newComment, setNewComment] = useState('')
-    const [comments, setComments] = useState([])
+    const [postComments, setPostComments] = useState([])
     const [replyText, setReplyText] = useState('');
     const [replyingTo, setReplyingTo] = useState(null);
-    const [parentId,setParentId] = useState('')
+    const [parentId, setParentId] = useState('')
     const theme = useTheme()
- 
- 
+
+
     const handleAddComment = async () => {
         console.log('add comment')
         const commentData = {
@@ -43,8 +43,8 @@ function CommentSection({ postId }) {
 
     const fetchAllMessages = async () => {
         try {
-            const res = await userAxios.get(`${userApi.loadComments}?postId=${postId}`)          
-            setComments(res.data)            
+            const res = await userAxios.get(`${userApi.loadComments}?postId=${postId}`)
+            setPostComments(res.data)
         } catch (error) {
             if (error.response && error.response.data.error) {
                 toast.error(error.response.data.error);
@@ -60,7 +60,7 @@ function CommentSection({ postId }) {
             parentId
         };
         try {
-            const res = await userAxios.post(userApi.addReply, replyData); 
+            const res = await userAxios.post(userApi.addReply, replyData);
             console.log(res.data)
             setReplyText('');
             setReplyingTo(null);
@@ -75,12 +75,8 @@ function CommentSection({ postId }) {
     };
 
     useEffect(() => {
-        fetchAllMessages()
+        setPostComments(comments)
     }, [])
-
-  
-
-
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         if (isToday(date)) {
@@ -93,21 +89,21 @@ function CommentSection({ postId }) {
         return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     };
 
-    const handleReplayInput =(commentId,pId=null)=>{
-        console.log('inside',commentId)
-       console.log(pId)
-        if(replyingTo==commentId){
+    const handleReplayInput = (commentId, pId = null) => {
+        console.log('inside', commentId)
+        console.log(pId)
+        if (replyingTo == commentId) {
             setReplyingTo(null)
-            }else{
+        } else {
             setReplyingTo(commentId)
             setParentId(pId)
         }
     }
     return (
-        <Box        
+        <Box
         >
-            <Box sx={{ marginTop:'1rem',marginBottom:'5rem' }} className='p-6'>
-                {comments.map((comment) => (
+            <Box sx={{ marginTop: '1rem', marginBottom: '5rem' }} className='p-6'>
+                {postComments.map((comment) => (
                     <Box key={comment._id} sx={{ mb: 2 }}>
                         <Comment
                             avatarSrc={comment.userId.profilePic || "/placeholder.svg"}
@@ -115,9 +111,9 @@ function CommentSection({ postId }) {
                             name={comment.userId.userName}
                             time={formatDate(comment.createdAt)}
                             content={comment.content}
-                            onReply={()=>handleReplayInput(comment._id)}
+                            onReply={() => handleReplayInput(comment._id)}
                             userId={comment.userId._id}
-                            // onReply={() => setReplyingTo(comment._id)}
+                        // onReply={() => setReplyingTo(comment._id)}
                         />
                         {comment.replies && comment.replies.map((rep) => (
                             <Box key={rep._id} sx={{ ml: 7, mb: 2 }}>
@@ -127,7 +123,7 @@ function CommentSection({ postId }) {
                                     name={rep.userId.userName}
                                     time={formatDate(rep.createdAt)}
                                     content={rep.reply}
-                                    onReply={()=>handleReplayInput(comment._id,rep._id)}
+                                    onReply={() => handleReplayInput(comment._id, rep._id)}
                                     userId={rep.userId._id}
                                 />
                             </Box>
@@ -137,7 +133,7 @@ function CommentSection({ postId }) {
                                 <TextField
                                     onChange={(e) => setReplyText(e.target.value)}
                                     value={replyText}
-                                   
+
                                     variant="outlined"
                                     placeholder="Add a reply..."
                                     fullWidth
@@ -170,15 +166,15 @@ function CommentSection({ postId }) {
                         )}
                     </Box>
                 ))}
-                {comments.length<1 && (
+                {comments.length < 1 && (
                     <Typography>No comments yet...</Typography>
                 )}
 
 
             </Box>
             <Box className="fixed bottom-0 flex backdrop-filter backdrop-blur-md p-6 w-96  "
-            // sx={{ border: `1px solid ${theme.palette.divider}` }}
-            style={{ zIndex: 1200 }}
+                // sx={{ border: `1px solid ${theme.palette.divider}` }}
+                style={{ zIndex: 1200 }}
             >
                 <Box className="flex-1">
                     <TextField
@@ -207,7 +203,7 @@ function CommentSection({ postId }) {
                             },
                             style: {
                                 fontSize: '1rem',
-                               
+
                             },
                         }}
                         sx={{ zIndex: 2400 }}

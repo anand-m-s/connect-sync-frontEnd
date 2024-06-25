@@ -41,7 +41,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-start',
 }));
 
-export default function PersistentDrawerRight({ open, handleDrawerClose, postId }) {
+export default function PersistentDrawerRight({ open, handleDrawerClose, postId,comments }) {
     const theme = useTheme();
     return (
         <Box sx={{ display: 'flex' }}>
@@ -78,7 +78,7 @@ export default function PersistentDrawerRight({ open, handleDrawerClose, postId 
                 <Divider />
                 <Box className="drawer-content">
                     <Suspense fallback={<>Loading...</>}>
-                    <CommentSection postId={postId} />
+                    <CommentSection postId={postId} comments={comments} />
                     </Suspense>
                 </Box>
             </Drawer>

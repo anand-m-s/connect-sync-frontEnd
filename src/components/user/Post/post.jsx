@@ -20,7 +20,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 const PersistentDrawerRight = lazy(() => import('../../common/persistentDrawer'));
 
-function Post({ userName, profilePic, imageUrl, location, description, postId, userId }) {
+function Post({ userName, profilePic, imageUrl, location, description, postId, userId,comments,likes}) {
     const theme = useTheme();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
@@ -37,6 +37,8 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const handleDrawerClose = () => {
         setDrawerOpen(false);
     };
+  
+  
 
     useEffect(() => {
         if (drawerOpen) {
@@ -46,11 +48,16 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
         }
     }, [drawerOpen]);
 
-    const handleLike = async () => {
+    const handleLike = async (postId) => {
         try {
             const res = await userAxios.post(`${userApi.toggleLike}?postId=${postId}`);
             console.log(res.data);
-            setIsLiked(!isLiked);
+            // setIsLiked(!isLiked);
+            if(res.data.action==='Liked'){
+                setIsLiked(true)
+            }else{
+                setIsLiked(false)
+            }
             setLikeCount(res.data.likeCount);
         } catch (error) {
             if (error.response && error.response.data.error) {
@@ -60,18 +67,21 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     };
 
     useEffect(() => {
-        const fetchLikeStatus = async () => {
-            try {
-                const res = await userAxios.get(`${userApi.likeStatus}?postId=${postId}`);
-                setIsLiked(res.data.isLiked);
-                setLikeCount(res.data.likeCount);
-            } catch (error) {
-                console.error('Error fetching like status:', error);
-            }
-        };
-        fetchLikeStatus();
+        // const fetchLikeStatus = async () => {
+        //     try {
+        //         const res = await userAxios.get(`${userApi.likeStatus}?postId=${postId}`);
+        //         setIsLiked(res.data.isLiked);
+        //         setLikeCount(res.data.likeCount);
+        //     } catch (error) {
+        //         console.error('Error fetching like status:', error);
+        //     }
+        // };
+        // fetchLikeStatus();
+        if(likes){
+            setLikeCount(likes.length)
+            setIsLiked(likes.includes(user.id))
+        }
     }, [postId]);
-
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -168,7 +178,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                         </Box>
                     </CardContent>
                     <CardActions>
-                        <IconButton size="small" aria-label="like" onClick={handleLike}>
+                        <IconButton size="small" aria-label="like" onClick={()=>handleLike(postId)}>
                             {isLiked ? <FavoriteIcon color="error" /> : <FavoriteBorderOutlinedIcon />}
                         </IconButton>
                         {likeCount !== 0 && <Typography variant="body2">{likeCount}</Typography>}
@@ -182,7 +192,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                 </Box>
             </Card>
             <Suspense fallback={<>Loading...</>}>
-                <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={postId} />
+                <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} />
             </Suspense>
             <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
         </Box>

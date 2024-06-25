@@ -17,9 +17,10 @@ function Feed() {
 
   const fetchData = async () => {
     try {
-      await new Promise(res => setTimeout(res, 2000));
+      await new Promise(res => setTimeout(res, 1500));
       const res = await userAxios.get(`${userApi.userFeedPost}?perPage=3&page=${page}`);
       const newData = res.data;
+      console.log(newData)
       setPostData((prev) => [...prev, ...newData]);
       setHasMore(newData.length > 0)
       setPage((prev) => prev + 1);
@@ -71,6 +72,8 @@ function Feed() {
             >
               <div className="p-2 mt-9 ml-5  " key={post._id}>
                 <Post
+                  comments={post.comments}
+                  likes={post.likedUsers}
                   userId={post.userId}
                   postId={post._id}
                   userName={post.userName}
