@@ -7,38 +7,9 @@ import {
     useMotionValue,
     useSpring,
 } from "framer-motion";
-import { cn } from "../../utils/cn";
-import Badge from '@mui/material/Badge';
-import { styled } from '@mui/material/styles';
+import StyledBadge from "./miniComponents/StyledBadge";
 
-const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-        backgroundColor: '#44b700',
-        color: '#44b700',
-        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-        '&::after': {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            borderRadius: '50%',
-            animation: 'ripple 1.2s infinite ease-in-out',
-            border: '1px solid currentColor',
-            content: '""',
-        },
-    },
-    '@keyframes ripple': {
-        '0%': {
-            transform: 'scale(.8)',
-            opacity: 1,
-        },
-        '100%': {
-            transform: 'scale(2.4)',
-            opacity: 0,
-        },
-    },
-}));
+
 
 export const AnimatedTooltip = ({ items }) => {
     const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -59,14 +30,14 @@ export const AnimatedTooltip = ({ items }) => {
 
     return (
         <>
-            {items.map((item,idx) => (
+            {items.map((item, idx) => (
                 <div
                     className="-mr-4 relative group"
                     key={idx}
-                    onMouseEnter={() => setHoveredIndex(item.userId)}
+                    onMouseEnter={() => setHoveredIndex(item.id)}
                     onMouseLeave={() => setHoveredIndex(null)}
                 >
-                    {hoveredIndex === item.userId && (
+                    {hoveredIndex === item.id && (
                         <motion.div
                             initial={{ opacity: 0, y: 20, scale: 0.6 }}
                             animate={{
@@ -106,7 +77,7 @@ export const AnimatedTooltip = ({ items }) => {
                             width={100}
                             src={item.profilePic}
                             alt={item.userName}
-                            className="object-cover !m-0 !p-0 object-top rounded-full h-14 w-14 border-2 group-hover:scale-105 group-hover:z-30 border-white relative transition duration-500"
+                            className="object-cover !m-0 !p-0 object-top rounded-full h-14 w-14 border-1 group-hover:scale-105 group-hover:z-30 border-white relative transition duration-500"
                         />
                     </StyledBadge>
                 </div>

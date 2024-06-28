@@ -67,16 +67,6 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     };
 
     useEffect(() => {
-        // const fetchLikeStatus = async () => {
-        //     try {
-        //         const res = await userAxios.get(`${userApi.likeStatus}?postId=${postId}`);
-        //         setIsLiked(res.data.isLiked);
-        //         setLikeCount(res.data.likeCount);
-        //     } catch (error) {
-        //         console.error('Error fetching like status:', error);
-        //     }
-        // };
-        // fetchLikeStatus();
         if(likes){
             setLikeCount(likes.length)
             setIsLiked(likes.includes(user.id))
@@ -178,10 +168,11 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                         </Box>
                     </CardContent>
                     <CardActions>
+                       
                         <IconButton size="small" aria-label="like" onClick={()=>handleLike(postId)}>
                             {isLiked ? <FavoriteIcon color="error" /> : <FavoriteBorderOutlinedIcon />}
                         </IconButton>
-                        {likeCount !== 0 && <Typography variant="body2">{likeCount}</Typography>}
+                            {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
                         <IconButton size="small" aria-label="comment" onClick={handleCommentClick}>
                             <CommentIcon />
                         </IconButton>

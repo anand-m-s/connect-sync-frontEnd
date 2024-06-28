@@ -299,13 +299,13 @@ const VideoChat = () => {
 
                     <Box sx={{ flexGrow: 1 }} />
                     <Box className='flex gap-3'>
-                        <Button variant="contained" color="primary" onClick={startWebcam} disabled={localStream}>
+                        <Button variant="contained" color="primary" onClick={startWebcam} >
                             Start Webcam
                         </Button>
-                        <Button variant="contained" color="success" onClick={createCall} disabled={!localStream}>
+                        <Button variant="contained" color="success" onClick={createCall} >
                             Call
                         </Button>
-                        <Button variant="contained" color="error" onClick={endCall} disabled={!localStream}>
+                        <Button variant="contained" color="error" onClick={endCall} >
                             End
                         </Button>
                     </Box>

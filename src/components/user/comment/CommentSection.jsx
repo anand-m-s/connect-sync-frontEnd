@@ -8,7 +8,6 @@ import userApi from '../../../constraints/api/userApi'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
-import { useRef } from 'react'
 
 function CommentSection({ postId, comments }) {
     const user = useSelector((state) => state.userAuth.userInfo)
@@ -19,6 +18,9 @@ function CommentSection({ postId, comments }) {
     const [parentId, setParentId] = useState('')
     const theme = useTheme()
 
+    useEffect(() => {
+        setPostComments(comments)
+    }, [comments])
 
     const handleAddComment = async () => {
         console.log('add comment')
@@ -51,13 +53,12 @@ function CommentSection({ postId, comments }) {
             }
         }
     }
-
     const handleAddReply = async (commentId) => {
         const replyData = {
             reply: replyText,
             commentId,
             userId: user.id,
-            parentId
+            // parentId:parentId
         };
         try {
             const res = await userAxios.post(userApi.addReply, replyData);
@@ -73,10 +74,6 @@ function CommentSection({ postId, comments }) {
             }
         }
     };
-
-    useEffect(() => {
-        setPostComments(comments)
-    }, [])
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         if (isToday(date)) {
@@ -99,11 +96,12 @@ function CommentSection({ postId, comments }) {
             setParentId(pId)
         }
     }
+    console.log(postComments)
     return (
         <Box
         >
             <Box sx={{ marginTop: '1rem', marginBottom: '5rem' }} className='p-6'>
-                {postComments.map((comment) => (
+                {postComments.map((comment) => (                   
                     <Box key={comment._id} sx={{ mb: 2 }}>
                         <Comment
                             avatarSrc={comment.userId.profilePic || "/placeholder.svg"}
@@ -116,7 +114,7 @@ function CommentSection({ postId, comments }) {
                         // onReply={() => setReplyingTo(comment._id)}
                         />
                         {comment.replies && comment.replies.map((rep) => (
-                            <Box key={rep._id} sx={{ ml: 7, mb: 2 }}>
+                            <Box key={rep._id} sx={{ ml: 3, mb: 2 }}>
                                 <Comment
                                     avatarSrc={rep.userId.profilePic || "/placeholder.svg"}
                                     fallback={rep.userId.userName.charAt(0)}
@@ -127,13 +125,12 @@ function CommentSection({ postId, comments }) {
                                     userId={rep.userId._id}
                                 />
                             </Box>
-                        ))}
+                        ))}                 
                         {replyingTo === comment._id && (
                             <Box sx={{ ml: 7, mt: 1, display: 'flex', alignItems: 'center' }}>
                                 <TextField
                                     onChange={(e) => setReplyText(e.target.value)}
                                     value={replyText}
-
                                     variant="outlined"
                                     placeholder="Add a reply..."
                                     fullWidth
@@ -144,6 +141,7 @@ function CommentSection({ postId, comments }) {
                                             borderRadius: '50px',
                                             padding: '10px 15px',
                                             backgroundColor: theme.palette.background.paper,
+                                            // zIndex: 1600,
                                             '& .MuiOutlinedInput-notchedOutline': {
                                                 border: `1px solid ${theme.palette.divider}`,
                                             },
@@ -166,7 +164,7 @@ function CommentSection({ postId, comments }) {
                         )}
                     </Box>
                 ))}
-                {comments.length < 1 && (
+                {postComments.length < 1 && (
                     <Typography>No comments yet...</Typography>
                 )}
 

@@ -66,7 +66,7 @@ function RightBar() {
             flex={1.5}        
         >
             <Box className='fixed' sx={{marginTop:'5rem'}} >     
-                <Box className='flex justify-center items-center'>Online</Box>        
+                <Box className='flex justify-center items-center text-blue-400 font-semibold text-lg m-3'>Online Peeps</Box>        
                 <Box className="flex flex-row items-center justify-center  w-full">
                     <AnimatedTooltip items={onlineUsers} />
                 </Box>

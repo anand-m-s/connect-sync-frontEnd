@@ -83,8 +83,6 @@ function ProfileFeed() {
   const [openModal, setOpenModal] = useState(false);
   const [load, setLoad] = useState(false)
   const imageUrl = posts.map(post => post.imageUrl[0]);
-
-
   const [userData, setUserData] = useState({
     bio: user.bio || '',
     userName: user.userName || '',
@@ -92,6 +90,7 @@ function ProfileFeed() {
     profilePic: user.profilePic || '',
     initialPic: '',
   });
+
   const [isFollowing, setIsFollowing] = useState(false)
   const [followers, setFollowers] = useState(false)
   const [following, setFollowing] = useState(false)
@@ -214,14 +213,17 @@ function ProfileFeed() {
         profilePic: uploadedProfilePic
       };
       const res = await userAxios.put(`${userApi.editProfile}`, updateUser)
+      console.log(res.data.updatedUser)
       const updatedUser = {
         ...user,
         ...res.data.updatedUser
       }
+      console.log(updatedUser)
       toast.success(res.data.message)
       dispatch(setEditedUserCredentials(updatedUser))
       await new Promise(res => setTimeout(() => { res() }, 1500))
       resetState()
+      updateUserData(res.data.updatedUser)
       setOpenModal(false);
     } catch (error) {
       console.error('error updation profile', error)
@@ -316,7 +318,13 @@ function ProfileFeed() {
 
               <ClickAwayListener onClickAway={handleClickAwayFollowers}>
                 <ButtonBase>
-                  <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowers} ref={followersRef}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      // zIndex: '1'
+                    }} onClick={showFollowers} ref={followersRef}>
                     <Typography variant="h6">{followingCount}</Typography>
                     <Typography variant="subtitle2" color="textSecondary">Followers</Typography>
                     <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
@@ -337,7 +345,13 @@ function ProfileFeed() {
               </ClickAwayListener>
               <ClickAwayListener onClickAway={handleClickAwayFollowing}>
                 <ButtonBase>
-                  <Box sx={{ textAlign: 'center', cursor: 'pointer', position: 'relative', zIndex: '1' }} onClick={showFollowing} ref={followingRef}>
+                  <Box
+                    sx={{
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      position: 'relative',
+                      // zIndex: '1'
+                    }} onClick={showFollowing} ref={followingRef}>
                     <Typography variant="h6">{followersCount}</Typography>
                     <Typography variant="subtitle2" color="textSecondary">Following</Typography>
                     <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
@@ -388,7 +402,7 @@ function ProfileFeed() {
           </Box>
         </Item>
         <Divider />
-        <Item elevation={0} square ><ParallaxScroll determineUser={determineUser} images={imageUrl} /></Item>
+        <Item elevation={0} square ><ParallaxScroll determineUser={determineUser} posts={posts} /></Item>
       </Stack>
       {/* <SearchComponent /> */}
       {/* <BasicModal /> */}

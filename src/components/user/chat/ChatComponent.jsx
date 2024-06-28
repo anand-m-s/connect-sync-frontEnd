@@ -10,25 +10,22 @@ import { ChatState } from "../../../context/ChatProvider";
 import { useModal } from '../../../context/modalContext';
 import SearchComponent from "../modal/searchModal"
 import { useSelector } from "react-redux"
-import { getSender, getSenderProfilePic } from "../../../constraints/config/chatLogic"
+import { getSender } from "../../../constraints/config/chatLogic"
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
+import { useOnlineUsers } from "../../../context/OnlineUsers"
+import ChatAvatar from "../../ui/miniComponents/ChatAvatar"
 
 
 export default function ChatComponent() {
     const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
     const user = useSelector((state) => state.userAuth.userInfo)
-    const [userData, setUserData] = useState({ userName: '', profilePic: '', id: '' })
     const { handleOpen } = useModal()
     const theme = useTheme()
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
     const [fetchAgain, setFetchAgain] = useState(false)
     const [loading, setLoading] = useState(true)
-    const updateUserData = (updates) => {
-        setUserData((prevState) => ({
-            ...prevState,
-            ...updates
-        }));
-    };
+    const { onlineUsers} = useOnlineUsers()
+
 
     const fetchChats = useCallback(async () => {
         try {
@@ -46,8 +43,8 @@ export default function ChatComponent() {
 
     useEffect(() => {
         fetchChats()
-    }, [fetchAgain,fetchChats])
- 
+    }, [fetchAgain, fetchChats])
+
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -60,7 +57,7 @@ export default function ChatComponent() {
         const daysAgo = differenceInDays(new Date(), date);
         return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     };
-  
+
 
     return (
         <Box
@@ -102,7 +99,7 @@ export default function ChatComponent() {
                                                 cursor: 'pointer'
                                             }}
                                         >
-                                            <Avatar className="h-12 w-12" src={getSenderProfilePic(user.id, chat.users)} alt="Avatar">JD</Avatar>
+                                            <ChatAvatar onlineUsers={onlineUsers} user={user} chat={chat} />
                                             <Box className="flex-1">
                                                 <Box className="font-medium flex ml-1">
                                                     {!chat.isGroupChat ? getSender(user.id, chat.users) : chat.chatName}

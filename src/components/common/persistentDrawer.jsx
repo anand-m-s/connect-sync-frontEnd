@@ -43,6 +43,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 
 export default function PersistentDrawerRight({ open, handleDrawerClose, postId,comments }) {
     const theme = useTheme();
+    // console.log(comments)
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
@@ -56,7 +57,7 @@ export default function PersistentDrawerRight({ open, handleDrawerClose, postId,
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
                     },
-                    zIndex: 1301,
+                    // zIndex: 1500, 
                 }}
                 variant="persistent"
                 anchor="right"

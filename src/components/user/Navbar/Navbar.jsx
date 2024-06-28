@@ -120,7 +120,7 @@ const Navbar = () => {
     };
     const handleLogout = () => {
         dispatch(logout());
-        socket.emit('user-disconnected', { userId: user.id });
+        socket.emit('user-disconnected', { id: user.id });
         toast.info('logout successfull')
         navigate('/login')
     }

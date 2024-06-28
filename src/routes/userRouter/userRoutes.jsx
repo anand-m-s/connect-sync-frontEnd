@@ -12,7 +12,7 @@ import Chat from '../../pages/user/chat/Chat'
 import ForgotPassword from '../../pages/user/ForgotPassword'
 import VideoChat from '../../pages/user/videocall/VideoChat'
 import { CallProvider } from '../../context/CallContext'
-import CallNotification from '../../components/user/Call/CallNotification'
+import SocketConn from '../../components/user/Call/CallNotification'
 import { setupInterceptors } from '../../constraints/axios/userAxios';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../services/redux/slices/userAuthSlice';
@@ -50,7 +50,7 @@ const UserRoutes = () => {
                             </Routes>
                         </Suspense>
                     </ModalProvider>
-                    <CallNotification />
+                    <SocketConn/>
                 </OnlineUsersProvider>
             </CallProvider>
         </>

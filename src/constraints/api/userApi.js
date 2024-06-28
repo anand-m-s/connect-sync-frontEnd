@@ -24,6 +24,7 @@ export default{
     addReply:'/addReply',
     toggleLike:'/likePost',
     likeStatus:'/likeStatus',
+    comments:'/comments',
     reportPost:'/report',
     upload:'/chat/upload',
     getSignedUrl:'/chat/signed_url',

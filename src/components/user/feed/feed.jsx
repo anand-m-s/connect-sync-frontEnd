@@ -17,7 +17,7 @@
 
     const fetchData = async () => {
       try {
-        await new Promise(res => setTimeout(res, 1500));
+        await new Promise(res => setTimeout(res, 500));
         console.log(page)
         const res = await userAxios.get(`${userApi.userFeedPost}?perPage=3&page=${page}`);
         const newData = res.data;

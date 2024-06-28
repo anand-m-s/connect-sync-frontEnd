@@ -1,21 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { getSenderFull } from '../../../constraints/config/chatLogic';
 import { Avatar, Box, IconButton, useTheme } from '@mui/material';
 import { MoreHoriz, Phone, VideoCall } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../../../services/socket';
-// import io from 'socket.io-client';
-
-
-// const socket = io('http://localhost:3000');
-
-
+import { useOnlineUsers } from '../../../context/OnlineUsers';
+import StyledBadge from '../../ui/miniComponents/StyledBadge';
 
 function ChatHeader({ userId, selectedChat }) {
   const sender = getSenderFull(userId, selectedChat);
-  const {socket} = useSocket()
+  const { socket } = useSocket()
   const theme = useTheme();
   const navigate = useNavigate();
+  const [isOnline, setIsOnline] = useState(false)
+  const { onlineUsers } = useOnlineUsers()
+
+  const checkOnline = () => {
+    const isUserOnline = onlineUsers.some((ele) => ele.id === sender._id);
+    setIsOnline(isUserOnline);
+  };
+
+  useEffect(() => {
+    checkOnline();
+  }, [sender, onlineUsers]);
+
+
+
   const handleVideoCallClick = () => {
     const roomId = selectedChat[1]._id;
     socket?.emit('video-call', {
@@ -26,7 +36,7 @@ function ChatHeader({ userId, selectedChat }) {
     navigate(`/video-call/${roomId}`);
   };
 
-  
+
   return (
     <Box
       className="flex items-center h-16 justify-between p-3"
@@ -36,10 +46,18 @@ function ChatHeader({ userId, selectedChat }) {
       }}
     >
       <Box className="flex items-center gap-3">
-        <Avatar className="h-10 w-10" src={sender.profilePic} alt="Avatar">{sender.userName}</Avatar>
+        {isOnline ? (<StyledBadge
+          overlap="circular"
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+          variant="dot"
+        >
+          <Avatar className="h-10 w-10" src={sender.profilePic} alt="Avatar">{sender.userName}</Avatar>
+        </StyledBadge>) : (
+          <Avatar className="h-10 w-10" src={sender.profilePic} alt="Avatar">{sender.userName}</Avatar>
+        )}
         <Box>
           <Box className="font-medium">{sender.userName}</Box>
-          <Box className="text-sm text-gray-500 dark:text-gray-400">Online</Box>
+          <Box className="text-sm text-gray-500 dark:text-gray-400">{isOnline ? 'Online' : 'offline'}</Box>
         </Box>
       </Box>
       <Box className="flex items-center gap-2">

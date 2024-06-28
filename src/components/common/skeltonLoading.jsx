@@ -8,7 +8,7 @@ export default function SkeletonLoading() {
   return (
     <Stack spacing={2} p={2}>
       {[1, 2, 3, 4].map((item) => (
-        <Box key={item} p={2}  borderRadius="8px" className='border'>
+        <Box key={item} p={2}  borderRadius="11px" >
           <Stack direction="row" spacing={2} alignItems="center">
             <Skeleton variant="circular" width={40} height={40} />
             <Box flex={1}>
