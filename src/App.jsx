@@ -5,15 +5,7 @@ import ErrorBoundary from './components/errorBoundary/errorBoundary'
 import AdminRoutes from './routes/adminRouter/adminRoutes'
 import { ColorModeProvider } from './context/colorModeContext'
 import ChatProvider from './context/ChatProvider'
-// import { useEffect } from 'react'
-// import { setupInterceptors } from './constraints/axios/userAxios'
-// import { useDispatch } from 'react-redux'
-// import { logout } from './services/redux/slices/userAuthSlice'
-// import { toast } from 'sonner';
-
 function App() {
-
-
 
 
   return (

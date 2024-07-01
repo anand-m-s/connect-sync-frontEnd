@@ -1,9 +1,8 @@
-import Avatar from "@mui/material/Avatar"
 import IconButton from "@mui/material/IconButton"
 import { Add, Search } from "@mui/icons-material"
 import { Box, ButtonBase, Divider, Stack, useMediaQuery, useTheme, CircularProgress } from "@mui/material"
 import IndividualChat from "./IndividualChat"
-import { useCallback, useContext, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import userApi from "../../../constraints/api/userApi"
 import { userAxios } from "../../../constraints/axios/userAxios"
 import { ChatState } from "../../../context/ChatProvider";

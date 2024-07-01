@@ -26,8 +26,7 @@ function CommentSection({ postId, comments }) {
         console.log('add comment')
         const commentData = {
             newComment,
-            postId,
-            userId: user.id
+            postId,            
         }
         try {
             const res = await userAxios.post(userApi.addComment, commentData)
@@ -96,7 +95,7 @@ function CommentSection({ postId, comments }) {
             setParentId(pId)
         }
     }
-    console.log(postComments)
+    // console.log(postComments)
     return (
         <Box
         >

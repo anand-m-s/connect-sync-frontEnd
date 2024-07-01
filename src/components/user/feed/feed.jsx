@@ -55,20 +55,20 @@
             }
           >
             {postData.map((post, i) => (
-              <Parallax
-                key={i}
-                blur={{ min: 0, max: 15 }}
-                bgImage={post.imageUrl[0]}
-                bgImageAlt={post.description}
-                strength={-400}
-                bgImageStyle={{ backgroundSize: 'cover', opacity: '1' }}
-                // style={{ margin: '4.8rem 0', borderRadius: '1rem' }}
-                style={{
-                  margin: '4.8rem 0',
-                  // padding:'4rem',
-                  borderRadius: '1rem'
-                }}
-              >
+              // <Parallax
+              //   key={i}
+              //   blur={{ min: 0, max: 15 }}
+              //   bgImage={post.imageUrl[0]}
+              //   bgImageAlt={post.description}
+              //   strength={-400}
+              //   bgImageStyle={{ backgroundSize: 'cover', opacity: '1' }}
+              //   // style={{ margin: '4.8rem 0', borderRadius: '1rem' }}
+              //   style={{
+              //     margin: '4.8rem 0',
+              //     // padding:'4rem',
+              //     borderRadius: '1rem'
+              //   }}
+              // >
                 <div className="p-2 mt-9 ml-5  " key={post._id}>
                   <Post
                     comments={post.comments}
@@ -82,7 +82,7 @@
                     description={post.description}
                   />
                 </div>
-              </Parallax>
+              // </Parallax>
             ))}
           </InfiniteScroll>
 

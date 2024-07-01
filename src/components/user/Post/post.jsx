@@ -18,7 +18,7 @@ import CommentIcon from '@mui/icons-material/Comment';
 import ReportPostModal from '../report/Report';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-const PersistentDrawerRight = lazy(() => import('../../common/persistentDrawer'));
+ import PersistentDrawerRight from '../../common/persistentDrawer';
 
 function Post({ userName, profilePic, imageUrl, location, description, postId, userId,comments,likes}) {
     const theme = useTheme();
@@ -182,9 +182,9 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                     </CardActions>
                 </Box>
             </Card>
-            <Suspense fallback={<>Loading...</>}>
+           
                 <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} />
-            </Suspense>
+           
             <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
         </Box>
     );

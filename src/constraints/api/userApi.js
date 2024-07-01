@@ -28,6 +28,7 @@ export default{
     reportPost:'/report',
     upload:'/chat/upload',
     getSignedUrl:'/chat/signed_url',
-    fileUpload:'/chat/fileUpload'
+    fileUpload:'/chat/fileUpload',
+    getNotification:'/notification'
 
 }

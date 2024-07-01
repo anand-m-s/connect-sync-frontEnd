@@ -30,7 +30,27 @@ const UserList = ({ users, currentUserFollowing, onFollowChange }) => {
     }
 
     return (
-        <Box sx={{ maxHeight: 400, overflowY: 'auto', scrollbarWidth: 'none', '&::-webkit-scrollbar': { display: 'none' } }}>
+        <Box
+            sx={{
+                maxHeight: 400,
+                overflowY: 'auto',
+                '&::-webkit-scrollbar': {
+                    width: '8px',
+                    borderRadius: '8px',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#888',
+                    borderRadius: '8px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                    backgroundColor: '#555',
+                },
+                '&::-webkit-scrollbar-track': {
+                    backgroundColor: '#f1f1f1',
+                    borderRadius: '8px',
+                },
+            }}
+        >
             <List>
                 {followingStatus.map((user) => (
                     <ListItem key={user._id}>
@@ -50,7 +70,7 @@ const UserList = ({ users, currentUserFollowing, onFollowChange }) => {
                         )}
                     </ListItem>
                 ))}
-            </List>
+            </List>           
         </Box>
     );
 };

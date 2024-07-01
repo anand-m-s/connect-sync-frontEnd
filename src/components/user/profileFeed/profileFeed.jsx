@@ -57,24 +57,6 @@ const useQuery = () => {
   return new URLSearchParams(useLocation().search)
 }
 
-const icon = (
-  <Paper sx={{ m: 1, width: 200, height: 200 }} elevation={5}>
-    <svg>
-      <Box
-        component="polygon"
-        points="0,100 50,00, 100,100"
-        sx={{
-          fill: (theme) => theme.palette.common.white,
-          stroke: (theme) => theme.palette.divider,
-          strokeWidth: 1,
-        }}
-      />
-    </svg>
-  </Paper>
-);
-
-
-
 function ProfileFeed() {
   const user = useSelector((state) => state.userAuth.userInfo)
   const posts = useSelector(state => state.userAuth.posts);
@@ -82,7 +64,6 @@ function ProfileFeed() {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = useState(false);
   const [load, setLoad] = useState(false)
-  const imageUrl = posts.map(post => post.imageUrl[0]);
   const [userData, setUserData] = useState({
     bio: user.bio || '',
     userName: user.userName || '',
@@ -343,6 +324,7 @@ function ProfileFeed() {
                   </Box>
                 </ButtonBase>
               </ClickAwayListener>
+              
               <ClickAwayListener onClickAway={handleClickAwayFollowing}>
                 <ButtonBase>
                   <Box

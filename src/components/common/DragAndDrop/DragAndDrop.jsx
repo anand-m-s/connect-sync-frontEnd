@@ -70,13 +70,13 @@ const DragNdrop = ({ onFilesSelected, width, height, setMessages }) => {
 
       const fileLinks = await Promise.all(uploadPromises);
       if (fileLinks) {
-     
+
         const res = await userAxios.post(userApi.fileUpload, {
           files: fileLinks,
           chatId: selectedChat._id
         });
         // setMessages(prevMessages => [...prevMessages, ...res.data]);
-        if(res.data){
+        if (res.data) {
           onFilesSelected('uploaded')
         }
       }

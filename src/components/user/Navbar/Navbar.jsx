@@ -52,7 +52,7 @@ const Navbar = () => {
     const colorMode = useContext(ColorModeContext);
     const theme = useTheme();
     const user = useSelector((state)=>state.userAuth.userInfo)
-    const {setSocket,socket} = useSocket()
+    const {socket} = useSocket()
     const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         width: 62,
@@ -177,14 +177,14 @@ const Navbar = () => {
                         <ListItemText primary={"Message"} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
+                {/* <ListItem disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
                             <NotificationsNoneOutlinedIcon color='primary' />
                         </ListItemIcon>
                         <ListItemText primary={"Notification"} />
                     </ListItemButton>
-                </ListItem>
+                </ListItem> */}
                 <ListItem disablePadding>
                     <ListItemButton onClick={() => handleOpen('create')}>
                         <ListItemIcon>

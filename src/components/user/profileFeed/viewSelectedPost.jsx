@@ -25,6 +25,7 @@ const style = {
     boxShadow: 22,
     p: 4,
     borderRadius: 6,
+    
 };
 
 const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
@@ -149,7 +150,7 @@ const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
     return (
         <>
             <ClickAwayListener onClickAway={onRequestClose}>
-                <Box>
+                <Box >
                     <Box
 
                     // open={isOpen}
