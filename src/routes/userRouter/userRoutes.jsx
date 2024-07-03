@@ -50,7 +50,7 @@ const UserRoutes = () => {
                             </Routes>
                         </Suspense>
                     </ModalProvider>
-                    <SocketConn/>
+                    <SocketConn />
                 </OnlineUsersProvider>
             </CallProvider>
         </>

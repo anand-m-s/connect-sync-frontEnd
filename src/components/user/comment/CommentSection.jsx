@@ -8,6 +8,7 @@ import userApi from '../../../constraints/api/userApi'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
+import { useSocket } from '../../../services/socket'
 
 function CommentSection({ postId, comments }) {
     const user = useSelector((state) => state.userAuth.userInfo)
@@ -17,6 +18,7 @@ function CommentSection({ postId, comments }) {
     const [replyingTo, setReplyingTo] = useState(null);
     const [parentId, setParentId] = useState('')
     const theme = useTheme()
+    const {socket} = useSocket()
 
     useEffect(() => {
         setPostComments(comments)
@@ -32,6 +34,11 @@ function CommentSection({ postId, comments }) {
             const res = await userAxios.post(userApi.addComment, commentData)
             console.log(res)
             console.log(res.data)
+            console.log(res.data.post.userId._id)
+            const postOwnerId = res.data.post.userId._id
+            if(socket && user.id!== postOwnerId){
+                socket.emit('comment',{postId,commentedBy:user.userName,postOwnerId})
+            }
             fetchAllMessages()
             setNewComment('')
         } catch (error) {

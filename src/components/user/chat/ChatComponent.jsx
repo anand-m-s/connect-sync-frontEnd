@@ -23,7 +23,7 @@ export default function ChatComponent() {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
     const [fetchAgain, setFetchAgain] = useState(false)
     const [loading, setLoading] = useState(true)
-    const { onlineUsers} = useOnlineUsers()
+    const { onlineUsers } = useOnlineUsers()
 
 
     const fetchChats = useCallback(async () => {
@@ -67,6 +67,7 @@ export default function ChatComponent() {
             {/* <Box className="grid min-h-screen w-full grid-cols-[300px_1fr] overflow-hidden "> */}
             <Box className="overflow-hidden ">
                 <Stack direction='row'>
+
                     <Box flex={1} className="flex flex-col " sx={{
                         height: '100vh',
                         borderRight: `1px solid ${theme.palette.divider}`
@@ -125,6 +126,7 @@ export default function ChatComponent() {
 
                     </Box>
                     <IndividualChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+
                 </Stack>
                 <SearchComponent source="chat" />
 

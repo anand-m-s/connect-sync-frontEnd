@@ -15,7 +15,7 @@ import { ClickAwayListener } from '@mui/material';
 
 const shakeAnimation = {
     initial: { x: 0 },
-    animate: { x: [0, -5, 5, -5, 5, 0], transition: { duration: 1 } },
+    animate: { x: [0, -5, 5, -5, 5, 0], transition: { duration: .5 } },
 };
 
 function RightBar() {
@@ -38,11 +38,11 @@ function RightBar() {
             console.log(error)
         }
     }
-    console.log(notification)
+    // console.log(notification)
 
     useEffect(() => {
         fetchNotifications()
-    }, [checked])
+    }, [])
 
     const closeNotification = () => {
         setChecked(false)

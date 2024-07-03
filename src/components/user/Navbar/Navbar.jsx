@@ -41,8 +41,7 @@ import { useSocket } from '../../../services/socket';
 
 
 const Navbar = () => {
-
-    const { handleOpen } = useModal()
+    const { handleOpen,setSource } = useModal()
     const [state, setState] = React.useState({
         left: false,
     });
@@ -124,6 +123,11 @@ const Navbar = () => {
         toast.info('logout successfull')
         navigate('/login')
     }
+
+    const handleSearchClick = ()=>{
+        handleOpen('search')
+        setSource('navbar')
+    }
     const list = () => (
         <Box
             p={2}
@@ -154,7 +158,8 @@ const Navbar = () => {
                 </ListItem>
 
                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => handleOpen('search')} >
+                    {/* <ListItemButton onClick={() => handleOpen('search')} > */}
+                    <ListItemButton onClick={handleSearchClick} >
                         <ListItemIcon>
                             <SearchOutlinedIcon color='info' />
                         </ListItemIcon>
@@ -311,7 +316,7 @@ const Navbar = () => {
                 </Box>
             )}
                  {/* <SearchComponent /> */}
-                 <SearchComponent source="navbar" />
+                 <SearchComponent/>
                  <BasicModal />
         </Box>
 

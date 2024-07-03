@@ -29,6 +29,7 @@ export default{
     upload:'/chat/upload',
     getSignedUrl:'/chat/signed_url',
     fileUpload:'/chat/fileUpload',
-    getNotification:'/notification'
+    getNotification:'/notification',
+    sharedPost:'/chat/sharedPost'
 
 }

@@ -3,14 +3,14 @@ import Avatar from "@mui/material/Avatar"
 import IconButton from "@mui/material/IconButton"
 import TextField from "@mui/material/TextField"
 import { Send, AttachFile, InsertEmoticon, Clear } from "@mui/icons-material"
-import { Box, Dialog, DialogContent, DialogTitle, useTheme } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, CardMedia, Dialog, DialogContent, DialogTitle, Typography, useTheme } from "@mui/material"
 import ScrollableFeed from 'react-scrollable-feed'
 import { userAxios } from "../../../constraints/axios/userAxios"
 import userApi from "../../../constraints/api/userApi"
 import { ChatState } from "../../../context/ChatProvider"
 import { isLastMessage, isSameSender } from "../../../constraints/config/chatLogic"
 import { useSelector } from "react-redux"
-import { toast,Toaster } from "sonner"
+import { toast, Toaster } from "sonner"
 import ChatHeader from "./ChatHeader"
 import { format, isToday, isYesterday, isSameDay, isSameWeek } from 'date-fns';
 import TypingIndicator from "./TypingIndicator"
@@ -19,13 +19,14 @@ import DragNdrop from "../../common/DragAndDrop/DragAndDrop"
 import SharedFiles from "./Files"
 import RecorderJSDemo from "./RecorderJs"
 import { useOnlineUsers } from "../../../context/OnlineUsers"
-
+import { Link } from "react-router-dom"
+import { MovingBorderButton } from "../../ui/MovingBorderButton"
 
 // const ENDPOINT = "http://localhost:3000";
 let selectedChatCompare;
 
 function IndividualChat({ fetchAgain, setFetchAgain }) {
-    const { selectedChat, setSelectedChat } = ChatState()
+    const { selectedChat, setSelectedChat, sharedPost, setSharedPost } = ChatState()
     const user = useSelector((state) => state.userAuth.userInfo)
     const [messages, setMessages] = useState([])
     const [loading, setLoading] = useState(false)
@@ -35,12 +36,11 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
     const [isTyping, setIsTyping] = useState(false)
     const { socket } = useSocket()
     const [showDragNdrop, setShowDragNdrop] = useState(false);
-    const [upload,setUpload] = useState(false)
- 
+    const [upload, setUpload] = useState(false)
 
+    // console.log(sharedPost)
 
-
-    const handleFilesSelected = async(files) => {
+    const handleFilesSelected = async (files) => {
         console.log('Files selected:', files);
         setUpload(true)
         await new Promise(res => setTimeout(() => { res() }, 1500))
@@ -58,7 +58,6 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
 
     const theme = useTheme()
     // console.log(messages)
-
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -84,15 +83,6 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
             socket.on('typing', () => setIsTyping(true))
             socket.on('stop typing', () => setIsTyping(false))
         }
-
-    }, [socket, user])
-
-    useEffect(() => {
-        fetchMessages()
-        selectedChatCompare = selectedChat
-    }, [selectedChat,upload])
-
-    useEffect(() => {
         socket?.on('message recieved', (newMessageRecieved) => {
             console.log(newMessageRecieved)
             if (!selectedChatCompare || selectedChatCompare._id !== newMessageRecieved.chat._id) {
@@ -101,7 +91,32 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                 setMessages((prev) => [...prev, newMessageRecieved])
             }
         })
-    }, [socket])
+
+    }, [socket, user])
+    // console.log(messages)
+
+    useEffect(() => {
+        fetchMessages()
+        selectedChatCompare = selectedChat
+    }, [selectedChat, upload])
+
+    // const fetchSharedPost = async () => {
+    //     try {
+    //         const res = await userAxios.get(`${userApi.getSharedPost}?postId=${sharedPost}`)
+    //         console.log(res.data)
+    //     } catch (error) {
+    //         if (error.response && error.response.data.error) {
+    //             toast.error(error.response.data.error);
+    //         }
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     console.log('inside shared post')
+    //     if (sharedPost !== null) {
+    //         fetchSharedPost()
+    //     }
+    // }, [sharedPost])
 
     const sendMessage = async (e) => {
         if (e.key === 'Enter' && newMessage) {
@@ -122,13 +137,30 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                 }
             }
         }
+        if (e.key === 'Enter' && sharedPost) {
+            try {
+                socket?.emit('stop typing', selectedChat._id)
+                setNewMessage('')
+                const res = await userAxios.post(userApi.sharedPost, {
+                    sharedPost: sharedPost[0],
+                    chatId: selectedChat._id,
+                })
+                console.log(res)
+                console.log(res.data[0])
+                setSharedPost(null)
+                socket?.emit('new message', res.data[0])
+                setMessages([...messages, res.data[0]])
+                setFetchAgain(prev => !prev);
+            } catch (error) {
+                if (error.response && error.response.data.error) {
+                    toast.error(error.response.data.error);
+                }
+            }
+        }
     }
-
-
 
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
-
         if (!socket) return
         if (!typing) {
             setTyping(true)
@@ -146,10 +178,10 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
             }
         }, timerLength)
     }
- 
+
     return (
         <Box flex={3.5}>
-            <Toaster richColors position="top-center"/>
+            <Toaster richColors position="top-center" />
             {selectedChat ? (
                 <>
                     <Box className="flex flex-col" sx={{ height: '100vh' }}>
@@ -179,7 +211,7 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                                                     alt="Avatar"
                                                 >AN</Avatar>
                                             )}
-                                            {m.files.length == 0 &&
+                                            {m.files.length == 0 && !m.sharedPost &&
                                                 <Box
                                                     // className={`max-w-[70%] rounded-lg p-2 text-sm ${m.sender._id === user.id ?  `text-white bg=${theme.palette.selectedChat.main}` : 'border'
                                                     className={`max-w-[70%] rounded-lg p-2 text-sm ${m.sender._id === user.id ? 'bg-blue-500 text-white' : ''
@@ -200,14 +232,90 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                                                         {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                     </div> */}
                                                     <div className={`${(isSameSender(messages, m, i, user.id) || isLastMessage(messages, i, user.id)) ? 'ml-0' : 'ml-11'}`}>
-                                                        <SharedFiles files={m.files} sender={m.sender._id} t={m.createdAt}/>
+                                                        <SharedFiles files={m.files} sender={m.sender._id} t={m.createdAt} />
                                                     </div>
                                                 </>
+                                            }
+                                            {m.sharedPost &&
+                                                <Box className='h-48 w-48 mb-24'>
+                                                    <Card
+                                                        sx={{ borderRadius: '.5rem', width: { xs: '70%', sm: '80%', md: '90%' } }} elevation={0}
+                                                    >
+                                                        <CardHeader
+                                                            style={{
+                                                                backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
+                                                            }}
+                                                            avatar={
+                                                                <Avatar src={m.sharedPost.userId.profilePic} sx={{ bgcolor: "skyblue", cursor: 'pointer' }} aria-label="recipe">
+                                                                    {m.sharedPost.userId.userName.charAt(0)}
+                                                                </Avatar>
+                                                            }
+
+                                                            title={<Box sx={{ cursor: 'pointer' }} component={Link} to={`/profile?userId=${m.sharedPost.userId._id}`}>{m.sharedPost.userId.userName}</Box>}
+                                                        // subheader={location}
+                                                        />
+                                                        <Box
+                                                        // sx={{
+                                                        //     display: 'flex',
+                                                        //     justifyContent: 'center',
+                                                        //     alignItems: 'center',
+                                                        //     width: '100%',
+                                                        //     padding: '10px',
+                                                        //     height: { xs: '200px', sm: '250px', md: '400px' },
+                                                        //     overflow: 'hidden',
+                                                        // }}
+                                                        >
+                                                            <CardMedia
+                                                                component="img"
+                                                                image={m.sharedPost.imageUrl[0]}
+                                                                alt="Post image"
+                                                            // sx={{
+                                                            //     width: '100%',
+                                                            //     height: '100%',
+                                                            //     objectFit: 'contain',
+                                                            // }}
+                                                            />
+                                                        </Box>
+                                                        <Box
+                                                            style={{
+                                                                backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
+                                                                cursor: 'pointer',
+                                                            }}
+                                                        >
+                                                            <CardContent sx={{ padding: '0' }}>
+                                                                <Box
+                                                                    sx={{
+                                                                        padding: '1px',
+                                                                        //  margin: '5px 6px 0 0'
+                                                                    }}
+                                                                >
+                                                                    {/* <Typography>{m.sharedPost.userId.userName}</Typography> */}
+                                                                    {/* <Typography variant="body2" color="text.secondary">{description}</Typography> */}
+
+                                                                </Box>
+                                                            </CardContent>
+                                                            <Box
+                                                                //  className={`mt-1 text-xs ${m.sender._id === user.id ? 'text-gray-200' : 'text-gray-200 dark:text-gray-400'}`}
+                                                                className='text-xs mt-1 flex justify-end mr-2 p-1'
+                                                            >
+
+                                                                {new Date(m.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                                            </Box>
+
+                                                        </Box>
+                                                    </Card>
+
+                                                </Box>
                                             }
                                         </Box>
                                     </Box>
                                 ))}
                                 {isTyping ? <Box className='mt-10'><TypingIndicator /></Box> : <></>}
+                                {sharedPost !== null && <Box className='flex justify-end'>
+                                    <MovingBorderButton className="p-1">
+                                        Click here to share the post
+                                    </MovingBorderButton>
+                                </Box>}
                             </Box>
                         </ScrollableFeed>
 
@@ -287,7 +395,7 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <DragNdrop onFilesSelected={handleFilesSelected} setMessages={setMessages} />
+                    <DragNdrop onFilesSelected={handleFilesSelected} setMessages={setMessages} messages={messages} />
                 </DialogContent>
             </Dialog>
         </Box>
@@ -295,8 +403,3 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
 }
 
 export default IndividualChat
-
-
-
-
-

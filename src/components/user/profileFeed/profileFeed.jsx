@@ -19,6 +19,7 @@ import { useLocation, useNavigate } from 'react-router';
 import UserList from './FollowingAndFollowers';
 import { logout } from '../../../services/redux/slices/userAuthSlice';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
+import { useSocket } from '../../../services/socket';
 
 
 
@@ -82,6 +83,7 @@ function ProfileFeed() {
   const followersRef = useRef(null)
   const followingRef = useRef(null)
   const navigate = useNavigate()
+  const {socket} = useSocket()
 
   const updateUserData = (updates) => {
     setUserData((prevState) => ({
@@ -220,7 +222,12 @@ function ProfileFeed() {
     try {
       const res = await userAxios.post(`${userApi.followUser}`, { userIdToToggle: userId })
       setIsFollowing((prevVal) => !prevVal)
-      toast.info(res.data.message)
+      toast.info(res.data.message)   
+      if(res.data.message=='following'){
+        if(socket){
+          socket.emit('followed',{userId,followedBy:user.userName})
+        }
+      }
     } catch (error) {
       if (error.response && error.response.data.error) {
         toast.error(error.response.data.error);

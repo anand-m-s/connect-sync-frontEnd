@@ -8,12 +8,13 @@ export const ModalProvider = ({ children }) => {
         create: false,
         search: false,
     });
+    const [source,setSource]=useState()
 
     const handleOpen = (modalName) => setModals((prev) => ({ ...prev, [modalName]: true }));
     const handleClose = (modalName) => setModals((prev) => ({ ...prev, [modalName]: false }));
 
     return (
-        <ModalContext.Provider value={{ modals, handleOpen, handleClose }}>
+        <ModalContext.Provider value={{ modals, handleOpen, handleClose,source,setSource }}>
             {children}
         </ModalContext.Provider>
     );

@@ -8,17 +8,19 @@ import { userAxios } from "../../../constraints/axios/userAxios";
 import userApi from "../../../constraints/api/userApi";
 import { uploadFileToSignedUrl } from "../../../constraints/axios/uploadFileToSignedUrl";
 import { ChatState } from "../../../context/ChatProvider";
+import { useSocket } from "../../../services/socket";
 
 
 const Input = styled('input')({
   display: 'none',
 });
 
-const DragNdrop = ({ onFilesSelected, width, height, setMessages }) => {
+const DragNdrop = ({ onFilesSelected, width, height, setMessages,messages }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const { selectedChat } = ChatState();
   const theme = useTheme();
+  const {socket} = useSocket()
 
   const handleFileChange = (event) => {
     const selectedFiles = event.target.files;
@@ -76,6 +78,9 @@ const DragNdrop = ({ onFilesSelected, width, height, setMessages }) => {
           chatId: selectedChat._id
         });
         // setMessages(prevMessages => [...prevMessages, ...res.data]);
+        console.log(res.data[0])
+        socket?.emit('new message', res.data[0])
+        setMessages([...messages, res.data[0]])
         if (res.data) {
           onFilesSelected('uploaded')
         }

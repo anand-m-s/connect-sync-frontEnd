@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../../../services/socket';
 import { useDispatch, useSelector } from 'react-redux';
 import { useOnlineUsers } from '../../../context/OnlineUsers';
+import { toast, Toaster } from 'sonner';
 
 const SocketConn = () => {
     const { setIncomingCall, callerData, setCallerData, incomingCall } = useCall();
@@ -56,14 +57,19 @@ const SocketConn = () => {
         });
     };
 
-    // const handleBeforeUnload = () => {
-    //     if (socket && userId) {
-    //         socket.emit('manual-disconnect', { id:user.id});
-    //     }
-    // };
-
+    const handleLikeNotification = ({ postId, liker, postOwnerId }) => {
+        toast.info(`${liker} liked your post`);
+    }
+    const handleCommentNotification = ({ postId, commentedBy, postOwnerId }) => {
+            console.log(commentedBy)
+        toast.info(`${commentedBy} commented on your post`);
+    }
+    const handleFollowersNotification = ({ followedBy }) => {
+            console.log(followedBy)
+        toast.info(`${followedBy} started following you`);
+    }
     useEffect(() => {
-        const handleIncomingCall = (data) => {            
+        const handleIncomingCall = (data) => {
             if (data.userId !== user.id) {
                 console.log('Incoming call: ', data);
                 console.log(data)
@@ -84,6 +90,9 @@ const SocketConn = () => {
             socket.on("connected", (data) => {
                 console.log(socket, "vannuuuuu")
             })
+            socket.on('liked', handleLikeNotification);
+            socket.on('commented',handleCommentNotification)
+            socket.on('followers',handleFollowersNotification)
             socket.on('user-connected', handleUserConnected);
             socket.on('user-disconnected', handleUserDisconnected);
             socket.on('current-online-users', handleCurrentOnlineUsers);
@@ -97,6 +106,8 @@ const SocketConn = () => {
             socket?.off('video-call');
             socket?.off('webrtc-offer', handleIncomingCall);
             socket?.off('user-connected', handleUserConnected);
+            socket?.off('liked', handleLikeNotification);
+            socket?.off('commented',handleCommentNotification)
             socket?.off('user-disconnected', handleUserDisconnected);
         };
     }, [socket])
@@ -106,7 +117,9 @@ const SocketConn = () => {
 
 
     return (
-         <Modal open={showModal} onClose={handleClose}>
+        <>
+            <Toaster richColors />
+            <Modal open={showModal} onClose={handleClose}>
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', boxShadow: 24, p: 4 }}>
                     <Typography variant="h6">Incoming Call</Typography>
                     {callerData && (
@@ -121,7 +134,8 @@ const SocketConn = () => {
                         </Button>
                     </Box>
                 </Box>
-            </Modal>        
+            </Modal>
+        </>
     );
 };
 

@@ -18,8 +18,9 @@ import { useNavigate } from "react-router";
 import { ChatState } from "../../../context/ChatProvider";
 
 
-export default function SearchComponent({ source }) {
-    const { modals, handleClose } = useModal();
+export default function SearchComponent() {
+    
+    const { modals, handleClose,source } = useModal();
     const [users, setUsers] = useState([])
     const [search, setSearch] = useState('')
     const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -84,6 +85,7 @@ export default function SearchComponent({ source }) {
                 }
                 setSelectedChat(data)
                 handleModalClose()
+                navigate('/chat')
             } catch (error) {
                 console.error('Error fetching chat data:', error);
             }

@@ -7,7 +7,24 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 const SharedFiles = ({ files, sender, t }) => {
     const user = useSelector((state) => state.userAuth.userInfo);
     const [showControls, setShowControls] = useState(false);
-   
+
+    const handleDownload = (url, filename) => {
+        fetch(url)
+          .then(response => response.blob())
+          .then(blob => {
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+          })
+          .catch(err => console.error('Error downloading the file', err));
+      };
+
     return (
         <Grid container direction='column' spacing={0} className={`flex items-end gap-2 ${sender === user.id ? 'justify-end' : ''}`}>
             {files.map((file) => (
@@ -16,20 +33,23 @@ const SharedFiles = ({ files, sender, t }) => {
                         <CardContent  >
                             {file.contentType.startsWith('image/') ? (
                                 <>
-                                    <CardMedia
-                                        component="img"
-                                        src={file.fileLink}
-                                        alt={file._id}
-                                        sx={{
-                                            width: 250,
-                                            height: 150,
-                                            borderRadius: 2,
-                                            cursor: 'pointer',
-                                            transition: 'transform 0.3s',
-                                            '&:hover': { transform: 'scale(1.05)' },
-                                            objectFit: 'contain'
-                                        }}
-                                    />
+                                    
+                                        <CardMedia
+                                            component="img"
+                                            src={file.fileLink}
+                                            alt={file._id}
+                                            sx={{
+                                                width: 250,
+                                                height: 150,
+                                                borderRadius: 2,
+                                                cursor: 'pointer',
+                                                transition: 'transform 0.3s',
+                                                '&:hover': { transform: 'scale(1.05)' },
+                                                objectFit: 'contain'
+                                            }}
+                                            onClick={() => handleDownload(file.fileLink, file._id)}
+                                        />
+                                    
                                     <p className='mr-1 p-1 text-grey-200 text-xs flex justify-end'> {new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                 </>
                             ) : file.contentType === 'application/pdf' ? (
@@ -49,33 +69,33 @@ const SharedFiles = ({ files, sender, t }) => {
                                 //     <p className='mr-1 p-1 text-grey-200 text-xs flex justify-end'> {new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                 // </>
                                 <>
-                                <CardContent>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'space-between',
-                                            bgcolor: 'background.default',
-                                            borderRadius: 2,
-                                            padding: 2,
-                                            cursor: 'pointer',
-                                        }}
-                                    >
-                                        <PictureAsPdfIcon  sx={{ fontSize: 45, color: 'error.main' }} className='border' />
-                                        <Typography variant="body1" component="div" sx={{ flex: 1, ml: 2 }}>
-                                            {file.fileName}
-                                        </Typography>
-                                        <Link href={file.fileLink} target="_blank" rel="noopener noreferrer">
-                                            <Typography variant="body2" color="primary">
-                                                Open
+                                    <CardContent>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'space-between',
+                                                bgcolor: 'background.default',
+                                                borderRadius: 2,
+                                                padding: 2,
+                                                cursor: 'pointer',
+                                            }}
+                                        >
+                                            <PictureAsPdfIcon sx={{ fontSize: 45, color: 'error.main' }} className='border' />
+                                            <Typography variant="body1" component="div" sx={{ flex: 1, ml: 2 }}>
+                                                {file.fileName}
                                             </Typography>
-                                        </Link>
-                                    </Box>
-                                </CardContent>
-                                <p className='mr-1 p-1 text-grey-200 text-xs flex justify-end'>
-                                    {new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                                </p>
-                            </>
+                                            <Link href={file.fileLink} target="_blank" rel="noopener noreferrer">
+                                                <Typography variant="body2" color="primary">
+                                                    Open
+                                                </Typography>
+                                            </Link>
+                                        </Box>
+                                    </CardContent>
+                                    <p className='mr-1 p-1 text-grey-200 text-xs flex justify-end'>
+                                        {new Date(t).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </p>
+                                </>
                             ) : file.contentType.startsWith('video/') ? (
                                 <>
                                     <CardMedia

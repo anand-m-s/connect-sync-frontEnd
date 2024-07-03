@@ -18,10 +18,16 @@ import CommentIcon from '@mui/icons-material/Comment';
 import ReportPostModal from '../report/Report';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
- import PersistentDrawerRight from '../../common/persistentDrawer';
+import PersistentDrawerRight from '../../common/persistentDrawer';
+import { useSocket } from '../../../services/socket';
+import { useModal } from '../../../context/modalContext';
+import SearchComponent from '../modal/searchModal';
+import { ChatState } from '../../../context/ChatProvider';
 
-function Post({ userName, profilePic, imageUrl, location, description, postId, userId,comments,likes}) {
+
+function Post({ userName, profilePic, imageUrl, location, description, postId, userId, comments, likes }) {
     const theme = useTheme();
+    const { socket } = useSocket()
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
@@ -29,7 +35,8 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const [modalOpen, setModalOpen] = useState(false);
     const user = useSelector((state) => state.userAuth.userInfo);
     const open = Boolean(anchorEl);
-
+    const { handleOpen,setSource } = useModal()
+    const { setSharedPost, sharedPost } = ChatState() 
     const handleCommentClick = () => {
         setDrawerOpen((prev) => !prev);
     };
@@ -37,8 +44,8 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const handleDrawerClose = () => {
         setDrawerOpen(false);
     };
-  
-  
+
+
 
     useEffect(() => {
         if (drawerOpen) {
@@ -52,10 +59,14 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
         try {
             const res = await userAxios.post(`${userApi.toggleLike}?postId=${postId}`);
             console.log(res.data);
-            // setIsLiked(!isLiked);
-            if(res.data.action==='Liked'){
+            const postOwnerId = res.data.user._id
+            console.log(postOwnerId)
+            if (res.data.action === 'Liked') {
                 setIsLiked(true)
-            }else{
+                if (socket && user.id!==postOwnerId) {                    
+                    socket.emit('like', { postId, liker: user.userName, postOwnerId });
+                }
+            } else {
                 setIsLiked(false)
             }
             setLikeCount(res.data.likeCount);
@@ -67,7 +78,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     };
 
     useEffect(() => {
-        if(likes){
+        if (likes) {
             setLikeCount(likes.length)
             setIsLiked(likes.includes(user.id))
         }
@@ -88,6 +99,12 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const handleCloseModal = () => {
         setModalOpen(false);
     };
+
+    const handleSharedPost = () => {
+        setSharedPost([postId, imageUrl])
+        handleOpen('search')
+        setSource('chat')
+    }
 
     return (
         <Box className='flex justify-center items-center'>
@@ -168,26 +185,29 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                         </Box>
                     </CardContent>
                     <CardActions>
-                       
-                        <IconButton size="small" aria-label="like" onClick={()=>handleLike(postId)}>
+
+                        <IconButton size="small" aria-label="like" onClick={() => handleLike(postId)}>
                             {isLiked ? <FavoriteIcon color="error" /> : <FavoriteBorderOutlinedIcon />}
                         </IconButton>
-                            {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
+                        {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
                         <IconButton size="small" aria-label="comment" onClick={handleCommentClick}>
                             <CommentIcon />
                         </IconButton>
-                        <IconButton size="small" aria-label="share">
+                        <IconButton size="small" aria-label="share" onClick={() => handleSharedPost()}>
                             <ShareIcon />
                         </IconButton>
                     </CardActions>
                 </Box>
             </Card>
-           
-                <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} />
-           
+
+            <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} />
+
             <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
+            {/* <SearchComponent source="chat" /> */}
         </Box>
     );
 }
 
 export default Post;
+
+

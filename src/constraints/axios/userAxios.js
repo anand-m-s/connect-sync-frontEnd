@@ -20,7 +20,6 @@ export const userAxios=axios.create({
   })
   
 
-
   export const setupInterceptors = (navigate, dispatch, logoutAction, toast) => {
     userAxios.interceptors.response.use(
       (response) => {

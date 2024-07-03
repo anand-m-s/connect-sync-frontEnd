@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import UserRoutes from './routes/userRouter/userRoutes'
 import ErrorBoundary from './components/errorBoundary/errorBoundary'
 import AdminRoutes from './routes/adminRouter/adminRoutes'
