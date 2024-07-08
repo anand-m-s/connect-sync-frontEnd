@@ -21,11 +21,13 @@ import { useSelector } from 'react-redux';
 import PersistentDrawerRight from '../../common/persistentDrawer';
 import { useSocket } from '../../../services/socket';
 import { useModal } from '../../../context/modalContext';
-import SearchComponent from '../modal/searchModal';
 import { ChatState } from '../../../context/ChatProvider';
+import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
+import { toast } from 'sonner';
 
 
-function Post({ userName, profilePic, imageUrl, location, description, postId, userId, comments, likes }) {
+function Post({ userName, profilePic, imageUrl, location, description, postId, userId, comments, likes, saved }) {
     const theme = useTheme();
     const { socket } = useSocket()
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -33,10 +35,11 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const [likeCount, setLikeCount] = useState(0);
     const [anchorEl, setAnchorEl] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [isSaved, setIsSaved] = useState(false)
     const user = useSelector((state) => state.userAuth.userInfo);
     const open = Boolean(anchorEl);
-    const { handleOpen,setSource } = useModal()
-    const { setSharedPost, sharedPost } = ChatState() 
+    const { handleOpen, setSource } = useModal()
+    const { setSharedPost, sharedPost } = ChatState()
     const handleCommentClick = () => {
         setDrawerOpen((prev) => !prev);
     };
@@ -63,7 +66,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
             console.log(postOwnerId)
             if (res.data.action === 'Liked') {
                 setIsLiked(true)
-                if (socket && user.id!==postOwnerId) {                    
+                if (socket && user.id !== postOwnerId) {
                     socket.emit('like', { postId, liker: user.userName, postOwnerId });
                 }
             } else {
@@ -82,6 +85,7 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
             setLikeCount(likes.length)
             setIsLiked(likes.includes(user.id))
         }
+        setIsSaved(saved)
     }, [postId]);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -104,6 +108,20 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
         setSharedPost([postId, imageUrl])
         handleOpen('search')
         setSource('chat')
+    }
+    const handleSavedPost = async () => {
+        try {
+            userAxios.post(`${userApi.savedPost}?postId=${postId}`)
+                .then((data) => {
+                    console.log(data)
+                    toast.info(data.data.message)
+                    setIsSaved(prev => !prev)
+                })
+        } catch (error) {
+            if (error.response && error.response.data.error) {
+                toast.error(error.response.data.error);
+            }
+        }
     }
 
     return (
@@ -193,9 +211,14 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                         <IconButton size="small" aria-label="comment" onClick={handleCommentClick}>
                             <CommentIcon />
                         </IconButton>
-                        <IconButton size="small" aria-label="share" onClick={() => handleSharedPost()}>
+                        <IconButton size="small" aria-label="share" onClick={handleSharedPost}>
                             <ShareIcon />
                         </IconButton>
+                        <Box className='flex justify-end w-full'>
+                            <IconButton onClick={handleSavedPost}>
+                                {isSaved ? <BookmarkIcon /> : <BookmarkBorderIcon />}
+                            </IconButton>
+                        </Box>
                     </CardActions>
                 </Box>
             </Card>

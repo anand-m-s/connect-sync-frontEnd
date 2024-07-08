@@ -23,6 +23,7 @@ function CommentSection({ postId, comments }) {
     useEffect(() => {
         setPostComments(comments)
     }, [comments])
+    
 
     const handleAddComment = async () => {
         console.log('add comment')

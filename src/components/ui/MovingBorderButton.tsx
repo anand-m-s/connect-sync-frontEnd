@@ -189,12 +189,12 @@ export function MovingBorderButton({
     >
       <div
         className="absolute inset-0"
-        style={{ borderRadius: `calc(${borderRadius} * 0.96)` }}
+        style={{ borderRadius: `calc(${borderRadius} *.77)` }}
       >
         <MovingBorder duration={duration} rx="30%" ry="30%">
           <div
             className={cn(
-              "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_60%)]",
+              "h-20 w-20 opacity-[0.8] bg-[radial-gradient(var(--sky-500)_40%,transparent_50%)]",
               borderClassName
             )}
           />
@@ -203,14 +203,14 @@ export function MovingBorderButton({
 
       <div
         className={cn(
-          "relative  border  backdrop-blur-xl flex items-center justify-center w-full h-full text-sm antialiased",
+          "relative backdrop-blur-xl  flex items-center justify-center w-full h-full text-sm ",
           className
         )}
-        // style={{
-        //   borderRadius: `calc(${borderRadius} * 0.96)`,
-        //   backgroundColor: theme.palette.mode === "light" ? "rgba(15, 23, 42, 0.8)" : "#f0f0f0" ,
+        style={{
+          borderRadius: `calc(${borderRadius} * 0.77)`,
+          // backgroundColor: theme.palette.mode === "light" ? "rgba(15, 23, 42, 0.8)" : "#f0f0f0" ,
           
-        // }}
+        }}
       >
         {children}
       </div>

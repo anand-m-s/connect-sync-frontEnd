@@ -83,7 +83,9 @@ function ProfileFeed() {
   const followersRef = useRef(null)
   const followingRef = useRef(null)
   const navigate = useNavigate()
-  const {socket} = useSocket()
+  const { socket } = useSocket()
+
+
 
   const updateUserData = (updates) => {
     setUserData((prevState) => ({
@@ -180,6 +182,16 @@ function ProfileFeed() {
 
   const handleSave = async () => {
     try {
+
+      // Validate userName and phone
+      if (!userData.userName.trim()) {
+        toast.error("Username cannot be empty");
+        return;
+      }
+      if (!/^\d{10}$/.test(userData.phone)) {
+        toast.error("Phone number must be 10 digits");
+        return;
+      }
       console.log('inside submit for edit save')
       setLoad(true)
       let uploadedProfilePic = userData.profilePic
@@ -189,7 +201,7 @@ function ProfileFeed() {
         uploadedProfilePic = uploadImage[0]
       }
       const updateUser = {
-        id: user.id,
+        // id: user.id,
         bio: userData.bio,
         userName: userData.userName,
         phone: userData.phone,
@@ -214,6 +226,8 @@ function ProfileFeed() {
         toast.error(error.response.data.error);
       }
 
+    } finally {
+      setLoad(false)
     }
   }
 
@@ -222,10 +236,10 @@ function ProfileFeed() {
     try {
       const res = await userAxios.post(`${userApi.followUser}`, { userIdToToggle: userId })
       setIsFollowing((prevVal) => !prevVal)
-      toast.info(res.data.message)   
-      if(res.data.message=='following'){
-        if(socket){
-          socket.emit('followed',{userId,followedBy:user.userName})
+      toast.info(res.data.message)
+      if (res.data.message == 'following') {
+        if (socket) {
+          socket.emit('followed', { userId, followedBy: user.userName })
         }
       }
     } catch (error) {
@@ -257,11 +271,9 @@ function ProfileFeed() {
     if (isFollowing) {
 
       setFollowersCount(prevCount => prevCount + 1);
-      // setFollowing(prevFollowing => [...prevFollowing, { _id: userId }]);
     } else {
 
       setFollowersCount(prevCount => prevCount - 1);
-      // setFollowing(prevFollowing => prevFollowing.filter(user => user._id !== userId));
     }
   };
 
@@ -331,7 +343,7 @@ function ProfileFeed() {
                   </Box>
                 </ButtonBase>
               </ClickAwayListener>
-              
+
               <ClickAwayListener onClickAway={handleClickAwayFollowing}>
                 <ButtonBase>
                   <Box
@@ -393,8 +405,6 @@ function ProfileFeed() {
         <Divider />
         <Item elevation={0} square ><ParallaxScroll determineUser={determineUser} posts={posts} /></Item>
       </Stack>
-      {/* <SearchComponent /> */}
-      {/* <BasicModal /> */}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -435,7 +445,7 @@ function ProfileFeed() {
               >
               </Avatar> */}
               <Button size='small' component='label' variant='outlined' color='info'>
-                Upload photo
+                change profile picture
                 <input type="file" hidden
                   onChange={handleImageChange}
                 />

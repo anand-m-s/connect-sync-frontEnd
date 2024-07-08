@@ -30,7 +30,7 @@ function RightBar() {
     };
 
     const fetchNotifications = async () => {
-        try {
+        try {         
             const res = await userAxios.get(userApi.getNotification)
             // console.log(res.data)
             setNotification(res.data.data)
@@ -42,7 +42,7 @@ function RightBar() {
 
     useEffect(() => {
         fetchNotifications()
-    }, [])
+    }, [checked])
 
     const closeNotification = () => {
         setChecked(false)

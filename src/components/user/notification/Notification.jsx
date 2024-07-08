@@ -23,7 +23,7 @@ const LoaderCore = ({ loadingStates, value = 0 }) => {
             sx={{
                 boxShadow: 24,
                 padding: 1,
-                maxHeight: '300px', 
+                maxHeight: '500px', 
                 overflowY: 'auto',
                 '&::-webkit-scrollbar': {
                     width: '4px',

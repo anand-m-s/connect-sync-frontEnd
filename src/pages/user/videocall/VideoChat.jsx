@@ -15,6 +15,7 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import { Link } from 'react-router-dom';
 import { MovingBorderButton } from '../../../components/ui/MovingBorderButton';
+import {toast,Toaster} from 'sonner'
 
 const servers = {
     iceServers: [
@@ -37,6 +38,7 @@ const VideoChat = () => {
     const pc = useRef(new RTCPeerConnection(servers));
     const { incomingCall, setIncomingCall, callerData, setCallerData } = useCall();
     const user = useSelector((state) => state.userAuth.userInfo);
+    const [remoteUser,setRemoteUser] = useState('')
     const accessRef = useRef()
     const userId = user.id;
     const { socket } = useSocket()
@@ -74,6 +76,8 @@ const VideoChat = () => {
 
             socket.on('webrtc-answer', async (data) => {
                 if (data.userId !== userId) {
+                    console.log(data)
+                    setRemoteUser(data.userName)
                     await pc.current.setRemoteDescription(new RTCSessionDescription(data.answer));
                 }
             });
@@ -91,17 +95,28 @@ const VideoChat = () => {
                     }
                 }
             });
+            socket.on('call-ended', (data) => {
+                console.log(data)
+                if (data.userId !== userId) {
+                    console.log('call ended')
+                    toast.info('user disconnected')
+                    
+                    // endCall();
+                }
+            });
         }
 
         return () => {
+            localStream?.getTracks().forEach(track => track.stop());
             socket?.off('webrtc-offer');
             socket?.off('webrtc-answer');
             socket?.off('webrtc-ice-candidate');
+            socket?.off('call-ended')
         };
     }, [socket, roomId, userId, localStream, remoteStream]);
-    // useEffect(() => {
-    //     startWebcam();
-    // }, [])
+    useEffect(() => {
+        startWebcam();
+    }, [])
 
     const startWebcam = async () => {
         try {
@@ -132,59 +147,8 @@ const VideoChat = () => {
         setMicrophoneOn(audioTrack.enabled);
     };
 
-    // const toggleCamera = async () => {
-    //     try {
-    //         if (!localStream || !localStream.getVideoTracks().length) {
-    //             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    //             if (localStream) {
-    //                 stream.getVideoTracks().forEach(track => localStream.addTrack(track));
-    //             } else {
-    //                 setLocalStream(stream);
-    //             }
-    //             stream.getTracks().forEach((track) => {
-    //                 pc.current.addTrack(track, stream);
-    //             });
-    //             if (webcamVideo.current) {
-    //                 webcamVideo.current.srcObject = stream;
-    //             }
-    //             setCameraOn(true);
-    //         } else {
-    //             const videoTrack = localStream.getVideoTracks()[0];
-    //             videoTrack.enabled = !videoTrack.enabled;
-    //             setCameraOn(videoTrack.enabled);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error toggling camera:', error);
-    //     }
-    // };
-
-    // const toggleMicrophone = async () => {
-    //     try {
-    //         if (!localStream || !localStream.getAudioTracks().length) {
-    //             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    //             if (localStream) {
-    //                 stream.getAudioTracks().forEach(track => localStream.addTrack(track));
-    //             } else {
-    //                 setLocalStream(stream);
-    //             }
-    //             stream.getTracks().forEach((track) => {
-    //                 pc.current.addTrack(track, stream);
-    //             });
-    //             if (webcamVideo.current) {
-    //                 webcamVideo.current.srcObject = stream;
-    //             }
-    //             setMicrophoneOn(true);
-    //         } else {
-    //             const audioTrack = localStream.getAudioTracks()[0];
-    //             audioTrack.enabled = !audioTrack.enabled;
-    //             setMicrophoneOn(audioTrack.enabled);
-    //         }
-    //     } catch (error) {
-    //         console.error('Error toggling microphone:', error);
-    //     }
-    // };
-
     const endCall = () => {
+        localStream?.getTracks().forEach(track => track.stop());
         pc.current.close();
         setLocalStream(null);
         setRemoteStream(new MediaStream());
@@ -195,7 +159,9 @@ const VideoChat = () => {
             remoteVideo.current.srcObject = null;
         }
         socket.emit('leave chat', roomId);
+        socket.emit('call-ended', { roomId, userId });
         pc.current = new RTCPeerConnection(servers);
+        startWebcam()
     };
 
     const createCall = async () => {
@@ -244,6 +210,7 @@ const VideoChat = () => {
             socket.emit('webrtc-answer', {
                 roomId,
                 userId,
+                userName:user.userName,
                 answer: answerDescription,
                 callerId: callerData.callerId,
             });
@@ -281,7 +248,7 @@ const VideoChat = () => {
                     <Grid item xs={6}>
                         <Paper sx={{ bgcolor: 'grey.800', position: 'relative', overflow: 'hidden', height: '100%' }}>
                             <Typography variant="h5" sx={{ position: 'absolute', top: 16, left: 16, zIndex: 1 }}>
-                                Remote Stream
+                              {callerData? callerData.userName:remoteUser}
                             </Typography>
                             <video ref={remoteVideo} autoPlay playsInline style={{ width: '100%', height: '100%', objectFit: 'contain' }}></video>
                         </Paper>
@@ -290,18 +257,18 @@ const VideoChat = () => {
             </Box>
             <AppBar position="static" sx={{ bgcolor: 'grey.800' }}>
                 <Toolbar>
-                    <IconButton color="inherit" onClick={toggleMicrophone} disabled={!localStream}>
-                        {microphoneOn ? <MicIcon /> : <MicOffIcon />}
-                    </IconButton>
                     <IconButton color="inherit" onClick={toggleCamera} disabled={!localStream}>
                         {cameraOn ? <VideocamIcon /> : <VideocamOffIcon />}
+                    </IconButton>
+                    <IconButton color="inherit" onClick={toggleMicrophone} disabled={!localStream}>
+                        {microphoneOn ? <MicIcon /> : <MicOffIcon />}
                     </IconButton>
 
                     <Box sx={{ flexGrow: 1 }} />
                     <Box className='flex gap-3'>
-                        <Button variant="contained" color="primary" onClick={startWebcam} >
+                        {/* <Button variant="contained" color="primary" onClick={startWebcam} >
                             Start Webcam
-                        </Button>
+                        </Button> */}
                         <Button variant="contained" color="success" onClick={createCall} >
                             Call
                         </Button>
@@ -315,20 +282,21 @@ const VideoChat = () => {
                 <Box
                     sx={{
                         position: 'absolute',
-                        top: '50%',
+                        top: '70%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
-                        // bgcolor: 'background.paper',
-                        p: 2,
-                        borderRadius:'1rem',
-                        marginTop:'2rem'
+                        bgcolor: 'background.paper',                        
+                        borderRadius:'4rem',
+                        // marginTop:'7rem',
+                        // padding:1
+                        
                         // boxShadow: 24
                     }}
                 >
                     {/* <Button variant="contained" color="success" onClick={answerCall}>
                         Answer
                     </Button> */}
-                    <MovingBorderButton onClick={answerCall}>
+                    <MovingBorderButton onClick={answerCall} className='text-black  font-light ' >
                         Answer
                     </MovingBorderButton>
                 </Box>

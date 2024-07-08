@@ -1,4 +1,4 @@
-import { Box, Button, LinearProgress, Paper } from '@mui/material';
+import { Box, Button, LinearProgress, Paper, Typography } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui'
 import { BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation';
@@ -12,6 +12,8 @@ import { Toaster, toast } from 'sonner';
 import { GoogleLogin } from '@react-oauth/google';
 import { useGoogleOneTapLogin, googleLogout, useGoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from "jwt-decode";
+import { FlipWords } from '../../components/ui/flipWords';
+import { motion } from "framer-motion";
 
 
 function Login() {
@@ -33,13 +35,18 @@ function Login() {
       console.log('Login Failed');
     },
   });
-  const submit = async (values) => {
+
+
+  const submit =  (values) => {
     try {
-      await new Promise(res => setTimeout(() => { res() }, 500))
-      const user = await userAxios.post(userApi.loginUser, values)
+      // await new Promise(res => setTimeout(() => { res() }, 500))
+      const user = userAxios.post(userApi.loginUser, values)
+      .then((res)=>{
+        
+      })
       // console.log(user.data)
       toast.success('Login success')
-      await new Promise(res => setTimeout(() => { res() }, 1000))
+      // await new Promise(res => setTimeout(() => { res() }, 1000))
       dispatch(setUserCredentials(user.data))
       navigate('/home')
     } catch (error) {
@@ -49,13 +56,30 @@ function Login() {
     }
 
   }
+  // const submit = async (values) => {
+  //   try {
+  //     await new Promise(res => setTimeout(() => { res() }, 500))
+  //     const user = await userAxios.post(userApi.loginUser, values)
+  //     // console.log(user.data)
+  //     toast.success('Login success')
+  //     await new Promise(res => setTimeout(() => { res() }, 1000))
+  //     dispatch(setUserCredentials(user.data))
+  //     navigate('/home')
+  //   } catch (error) {
+  //     if (error.response && error.response.data.error) {
+  //       toast.error(error.response.data.error);
+  //     }
+  //   }
+
+  // }
+
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {
       const decoded = jwtDecode(credentialResponse?.credential);
       // console.log(decoded);
       const res = await userAxios.post(userApi.googleAuth, {
         email: decoded.email,
-        userName: decoded.name,        
+        userName: decoded.name,
       });
       // console.log(res)
       // console.log(res.data)
@@ -63,7 +87,8 @@ function Login() {
       if (res.status == 200) {
         dispatch(setUserCredentials(res.data))
         navigate('/home')
-        toast.success('Login success')
+        // toast.success('Login success')
+        toast.promise()
       }
     } catch (error) {
       if (error.response && error.response.data.error) {
@@ -72,92 +97,119 @@ function Login() {
     }
   }
 
+  const handleKeyPress = (event, submitForm) => {
+    if(event.key=='Enter'){
+      event.preventDefault()
+      submitForm()
+    }
+  }
+
   return (
     <>
       <Box className='BackgroundGradientAnimation'>
         <BackgroundGradientAnimation />
       </Box>
-      <Box className='loginOuterBox'>
-        <Toaster richColors />
-        <Paper>
-          <section className='login-Section '>
-            <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={submit}
-            >
-              {({ submitForm, isSubmitting }) => (
-                <Form>
-                  <Box className='flex justify-center m-5'>
-                    <h1 className='text-2xl'>Circle Sync</h1>
-                  </Box>
+      <motion.div
+        initial={{ opacity: 0.0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: .1,
+          duration: 0.8,
+          ease: "easeInOut",
+        }}
+        className="relative flex flex-col gap-4 items-center justify-center px-4"
+      >
+        <Box className='loginOuterBox '>
+          <Toaster richColors />
+          <Paper>
+            <section className='login-Section '>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={submit}
+              >
+                {({ submitForm, isSubmitting }) => (
+                  <Form onKeyDown={(event) => handleKeyPress(event, submitForm)} >
+                    <Box className="flex  justify-around items-center mb-8 ">
+                      <img src="OIG4.svg" alt="favicon" className="w-36 h-36 m-0  rounded-xl" />
+                      <Box className='m-0 p-0'>
+                        <Typography variant="h6" className="text-2xl mt-1">
+                          Connect Sync
+                        </Typography>
+                        <Typography variant="body1" className='flex justify-center mt-1 '>
+                          {/* Build */}
+                          <FlipWords words={['Connect', 'Grow', 'Network', 'Share', 'Support']} />
+                        </Typography>
+                      </Box>
+                    </Box>
 
-                  <Field
-                    component={TextField}
-                    name="email"
-                    variant='standard'
-                    type="email"
-                    label="Email"
-                    size="small"
-                    autoComplete="off"
-                    sx={{
-                      margin: '.5rem',
-                      width: { sm: 250, md: 350 },
-                    }}
-                  />
-                  <br />
-                  <Field
-                    component={TextField}
-                    variant='standard'
-                    type="password"
-                    label="Password"
-                    name="password"
-                    size="small"
-                    sx={{
-                      margin: '.5rem',
-                      width: { sm: 250, md: 350 },
-                    }}
-                  />
-                  {isSubmitting && <LinearProgress />}
-                  <Box className='loginBtn'>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size='small'
-                      disabled={isSubmitting}
-                      onClick={submitForm}
+                    <Field
+                      component={TextField}
+                      name="email"
+                      variant='standard'
+                      type="email"
+                      label="Email"
+                      size="small"
+                      autoComplete="off"
                       sx={{
-                        margin: '1rem',
-                      }}
-                    >
-                      Login
-                    </Button>
-                  </Box>
-                   
-                  <Box className="flex justify-center items-center">
-                    <GoogleLogin
-                      size='medium'
-                      onSuccess={handleGoogleLoginSuccess}
-                      onError={() => {
-                        console.log('Login Failed');
+                        margin: '.5rem',
+                        width: { sm: 250, md: 350 },
                       }}
                     />
-                  </Box>
-                 
-                  <br />
-                  <Box >
+                    <br />
+                    <Field
+                      component={TextField}
+                      variant='standard'
+                      type="password"
+                      label="Password"
+                      name="password"
+                      size="small"
+                      sx={{
+                        margin: '.5rem',
+                        width: { sm: 250, md: 350 },
+                      }}
+                    />
+                    {isSubmitting && <LinearProgress />}
+                    <Box className='loginBtn'>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size='small'
+                        disabled={isSubmitting}
+                        onClick={submitForm}
+                        sx={{
+                          margin: '1rem',
+                        }}
+                      >
+                        Login
+                      </Button>
+                    </Box>
+
+                    <Box className="flex justify-center items-center">
+                      <GoogleLogin
+                        size='medium'
+                        onSuccess={handleGoogleLoginSuccess}
+                        onError={() => {
+                          console.log('Login Failed');
+                        }}
+                      />
+                    </Box>
+
+                    <br />
+                    <Box >
                       <p> <Link className='text-blue-500 ' to={'/forgot'}>Forgot Password?</Link></p>
                     </Box>
-                  <Box >
-                    <p>Dont have an account? <Link className='text-blue-500 ' to={'/'}>Signup</Link></p>
-                  </Box>
+                    <Box >
+                      <p>Dont have an account? <Link className='text-blue-500 ' to={'/'}>Signup</Link></p>
+                    </Box>
 
-                </Form>
-              )}
-            </Formik>
-          </section>
-        </Paper>
-      </Box>
+                  </Form>
+                )}
+              </Formik>
+            </section>
+          </Paper>
+        </Box>
+      </motion.div>
 
     </>
   )

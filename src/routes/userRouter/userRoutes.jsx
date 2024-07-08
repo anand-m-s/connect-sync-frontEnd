@@ -18,6 +18,7 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../../services/redux/slices/userAuthSlice';
 import { toast, Toaster } from 'sonner';
 import { OnlineUsersProvider } from '../../context/OnlineUsers';
+import SavedPost from '../../pages/user/savedPost/SavedPost';
 
 
 const UserRoutes = () => {
@@ -44,8 +45,10 @@ const UserRoutes = () => {
                                     <Route path='/home' element={<Home />} />
                                     <Route path='/profile' element={<Profile />} />
                                     <Route path='/chat' element={<Chat />} />
-                                    <Route path='/videoChat' element={<VideoChat />} />
+                                    {/* <Route path='/videoChat' element={<VideoChat />} /> */}
                                     <Route path="/video-call/:roomId" element={<VideoChat />} />
+                                    <Route path="/savedPost" element={<SavedPost />} />
+
                                 </Route>
                             </Routes>
                         </Suspense>

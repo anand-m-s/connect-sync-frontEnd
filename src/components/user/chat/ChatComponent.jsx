@@ -13,12 +13,13 @@ import { getSender } from "../../../constraints/config/chatLogic"
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
 import { useOnlineUsers } from "../../../context/OnlineUsers"
 import ChatAvatar from "../../ui/miniComponents/ChatAvatar"
+import Skeleton from '@mui/material/Skeleton';
 
 
 export default function ChatComponent() {
     const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
     const user = useSelector((state) => state.userAuth.userInfo)
-    const { handleOpen } = useModal()
+    const { handleOpen, setSource } = useModal()
     const theme = useTheme()
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
     const [fetchAgain, setFetchAgain] = useState(false)
@@ -57,6 +58,11 @@ export default function ChatComponent() {
         return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     };
 
+    const handleSearchClick = () => {
+        handleOpen('search')
+        setSource('chat')
+
+    }
 
     return (
         <Box
@@ -77,18 +83,22 @@ export default function ChatComponent() {
                                 Search
                             </Box>
                             <Box className="flex items-center gap-2" >
-                                <IconButton size="large" onClick={() => handleOpen('search')}>
+                                {/* <IconButton size="large" onClick={() => handleOpen('search')}> */}
+                                <IconButton size="large" onClick={handleSearchClick}>
                                     <Search className="" />
                                 </IconButton>
-                                <IconButton size="large">
+                                {/* <IconButton size="large">
                                     <Add className="" />
-                                </IconButton>
+                                </IconButton> */}
                             </Box>
                         </Box>
                         {chats.length > 0 ? (<Box className="flex-1 overflow-auto">
                             {chats.map((chat) => (
                                 <Box key={chat._id} className="grid gap-2 p-3">
-                                    {loading && <CircularProgress />}
+                                    {loading && <Box className>
+                                        <Skeleton animation='wave' className="p-8"/>
+                                    </Box>
+                                    }
                                     <ButtonBase>
                                         <Box
                                             className="flex gap-1 p-3 rounded-md border  transition-colors"

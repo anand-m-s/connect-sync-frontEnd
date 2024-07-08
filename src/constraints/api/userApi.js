@@ -30,6 +30,8 @@ export default{
     getSignedUrl:'/chat/signed_url',
     fileUpload:'/chat/fileUpload',
     getNotification:'/notification',
-    sharedPost:'/chat/sharedPost'
+    sharedPost:'/chat/sharedPost',
+    savedPost:'/savedPost',
+    getSavedPosts:'/getSavedPosts'
 
 }

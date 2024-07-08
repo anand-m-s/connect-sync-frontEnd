@@ -25,7 +25,7 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { logout } from '../../../services/redux/slices/userAuthSlice';
-import { useDispatch, useSelector} from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { Toaster, toast } from 'sonner';
 import { Link } from 'react-router-dom';
@@ -41,7 +41,7 @@ import { useSocket } from '../../../services/socket';
 
 
 const Navbar = () => {
-    const { handleOpen,setSource } = useModal()
+    const { handleOpen, setSource } = useModal()
     const [state, setState] = React.useState({
         left: false,
     });
@@ -50,8 +50,8 @@ const Navbar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const colorMode = useContext(ColorModeContext);
     const theme = useTheme();
-    const user = useSelector((state)=>state.userAuth.userInfo)
-    const {socket} = useSocket()
+    const user = useSelector((state) => state.userAuth.userInfo)
+    const { socket } = useSocket()
     const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
     const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         width: 62,
@@ -124,7 +124,7 @@ const Navbar = () => {
         navigate('/login')
     }
 
-    const handleSearchClick = ()=>{
+    const handleSearchClick = () => {
         handleOpen('search')
         setSource('navbar')
     }
@@ -224,6 +224,15 @@ const Navbar = () => {
                     onClose={handleClose}
                 >
                     <MenuItem
+                        component={Link} to={'/savedPost'}
+                        // onClick={handleLogout}
+                        sx={{
+                            padding: '10px 60px',
+                        }}
+                    >
+                        Saved
+                    </MenuItem>
+                    <MenuItem
                         onClick={handleLogout}
                         sx={{
                             padding: '10px 60px',
@@ -231,7 +240,8 @@ const Navbar = () => {
                     >
                         Logout
                     </MenuItem>
-                    <MenuItem
+
+                    {/* <MenuItem
                         onClick={handleClose}
                         sx={{
                             padding: '10px 60px',
@@ -245,7 +255,7 @@ const Navbar = () => {
                             padding: '10px 60px',
                         }}
                     >Activity
-                    </MenuItem>
+                    </MenuItem> */}
                 </Menu>
 
             </List>
@@ -315,9 +325,9 @@ const Navbar = () => {
                     {list()}
                 </Box>
             )}
-                 {/* <SearchComponent /> */}
-                 <SearchComponent/>
-                 <BasicModal />
+            {/* <SearchComponent /> */}
+            <SearchComponent />
+            <BasicModal />
         </Box>
 
 
