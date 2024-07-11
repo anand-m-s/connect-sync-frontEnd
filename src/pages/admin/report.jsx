@@ -19,7 +19,7 @@ function Report() {
                         <SideBar />
 
                     </Box>
-                    {/* <UserManagment /> */}
+         
                     <PostReport/>
                     
 

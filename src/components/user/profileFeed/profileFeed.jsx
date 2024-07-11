@@ -20,6 +20,8 @@ import UserList from './FollowingAndFollowers';
 import { logout } from '../../../services/redux/slices/userAuthSlice';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { useSocket } from '../../../services/socket';
+import RazorpayPayment from '../razorPay/RazorPay';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
 
 
@@ -71,6 +73,8 @@ function ProfileFeed() {
     phone: user.phone || '',
     profilePic: user.profilePic || '',
     initialPic: '',
+    verified: false,
+    verifiedExp: ''
   });
 
   const [isFollowing, setIsFollowing] = useState(false)
@@ -98,6 +102,11 @@ function ProfileFeed() {
   const userId = query.get('userId');
   const determineUser = userId || user.id
 
+  const oneYearInMilliseconds = 365 * 24 * 60 * 60 * 1000;
+  const verifiedExpDate = new Date(userData.verifiedExp);
+  const isVerifiedWithinYear = (new Date() - verifiedExpDate) < oneYearInMilliseconds;
+
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,8 +117,8 @@ function ProfileFeed() {
           userAxios.get(`${userApi.following}?userId=${determineUser}`),
           userAxios.get(`${userApi.following}?userId=${user.id}`)
         ]);
-        // console.log(postRes.data)
-        // console.log(followData.data.data)
+
+
         setConnectionData(followData.data.data)
         setCurrentUserConnection(currentUserConnection.data.data)
         dispatch(setUserPosts(postRes.data.post));
@@ -120,6 +129,8 @@ function ProfileFeed() {
           userName: userData.userName,
           profilePic: userData.profilePic,
           initialPic: userData.profilePic,
+          verified: userData.verified,
+          verifiedExp: userData.verifyTagExp
         });
         setIsFollowing(userData.isFollowing)
         setFollowersCount(userData.followers)
@@ -182,10 +193,13 @@ function ProfileFeed() {
 
   const handleSave = async () => {
     try {
-
-      // Validate userName and phone
       if (!userData.userName.trim()) {
         toast.error("Username cannot be empty");
+        return;
+      }
+      const hasSymbols = /[^a-zA-Z0-9]/.test(userData.userName);
+      if (hasSymbols) {
+        toast.error("Username cannot contain symbols");
         return;
       }
       if (!/^\d{10}$/.test(userData.phone)) {
@@ -214,11 +228,11 @@ function ProfileFeed() {
         ...res.data.updatedUser
       }
       console.log(updatedUser)
-      toast.success(res.data.message)
       dispatch(setEditedUserCredentials(updatedUser))
+      toast.success(res.data.message)
       await new Promise(res => setTimeout(() => { res() }, 1500))
       resetState()
-      updateUserData(res.data.updatedUser)
+      updateUserData(updatedUser)
       setOpenModal(false);
     } catch (error) {
       console.error('error updation profile', error)
@@ -284,6 +298,7 @@ function ProfileFeed() {
   const handleClickAwayFollowing = () => {
     setFollowing(false);
   }
+
   return (
     <Box
       flex={5}
@@ -299,10 +314,18 @@ function ProfileFeed() {
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
               <Box className="mt-10">
-                <Box>
+                <Box className='flex items-center'>
                   <Typography variant="body1" noWrap>
                     {userData.userName || user.userName}
                   </Typography>
+                  {/* {user.userName == userData.userName && !userData.verified && <RazorpayPayment />}
+                  {userData.verified && <VerifiedIcon color='primary' fontSize='small' className='ml-1' />} */}
+                  {isVerifiedWithinYear ? (
+                    <VerifiedIcon color='primary' fontSize='small' className='ml-1' />
+                  ) : (
+                    user.userName === userData.userName && <RazorpayPayment />
+                  )}                 
+                  {/* <RazorpayPayment />  */}
                 </Box>
                 <Box>
                   <Typography>{userData.bio || user.bio}</Typography>

@@ -62,7 +62,7 @@ function SideBar() {
                         <ListItemIcon>
                             <SupervisorAccountIcon color='primary' />
                         </ListItemIcon>
-                        <ListItemText primary={"CircleSync"} />
+                        <ListItemText primary={"Connect sync"} />
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>

@@ -37,7 +37,6 @@ function Signup() {
 
   const submit = async (values) => {
     try {
-      console.log(values)
       await new Promise(res => setTimeout(() => { res() }, 500))
       const response = await userAxios.post(userApi.registerUser, values)
       const data = response.data
@@ -46,8 +45,9 @@ function Signup() {
       await new Promise(res => setTimeout(() => { res() }, 500))
       navigate(`/otp?email=${data.user.email}&userName=${data.user.userName}`)
     } catch (error) {
-      if (error.response && error.response.data.error) {
-        toast.error(error.response.data.error);
+      if (error.response && error.response.data.message) {
+        console.log(error.response)
+        toast.error(error.response.data.message);
       }
     }
   }
@@ -74,8 +74,7 @@ function Signup() {
     }
   }
 
-  const handleKeyPress = (event, submitForm) => {
-    console.log('inside handlePResss')
+  const handleKeyPress = (event, submitForm) => {   
     if (event.key == 'Enter') {
       console.log('enter')      
       event.preventDefault();

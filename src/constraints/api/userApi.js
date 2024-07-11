@@ -32,6 +32,7 @@ export default{
     getNotification:'/notification',
     sharedPost:'/chat/sharedPost',
     savedPost:'/savedPost',
-    getSavedPosts:'/getSavedPosts'
+    getSavedPosts:'/getSavedPosts',
+    verifiedTag:"/verifiedTag"
 
 }

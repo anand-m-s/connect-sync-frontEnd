@@ -14,6 +14,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 import Skeleton from '@mui/material/Skeleton';
 import CommentIcon from '@mui/icons-material/Comment';
+import PropTypes from 'prop-types';
 
 const style = {
     position: 'fixed',
@@ -25,7 +26,7 @@ const style = {
     boxShadow: 22,
     p: 4,
     borderRadius: 6,
-    
+
 };
 
 const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
@@ -43,6 +44,7 @@ const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const menuOpen = Boolean(anchorEl);
     const dispatch = useDispatch();
+
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -283,5 +285,12 @@ const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
         </>
     );
 };
+
+PostModal.propTypes = {
+    isOpen: PropTypes.bool,
+    onRequestClose: PropTypes.func,
+    postId: PropTypes.string,
+    determineUser: PropTypes.string
+}
 
 export default PostModal;

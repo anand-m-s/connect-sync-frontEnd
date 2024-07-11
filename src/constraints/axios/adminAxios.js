@@ -19,21 +19,25 @@ adminAxios.interceptors.request.use(config => {
   return config
 })
 
-adminAxios.interceptors.response.use((response) => {
-  return response;
-}, (error) => {
-  if (error.response) {
-    // The request was made and the server responded with a status code
-    // that falls out of the range of 2xx
-    console.error("Response Error:", error.response.data);
-    console.error("Status Code:", error.response.status);
-    console.error("Headers:", error.response.headers);
-  } else if (error.request) {
-    // The request was made but no response was received
-    console.error("Request Error:", error.request);
-  } else {
-    // Something happened in setting up the request that triggered an Error
-    console.error("Error:", error.message);
+
+adminAxios.interceptors.response.use(
+  response => response,
+  async error => {
+      const originalRequest = error.config;
+      if (error.response && error.response.status === 401 && error.response.data.message === "Token expired") {
+          try {           
+              const response = await axios.post(`${adminBaseUrl}/refresh-token`, {}, { withCredentials: true });           
+              localStorage.setItem('adminToken', response.data.accessToken);           
+              const newAccessToken = response.data.accessToken;
+              adminAxios.defaults.headers.common['Authorization'] = `Bearer ${newAccessToken}`;
+              originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+              return adminAxios(originalRequest);
+          } catch (refreshError) {
+              console.error("Refresh Token Error:", refreshError);           
+              return Promise.reject(refreshError);
+          }
+      }
+
+      return Promise.reject(error);
   }
-  return Promise.reject(error);
-});
+);

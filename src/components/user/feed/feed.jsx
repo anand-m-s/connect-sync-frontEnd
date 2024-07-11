@@ -7,6 +7,7 @@
   import SkeletonLoading from '../../common/skeltonLoading';
   import { Parallax } from 'react-parallax';
   import InfiniteScroll from 'react-infinite-scroll-component'
+import { useSelector } from 'react-redux';
   // import GradientLoader from '../../common/GradientCircularProgress';
 
   function Feed() {
@@ -14,6 +15,7 @@
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const newPost = useSelector((state) => state.userAuth.newPost);
 
     const fetchData = async () => {
       try {
@@ -21,7 +23,6 @@
         console.log(page)
         const res = await userAxios.get(`${userApi.userFeedPost}?perPage=3&page=${page}`);
         const newData = res.data;
-        console.log(newData)
         setPostData((prev) => [...prev, ...newData]);
         setHasMore(newData.length > 0)
         setPage((prev) => prev + 1);
@@ -33,7 +34,7 @@
     };
     useEffect(() => {
       fetchData();
-    }, []);
+    }, [newPost]);
     return (
       <Box
         flex={5}
@@ -81,9 +82,10 @@
                     location={post.location}
                     description={post.description}
                     saved={post.isSaved}
+                    verifiedExp={post.verifiedExp}
                   />
                 </div>
-              //  </Parallax>
+                // </Parallax>
             ))}
           </InfiniteScroll>
 

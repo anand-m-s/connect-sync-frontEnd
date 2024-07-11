@@ -65,30 +65,3 @@ export const setupInterceptors = (navigate, dispatch, logoutAction, toast) => {
 };
 
 
-// export const setupInterceptors = (navigate, dispatch, logoutAction, toast) => {
-//   userAxios.interceptors.response.use(
-//     (response) => {
-//       return response;
-//     },
-//     (error) => {
-//       if (error.response) {
-//         console.error("Response Error:", error.response.data);
-//         console.error("Status Code:", error.response.status);
-//         console.error("Headers:", error.response.headers);
-
-//         if (error.response.data.message === 'User Is Blocked') {
-//           dispatch(logoutAction());
-//           toast.error('User is blocked');
-//           navigate('/login');
-//         }
-//       } else if (error.request) {
-//         console.error("Request Error:", error.request);
-//       } else {
-//         console.error("Error:", error.message);
-//       }
-//       return Promise.reject(error);
-//     }
-//   );
-// };
-
-

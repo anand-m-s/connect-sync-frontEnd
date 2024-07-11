@@ -37,32 +37,16 @@ function Login() {
   });
 
 
-  const submit =  (values) => {
-    try {
-      // await new Promise(res => setTimeout(() => { res() }, 500))
-      const user = userAxios.post(userApi.loginUser, values)
-      .then((res)=>{
-        
-      })
-      // console.log(user.data)
-      toast.success('Login success')
-      // await new Promise(res => setTimeout(() => { res() }, 1000))
-      dispatch(setUserCredentials(user.data))
-      navigate('/home')
-    } catch (error) {
-      if (error.response && error.response.data.error) {
-        toast.error(error.response.data.error);
-      }
-    }
-
-  }
-  // const submit = async (values) => {
+  // const submit =  (values) => {
   //   try {
-  //     await new Promise(res => setTimeout(() => { res() }, 500))
-  //     const user = await userAxios.post(userApi.loginUser, values)
+  //     // await new Promise(res => setTimeout(() => { res() }, 500))
+  //     const user = userAxios.post(userApi.loginUser, values)
+  //     .then((res)=>{
+        
+  //     })
   //     // console.log(user.data)
   //     toast.success('Login success')
-  //     await new Promise(res => setTimeout(() => { res() }, 1000))
+  //     // await new Promise(res => setTimeout(() => { res() }, 1000))
   //     dispatch(setUserCredentials(user.data))
   //     navigate('/home')
   //   } catch (error) {
@@ -72,6 +56,22 @@ function Login() {
   //   }
 
   // }
+  const submit = async (values) => {
+    try {
+      await new Promise(res => setTimeout(() => { res() }, 500))
+      const user = await userAxios.post(userApi.loginUser, values)
+      // console.log(user.data)
+      toast.success('Login success')
+      await new Promise(res => setTimeout(() => { res() }, 1000))
+      dispatch(setUserCredentials(user.data))
+      navigate('/home')
+    } catch (error) {
+      if (error.response && error.response.data.error) {
+        toast.error(error.response.data.error);
+      }
+    }
+
+  }
 
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     try {

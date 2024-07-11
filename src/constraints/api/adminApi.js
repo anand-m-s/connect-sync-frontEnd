@@ -3,5 +3,7 @@ export default{
     getUserData:'/fetchUserData',
     blockunblock:'/block',
     getReport:'/getReport',
-    blockPost:'/blockReportedPost'
+    blockPost:'/blockReportedPost',
+    getPostData:'/getPostData',
+    getReportData:'/getReportData'
 }

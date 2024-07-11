@@ -23,6 +23,9 @@ const SocketConn = () => {
     }, [user, socket]);
 
     const handleClose = () => {
+        if (callerData) {
+            socket.emit('call-declined', { roomId: callerData.roomId, userId: user.id });
+        }
         setIncomingCall(false);
         setShowModal(false);
     };
@@ -61,11 +64,11 @@ const SocketConn = () => {
         toast.info(`${liker} liked your post`);
     }
     const handleCommentNotification = ({ postId, commentedBy, postOwnerId }) => {
-            console.log(commentedBy)
+        console.log(commentedBy)
         toast.info(`${commentedBy} commented on your post`);
     }
     const handleFollowersNotification = ({ followedBy }) => {
-            console.log(followedBy)
+        console.log(followedBy)
         toast.info(`${followedBy} started following you`);
     }
     useEffect(() => {
@@ -88,27 +91,30 @@ const SocketConn = () => {
             })
             socket.on('webrtc-offer', handleIncomingCall);
             socket.on("connected", (data) => {
-                console.log(socket, "vannuuuuu")
+                // console.log(socket, "vannuuuuu")
             })
             socket.on('liked', handleLikeNotification);
-            socket.on('commented',handleCommentNotification)
-            socket.on('followers',handleFollowersNotification)
+            socket.on('commented', handleCommentNotification)
+            socket.on('followers', handleFollowersNotification)
             socket.on('user-connected', handleUserConnected);
             socket.on('user-disconnected', handleUserDisconnected);
             socket.on('current-online-users', handleCurrentOnlineUsers);
+            socket.on('call-declined', (data) => {
+                console.log(`Call declined by user`);
+                toast.info('call declined')
+               
+            });
 
-
-
-            // window.addEventListener('beforeunload', handleBeforeUnload);
         }
         return () => {
-            // window.removeEventListener('beforeunload', handleBeforeUnload);
+        
             socket?.off('video-call');
             socket?.off('webrtc-offer', handleIncomingCall);
             socket?.off('user-connected', handleUserConnected);
             socket?.off('liked', handleLikeNotification);
-            socket?.off('commented',handleCommentNotification)
+            socket?.off('commented', handleCommentNotification)
             socket?.off('user-disconnected', handleUserDisconnected);
+            socket?.off('call-declined');
         };
     }, [socket])
 

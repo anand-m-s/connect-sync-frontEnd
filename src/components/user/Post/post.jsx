@@ -25,9 +25,10 @@ import { ChatState } from '../../../context/ChatProvider';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import { toast } from 'sonner';
+import PropTypes from 'prop-types';
+import VerifiedIcon from '@mui/icons-material/Verified';
 
-
-function Post({ userName, profilePic, imageUrl, location, description, postId, userId, comments, likes, saved }) {
+const Post = ({ userName, profilePic, imageUrl, location, description, postId, userId, comments, likes, saved, verifiedExp }) => {
     const theme = useTheme();
     const { socket } = useSocket()
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -40,6 +41,12 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const open = Boolean(anchorEl);
     const { handleOpen, setSource } = useModal()
     const { setSharedPost, sharedPost } = ChatState()
+
+
+    const oneYearInMilliseconds = 365 * 24 * 60 * 60 * 1000;
+    const verifiedExpDate = new Date(verifiedExp);
+    const isVerifiedWithinYear = (new Date() - verifiedExpDate) < oneYearInMilliseconds;
+
     const handleCommentClick = () => {
         setDrawerOpen((prev) => !prev);
     };
@@ -47,8 +54,6 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
     const handleDrawerClose = () => {
         setDrawerOpen(false);
     };
-
-
 
     useEffect(() => {
         if (drawerOpen) {
@@ -132,10 +137,12 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                         backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
                     }}
                     avatar={
+
                         <Avatar src={profilePic} sx={{ bgcolor: "skyblue", cursor: 'pointer' }} aria-label="recipe">
                             {userName.charAt(0)}
                         </Avatar>
                     }
+
                     action={
                         <ClickAwayListener onClickAway={handleClose}>
                             <div>
@@ -165,7 +172,10 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
                             </div>
                         </ClickAwayListener>
                     }
-                    title={<Box sx={{ cursor: 'pointer' }} component={Link} to={`/profile?userId=${userId}`}>{userName}</Box>}
+                    title={<Box className='flex items-center ' sx={{ cursor: 'pointer' }} component={Link} to={`/profile?userId=${userId}`}>
+                        {userName} {isVerifiedWithinYear &&
+                            <VerifiedIcon color='primary' fontSize='18' className='ml-1' />}
+                    </Box>}
                     subheader={location}
                 />
                 <Box
@@ -229,6 +239,21 @@ function Post({ userName, profilePic, imageUrl, location, description, postId, u
             {/* <SearchComponent source="chat" /> */}
         </Box>
     );
+}
+
+
+Post.propTypes = {
+    userName: PropTypes.string,
+    profilePic: PropTypes.string,
+    imageUrl: PropTypes.array,
+    location: PropTypes.string,
+    description: PropTypes.string,
+    postId: PropTypes.string,
+    userId: PropTypes.string,
+    comments: PropTypes.array,
+    likes: PropTypes.array,
+    saved: PropTypes.bool,
+    verifiedExp: PropTypes.string
 }
 
 export default Post;
