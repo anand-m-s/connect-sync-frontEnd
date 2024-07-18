@@ -8,7 +8,7 @@ export const ModalProvider = ({ children }) => {
         create: false,
         search: false,
     });
-    const [source,setSource]=useState()
+    const [source,setSource]=useState("")
 
     const handleOpen = (modalName) => setModals((prev) => ({ ...prev, [modalName]: true }));
     const handleClose = (modalName) => setModals((prev) => ({ ...prev, [modalName]: false }));

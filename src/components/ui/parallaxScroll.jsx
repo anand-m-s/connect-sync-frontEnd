@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useRef } from "react";
 import { useScroll, useTransform, motion } from "framer-motion";
 import { cn } from "../../utils/cn";

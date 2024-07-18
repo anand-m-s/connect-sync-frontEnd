@@ -83,7 +83,7 @@ function ProfileFeed() {
   const [followers, setFollowers] = useState(false)
   const [following, setFollowing] = useState(false)
   const [connectionData, setConnectionData] = useState([])
-  const [currentUserConnection, setCurrentUserConnection] = useState()
+  const [currentUserConnection, setCurrentUserConnection] = useState(null)
   const [followersCount, setFollowersCount] = useState(0)
   const [followingCount, setFollowingCount] = useState(0)
   const followersRef = useRef(null)

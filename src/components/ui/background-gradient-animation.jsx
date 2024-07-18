@@ -1,4 +1,3 @@
-"use client";
 import React from 'react';
 import { cn } from '../../utils/cn'
 import { useEffect, useRef, useState } from "react";
@@ -18,21 +17,6 @@ export const BackgroundGradientAnimation = ({
   className,
   interactive = true,
   containerClassName,
-}: {
-  gradientBackgroundStart?: string;
-  gradientBackgroundEnd?: string;
-  firstColor?: string;
-  secondColor?: string;
-  thirdColor?: string;
-  fourthColor?: string;
-  fifthColor?: string;
-  pointerColor?: string;
-  size?: string;
-  blendingValue?: string;
-  children?: React.ReactNode;
-  className?: string;
-  interactive?: boolean;
-  containerClassName?: string;
 }) => {
   const interactiveRef = useRef<HTMLDivElement>(null);
 
@@ -74,7 +58,7 @@ export const BackgroundGradientAnimation = ({
     move();
   }, [tgX, tgY]);
 
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseMove = (event) => {
     if (interactiveRef.current) {
       const rect = interactiveRef.current.getBoundingClientRect();
       setTgX(event.clientX - rect.left);

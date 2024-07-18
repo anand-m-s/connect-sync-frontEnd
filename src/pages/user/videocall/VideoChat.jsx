@@ -39,7 +39,6 @@ const VideoChat = () => {
     const { incomingCall, setIncomingCall, callerData, setCallerData } = useCall();
     const user = useSelector((state) => state.userAuth.userInfo);
     const [remoteUser,setRemoteUser] = useState('')
-    const accessRef = useRef()
     const userId = user.id;
     const { socket } = useSocket()
 

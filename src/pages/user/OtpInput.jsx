@@ -119,7 +119,7 @@ function OtpInput({
       setSubmitting(false);
     }
   };
-  const ref = useRef();
+  const ref = useRef(null);
   useEffect(() => {
     if (ref.current) {
       ref.current.focus();

@@ -50,7 +50,7 @@ export default function BasicModal() {
 
   const user = useSelector((state) => state.userAuth.userInfo)
 
-  const inputRef = useRef()
+  const inputRef = useRef(null)
   const formRef = useRef(null)
   // const { open, handleClose } = useModal();
   const {modals,handleClose} = useModal()
