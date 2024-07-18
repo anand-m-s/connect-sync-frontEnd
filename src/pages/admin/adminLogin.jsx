@@ -17,7 +17,6 @@ function Login() {
 
   const selectAdmin = (state) => state.adminAuth.adminInfo;
   const admin = useSelector(selectAdmin);
-  console.log(admin)
 
   useEffect(() => {
     if (admin) {

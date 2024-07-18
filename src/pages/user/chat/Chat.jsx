@@ -11,7 +11,8 @@ function Chat() {
       <Box >
         <Stack direction="row" spacing={1}
           justifyContent={'space-between'}
-          divider=<Divider orientation="vertical" flexItem />>
+          // divider=<Divider orientation="vertical" flexItem />
+          >
           <SideBar/>
           <ChatComponent />
         </Stack>

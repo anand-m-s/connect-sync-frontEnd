@@ -9,7 +9,6 @@ import ListItemText from '@mui/material/ListItemText';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import FlagIcon from '@mui/icons-material/Flag';
-import AnalyticsIcon from '@mui/icons-material/Analytics';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
@@ -152,7 +151,6 @@ function SideBar() {
 }
 
 export default SideBar
-
 
 
 

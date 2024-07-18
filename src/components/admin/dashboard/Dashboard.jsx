@@ -181,9 +181,9 @@ export default function Component() {
                 <Box style={{ width: '400px', margin: '0 auto' }}>
                     <Doughnut data={reportChartData} options={options} />
                 </Box>
-                <Box style={{ width: '400px', margin: '0 auto' }}>
+                {/* <Box style={{ width: '400px', margin: '0 auto' }}>
                     <Doughnut data={reportChartData} options={options} />
-                </Box>
+                </Box> */}
             </Box>
         </Box>
     );

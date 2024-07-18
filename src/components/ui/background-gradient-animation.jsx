@@ -18,7 +18,7 @@ export const BackgroundGradientAnimation = ({
   interactive = true,
   containerClassName,
 }) => {
-  const interactiveRef = useRef<HTMLDivElement>(null);
+  const interactiveRef = useRef(null);
 
   const [curX, setCurX] = useState(0);
   const [curY, setCurY] = useState(0);

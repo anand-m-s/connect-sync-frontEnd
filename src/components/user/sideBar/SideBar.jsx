@@ -5,7 +5,7 @@ import Navbar from '../Navbar/Navbar';
 function SideBar() {
     return (
         <Box
-            flex={1}
+            flex={.8}
             // padding={1}
         >
             <Box sx={{ position: 'sticky', top: 0 }}>
