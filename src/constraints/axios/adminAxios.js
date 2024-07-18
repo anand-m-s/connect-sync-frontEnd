@@ -19,7 +19,7 @@ adminAxios.interceptors.request.use(config => {
   return config
 })
 
-
+export const setupInterceptors = (navigate,dispatch,logout,toast) => {
 adminAxios.interceptors.response.use(
   response => response,
   async error => {
@@ -33,7 +33,9 @@ adminAxios.interceptors.response.use(
               originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
               return adminAxios(originalRequest);
           } catch (refreshError) {
-              console.error("Refresh Token Error:", refreshError);           
+              console.error("Refresh Token Error:", refreshError);
+              dispatch(logout())
+              toast.info('Session expired')
               return Promise.reject(refreshError);
           }
       }
@@ -41,3 +43,4 @@ adminAxios.interceptors.response.use(
       return Promise.reject(error);
   }
 );
+}

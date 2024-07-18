@@ -3,9 +3,10 @@ import { Box, Typography, Button, Modal } from '@mui/material';
 import { useCall } from '../../../context/CallContext';
 import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../../../services/socket';
-import { useDispatch, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import { useOnlineUsers } from '../../../context/OnlineUsers';
 import { toast, Toaster } from 'sonner';
+
 
 const SocketConn = () => {
     const { setIncomingCall, callerData, setCallerData, incomingCall } = useCall();
@@ -13,8 +14,10 @@ const SocketConn = () => {
     const user = useSelector((state) => state.userAuth.userInfo)
     const navigate = useNavigate();
     const { socket } = useSocket()
-    const { setOnlineUsers } = useOnlineUsers()
+    const { setOnlineUsers, setNotificationCount, setNotification, notification } = useOnlineUsers()
 
+    // console.log(notification)
+   
     //===socket connection===
     useEffect(() => {
         if (user && socket) {
@@ -60,7 +63,27 @@ const SocketConn = () => {
         });
     };
 
-    const handleLikeNotification = ({ postId, liker, postOwnerId }) => {
+
+    const handleLikeNotification = ({ postId, liker, postOwnerId, profilePic, createdAt }) => {
+        const data = {
+            user: postOwnerId,
+            follower: {
+                profilePic,
+                userName: liker
+            },
+            isRead: false,
+            content: 'liked your post',
+            createdAt,
+        }
+         
+        setNotification((prevNotifications) => {           
+            return [...prevNotifications, data];
+        })
+ 
+        setNotificationCount((prev) => {
+            console.log(prev)
+            return prev + 1
+        })
         toast.info(`${liker} liked your post`);
     }
     const handleCommentNotification = ({ postId, commentedBy, postOwnerId }) => {
@@ -102,12 +125,12 @@ const SocketConn = () => {
             socket.on('call-declined', (data) => {
                 console.log(`Call declined by user`);
                 toast.info('call declined')
-               
+
             });
 
         }
         return () => {
-        
+
             socket?.off('video-call');
             socket?.off('webrtc-offer', handleIncomingCall);
             socket?.off('user-connected', handleUserConnected);

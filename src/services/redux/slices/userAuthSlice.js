@@ -8,6 +8,7 @@ const initialState = {
     newPost: null,
 
 
+
 };
 
 const userAuthSlice = createSlice({
@@ -15,7 +16,7 @@ const userAuthSlice = createSlice({
     initialState,
     reducers: {
         setUserCredentials: (state, action) => {   
-            console.log(action.payload)      
+            // console.log(action.payload)      
             state.userInfo = action.payload.user
             localStorage.setItem('userInfo', JSON.stringify(action.payload.user))
             localStorage.setItem('userToken', action.payload.accessToken)
@@ -41,6 +42,7 @@ const userAuthSlice = createSlice({
         resetNewPost: (state) => {
             state.newPost = null;
         },
+   
     
     }
 })
@@ -52,5 +54,6 @@ export const {
     setEditedUserCredentials,
     addUserPost,
     resetNewPost,
+
 } = userAuthSlice.actions
 export default userAuthSlice.reducer

@@ -3,13 +3,16 @@ import Box from '@mui/material/Box';
 import { AnimatedTooltip } from '../../ui/animatedToolTip';
 import { useOnlineUsers } from '../../../context/OnlineUsers';
 import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
-import LoaderCore from '../notification/Notification';
+import Notifications from '../notification/Notification';
 import Collapse from '@mui/material/Collapse';
 import { motion } from 'framer-motion';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import userApi from '../../../constraints/api/userApi';
 import { useTheme } from '@emotion/react';
-import { ClickAwayListener } from '@mui/material';
+import { Badge, ClickAwayListener } from '@mui/material';
+import {  MeditationCard } from '../meditation/ExploreMeditation';
+
+
 
 
 
@@ -19,42 +22,64 @@ const shakeAnimation = {
 };
 
 function RightBar() {
-    const { onlineUsers } = useOnlineUsers();
-    const [loading, setLoading] = useState(false);
-    const [checked, setChecked] = useState(false);
-    const [notification, setNotification] = useState([])
+    const { onlineUsers, notificationCount, setNotificationCount, notification, setNotification } = useOnlineUsers()
+    const [checked, setChecked] = useState(false)
     const theme = useTheme()
 
     const handleChange = () => {
         setChecked((prev) => !prev);
-    };
+        // if (checked) {
+        //     setNotificationCount(0)
+        // }
+    }
+
 
     const fetchNotifications = async () => {
-        try {         
+        try {
             const res = await userAxios.get(userApi.getNotification)
             // console.log(res.data)
             setNotification(res.data.data)
+            setNotificationCount(res.data.newNotifications)
         } catch (error) {
             console.log(error)
         }
     }
     // console.log(notification)
 
+    const markNotificationAsRead = async () => {
+        await userAxios.put(userApi.markNotificationAsRead)
+    }
+
+    useEffect(() => {
+        return () => {
+            if (checked) {
+                markNotificationAsRead()
+                setNotificationCount(0)
+                setNotification((prevNotificatoins) => {
+                    return prevNotificatoins.map((noti) => ({
+                        ...noti,
+                        isRead: true
+                    }));
+                });
+            }
+        }
+    }, [checked])
+
     useEffect(() => {
         fetchNotifications()
-    }, [checked])
+    }, [])
+
 
     const closeNotification = () => {
         setChecked(false)
     }
 
     return (
-        <Box className='flex justify-center' flex={1.5}
+        <Box className='flex justify-center' flex={1.8}
         >
             <ClickAwayListener onClickAway={closeNotification}>
                 <Box
                     sx={{
-                        // zIndex: 1,
                         marginTop: 5,
                         position: 'fixed',
                         padding: 1
@@ -70,22 +95,30 @@ function RightBar() {
                             variants={shakeAnimation}
                             className='flex items-center justify-center'
                         >
-                            Notification
-                            <NotificationsNoneOutlinedIcon color={!checked ? 'disabled' : 'error'} />
+                            <Badge badgeContent={notificationCount} color="primary">
+                                Notification
+                                <NotificationsNoneOutlinedIcon color={!checked ? 'disabled' : 'error'} />
+                            </Badge>
                         </motion.div>
                     </Box>
                     <Collapse in={checked} className='mt-1 p-2 rounded-xl'
                     >
-                        {checked && <LoaderCore loadingStates={notification} value={0} />}
+                        {checked && <Notifications loadingStates={notification} value={0} />}
                     </Collapse>
                 </Box>
             </ClickAwayListener>
-            {!checked && <Box className='fixed' sx={{ marginTop: '7rem' }} >
-                <Box className='flex justify-center items-center text-blue-400 font-semibold text-lg m-3'>Online</Box>
-                <Box className="flex flex-row items-center justify-center w-full">
-                    <AnimatedTooltip items={onlineUsers} />
+            {!checked &&(
+                <Box className='fixed' sx={{ marginTop: '7rem' }} >
+                    <Box className='flex justify-center items-center text-blue-400 font-semibold text-lg m-3'>Online</Box>
+                    <Box className="flex flex-row items-center justify-center w-full">
+                        <AnimatedTooltip items={onlineUsers} />
+                    </Box>
+                    <Box>
+                    <MeditationCard/>
+                    </Box>
                 </Box>
-            </Box>}
+                
+            )}
         </Box>
     );
 }

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Toaster, toast } from 'sonner';
 import Box from '@mui/material/Box';
 import { Stack, useMediaQuery, useTheme } from '@mui/material';
@@ -9,16 +9,19 @@ import Divider from '@mui/material/Divider';
 
 
 
-function Home() {
 
+function Home() {
+  
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm' && 'md'));
+
+
+
 
   return (
     <>
       <Toaster />
-      <Box >
-        {/* <Box >asdfsadf</Box> */}
+      <Box >        
         <Stack direction='row'
           justifyContent={'space-between'}
           // divider={isSmallScreen ? <Divider orientation="vertical" flexItem /> : null}

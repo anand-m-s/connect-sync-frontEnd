@@ -66,13 +66,12 @@ const Post = ({ userName, profilePic, imageUrl, location, description, postId, u
     const handleLike = async (postId) => {
         try {
             const res = await userAxios.post(`${userApi.toggleLike}?postId=${postId}`);
-            console.log(res.data);
             const postOwnerId = res.data.user._id
-            console.log(postOwnerId)
             if (res.data.action === 'Liked') {
+                const createdAt = new Date().toISOString()
                 setIsLiked(true)
                 if (socket && user.id !== postOwnerId) {
-                    socket.emit('like', { postId, liker: user.userName, postOwnerId });
+                    socket.emit('like', { postId, liker: user.userName, postOwnerId,profilePic:user.profilePic,createdAt});
                 }
             } else {
                 setIsLiked(false)

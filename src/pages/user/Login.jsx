@@ -59,8 +59,7 @@ function Login() {
   const submit = async (values) => {
     try {
       await new Promise(res => setTimeout(() => { res() }, 500))
-      const user = await userAxios.post(userApi.loginUser, values)
-      // console.log(user.data)
+      const user = await userAxios.post(userApi.loginUser, values)      
       toast.success('Login success')
       await new Promise(res => setTimeout(() => { res() }, 1000))
       dispatch(setUserCredentials(user.data))

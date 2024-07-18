@@ -5,5 +5,8 @@ export default{
     getReport:'/getReport',
     blockPost:'/blockReportedPost',
     getPostData:'/getPostData',
-    getReportData:'/getReportData'
+    getReportData:'/getReportData',
+    getSignedUrl:'/getSignedUrl',
+    createCourse:'/createCourse',
+    getCourses:'/getCourses'
 }

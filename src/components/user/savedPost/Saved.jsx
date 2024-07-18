@@ -9,7 +9,6 @@ import { motion } from 'framer-motion'
 
 export default function SavedPostContainer() {
 
-
     const [saved, setSaved] = useState([])
     const fetchSavedPost = async () => {
         try {
@@ -49,8 +48,7 @@ export default function SavedPostContainer() {
         >
             <Box className="max-w-6xl mx-auto">
                 <Box className="mb-8">
-                    <Typography variant="h4" className="text-3xl font-bold">Saved Posts</Typography>
-                    {/* <Typography className="text-muted-foreground">Your saved posts from across the platform.</Typography> */}
+                    <Typography variant="h4" className="text-3xl font-bold">Saved Posts</Typography>                   
                 </Box>
                 <Grid container spacing={3}>
                     {saved.map((post, index) => (

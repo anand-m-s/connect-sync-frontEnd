@@ -22,8 +22,9 @@ import ClickAwayListener from '@mui/material/ClickAwayListener';
 import { useSocket } from '../../../services/socket';
 import RazorpayPayment from '../razorPay/RazorPay';
 import VerifiedIcon from '@mui/icons-material/Verified';
-
-
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const style = {
   position: 'absolute',
@@ -67,6 +68,7 @@ function ProfileFeed() {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = useState(false);
   const [load, setLoad] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [userData, setUserData] = useState({
     bio: user.bio || '',
     userName: user.userName || '',
@@ -88,6 +90,15 @@ function ProfileFeed() {
   const followingRef = useRef(null)
   const navigate = useNavigate()
   const { socket } = useSocket()
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
 
 
@@ -106,19 +117,33 @@ function ProfileFeed() {
   const verifiedExpDate = new Date(userData.verifiedExp);
   const isVerifiedWithinYear = (new Date() - verifiedExpDate) < oneYearInMilliseconds;
 
+  const handleBlock = async() => {
+    const res = await userAxios.post(`${userApi.blockUser}?id=${determineUser}`)
+    if(res.status==200){
+      toast.info(res.data.message)
+      navigate('/home')
+    }
+    setAnchorEl(null);
+  }
+
 
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [postRes, userRes, followData, currentUserConnection] = await Promise.all([
+        const [postRes, userRes, followData, currentUserConnection,isBlocked] = await Promise.all([
           userAxios.get(`${userApi.getUserPost}?id=${determineUser}`),
           userAxios.get(`${userApi.getUserDetails}?id=${determineUser}`),
           userAxios.get(`${userApi.following}?userId=${determineUser}`),
-          userAxios.get(`${userApi.following}?userId=${user.id}`)
+          userAxios.get(`${userApi.following}?userId=${user.id}`),
+          userAxios.get(`${userApi.isBlock}?id=${determineUser}`)          
         ]);
-
-
+        console.log(isBlocked.data.isBlocked)
+        
+        if(isBlocked.data.isBlocked.isBlocked==true){
+          toast.error(isBlocked.data.isBlocked.message)
+          navigate('/home')
+        }
         setConnectionData(followData.data.data)
         setCurrentUserConnection(currentUserConnection.data.data)
         dispatch(setUserPosts(postRes.data.post));
@@ -153,11 +178,7 @@ function ProfileFeed() {
       }
     };
     fetchData();
-    return () => {
-      // Cancel requests if needed 
-      // const source = axios.CancelToken.source();
-      // source.cancel('Operation canceled by the user.');
-    };
+
   }, [determineUser, newPost, isFollowing, followersCount]); //==================need to optimize this isFollowing
   // todo *inverted problem====================
   // optimize differentiate the fetches accordingly====================
@@ -281,7 +302,7 @@ function ProfileFeed() {
     setFollowing(false)
   }, [determineUser])
 
-  const handleFollowChange = (userId, isFollowing) => {
+  const handleFollowChange = () => {
     if (isFollowing) {
 
       setFollowersCount(prevCount => prevCount + 1);
@@ -309,29 +330,52 @@ function ProfileFeed() {
         <Item square elevation={0}>
           <Box sx={{ padding: 1 }} >
             <Box className="flex flex-wrap">
+              {user.id !== determineUser && <Box className='flex justify-end w-full mt-4 cursor-pointer'>
+                <Box
+                  id="basic-button"
+                  aria-controls={open ? 'basic-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={open ? 'true' : undefined}
+                  onClick={handleClick}
+                >
+                  <MoreVertIcon />
+                </Box>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    'aria-labelledby': 'basic-button',
+                  }}
+                >
+                  <MenuItem onClick={handleBlock}>Block</MenuItem>
+                </Menu>
+              </Box>}
               <Avatar
                 src={userData.profilePic || user.profilePic}
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
-              <Box className="mt-10">
-                <Box className='flex items-center'>
+              <Box className="mt-10 ">
+                <Box className='flex items-center '>
                   <Typography variant="body1" noWrap>
                     {userData.userName || user.userName}
                   </Typography>
-                  {/* {user.userName == userData.userName && !userData.verified && <RazorpayPayment />}
-                  {userData.verified && <VerifiedIcon color='primary' fontSize='small' className='ml-1' />} */}
+
                   {isVerifiedWithinYear ? (
                     <VerifiedIcon color='primary' fontSize='small' className='ml-1' />
                   ) : (
                     user.userName === userData.userName && <RazorpayPayment />
-                  )}                 
+                  )}
                   {/* <RazorpayPayment />  */}
                 </Box>
                 <Box>
                   <Typography>{userData.bio || user.bio}</Typography>
                 </Box>
+
               </Box>
             </Box>
+
             <Box sx={{ display: 'flex', justifyContent: 'space-around', marginBottom: 2, paddingBottom: 2, marginTop: 2 }}>
               <Box sx={{ textAlign: 'center' }}>
                 <Typography variant="h6">{posts.length}</Typography>

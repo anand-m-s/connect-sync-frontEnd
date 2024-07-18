@@ -33,6 +33,12 @@ export default{
     sharedPost:'/chat/sharedPost',
     savedPost:'/savedPost',
     getSavedPosts:'/getSavedPosts',
-    verifiedTag:"/verifiedTag"
+    verifiedTag:"/verifiedTag",
+    markNotificationAsRead:'/notificationAsRead',
+    getCourses:'/course/getCourses',
+    blockUser:'/blockUser',
+    isBlock:'isBlock',
+    getAllBLockedUsers:'/getAllBlockedUsers',
+    unblockUser:'/unblockUser'
 
 }

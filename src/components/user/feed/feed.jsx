@@ -19,8 +19,7 @@ import { useSelector } from 'react-redux';
 
     const fetchData = async () => {
       try {
-        await new Promise(res => setTimeout(res, 500));
-        console.log(page)
+        await new Promise(res => setTimeout(res, 500));      
         const res = await userAxios.get(`${userApi.userFeedPost}?perPage=3&page=${page}`);
         const newData = res.data;
         setPostData((prev) => [...prev, ...newData]);
@@ -56,21 +55,21 @@ import { useSelector } from 'react-redux';
             }
           >
             {postData.map((post, i) => (
-              // <Parallax
-              //   key={i}
-              //   blur={{ min: 0, max: 15 }}
-              //   bgImage={post.imageUrl[0]}
-              //   bgImageAlt={post.description}
-              //   strength={-400}
-              //   bgImageStyle={{ backgroundSize: 'cover', opacity: '1' }}
-              //   // style={{ margin: '4.8rem 0', borderRadius: '1rem' }}
-              //   style={{
-              //     margin: '4.8rem 0',
-              //     // padding:'4rem',
-              //     borderRadius: '1rem'
-              //   }}
-              // >
-                <div className="p-2 mt-9 ml-5  " key={post._id}>
+              <Parallax
+                key={i}
+                blur={{ min: 0, max: 15 }}
+                bgImage={post.imageUrl[0]}
+                bgImageAlt={post.description}
+                strength={-400}
+                bgImageStyle={{ backgroundSize: 'cover', opacity: '1' }}
+                // style={{ margin: '4.8rem 0', borderRadius: '1rem' }}
+                style={{
+                  margin: '4.8rem 0',
+                  // padding:'4rem',
+                  borderRadius: '1rem'
+                }}
+              >
+                <div className=" mt-9 ml-5  " key={post._id}>
                   <Post
                     comments={post.comments}
                     likes={post.likedUsers}
@@ -85,7 +84,7 @@ import { useSelector } from 'react-redux';
                     verifiedExp={post.verifiedExp}
                   />
                 </div>
-                // </Parallax>
+                </Parallax>
             ))}
           </InfiniteScroll>
 

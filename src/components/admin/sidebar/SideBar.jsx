@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom'
 import { logout } from '../../../services/redux/slices/adminAuthSlice';
 import { useDispatch } from 'react-redux';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 
 function SideBar() {
     const [state, setState] = React.useState({
@@ -55,8 +56,9 @@ function SideBar() {
             role="presentation"
             onClick={toggleDrawer(anchor, false)}
             onKeyDown={toggleDrawer(anchor, false)}
+            
         >
-            <List>
+            <List className='grid gap-3'>
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to={'/admin'}>
                         <ListItemIcon>
@@ -79,7 +81,7 @@ function SideBar() {
                         <ListItemIcon>
                             <ManageAccountsIcon color='primary' />
                         </ListItemIcon>
-                        <ListItemText primary={"UserManagment"} />
+                        <ListItemText primary={"User Managment"} />
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
@@ -91,11 +93,11 @@ function SideBar() {
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>
-                    <ListItemButton  >
+                    <ListItemButton component={Link} to={'/admin/addcourse'}>
                         <ListItemIcon>
-                            <AnalyticsIcon color='primary' />
+                            <SelfImprovementIcon color='primary' />
                         </ListItemIcon>
-                        <ListItemText primary={"Analayze"} />
+                        <ListItemText primary={"Course managment"} />
                     </ListItemButton>
                 </ListItem>
                 <Divider />
@@ -141,7 +143,7 @@ function SideBar() {
         <Box>
             {/* heading here */}
         </Box>
-            <Box className='mt-10'>
+            <Box className='mt-4'>
                 {list()}
 
             </Box>

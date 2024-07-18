@@ -136,7 +136,7 @@ const Navbar = () => {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
         >
-            <List>
+            <List className='grid gap-2'>
 
                 <ListItem disablePadding>
                     <ListItemButton onClick={toggleDrawer(true)}>
@@ -166,14 +166,14 @@ const Navbar = () => {
                         <ListItemText primary={"Search"} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
+                {/* <ListItem disablePadding>
                     <ListItemButton>
                         <ListItemIcon>
                             <ExploreOutlinedIcon color='info' />
                         </ListItemIcon>
                         <ListItemText primary={"Explore"} />
                     </ListItemButton>
-                </ListItem>
+                </ListItem> */}
                 <ListItem disablePadding>
                     <ListItemButton component={Link} to={'/chat'}>
                         <ListItemIcon>
@@ -224,13 +224,20 @@ const Navbar = () => {
                     onClose={handleClose}
                 >
                     <MenuItem
-                        component={Link} to={'/savedPost'}
-                        // onClick={handleLogout}
+                        component={Link} to={'/savedPost'}                    
                         sx={{
                             padding: '10px 60px',
                         }}
                     >
                         Saved
+                    </MenuItem>
+                    <MenuItem
+                        component={Link} to={'/blockedUsers'}                    
+                        sx={{
+                            padding: '10px 60px',
+                        }}
+                    >
+                        Blocked
                     </MenuItem>
                     <MenuItem
                         onClick={handleLogout}
@@ -325,7 +332,7 @@ const Navbar = () => {
                     {list()}
                 </Box>
             )}
-            {/* <SearchComponent /> */}
+            
             <SearchComponent />
             <BasicModal />
         </Box>

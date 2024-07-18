@@ -17,6 +17,7 @@ import { Toaster, toast } from 'sonner';
 import { adminAxios } from '../../../constraints/axios/adminAxios';
 import adminApi from '../../../constraints/api/adminApi';
 import { LockOutlined as LockIcon, CheckCircleOutlined as CheckIcon } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -93,18 +94,21 @@ function UserManagment() {
 
         >
             <Toaster richColors />
-            <h1 className='flex bg-black p-3 text-slate-50 justify-center '>User Managment</h1>
+            {/* <h1 className='flex bg-black p-3 text-slate-50 justify-center '>User Managment</h1> */}
+            <h1 className="text-xl font-bold p-7 shadow-sm">User Managment</h1>
 
 
-            <div className='flex justify-center m-5 items-center '>
+            <div className='flex justify-center m-5 items-center  '>
                 <TextField
                     type="text"
                     size='small'
                     variant='outlined'
                     label="Search by user name or email"
                     value={search}
+                    className='w-80'
                     onChange={(e) => setSearch(e.target.value)}
                 />
+                <SearchIcon className=" left-2.5 top-2.5 h-4 w-4 text-gray-500" />
             </div>
             <Box className='p-4'>
                 <TableContainer component={Paper}>
@@ -121,7 +125,7 @@ function UserManagment() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {filteredUser.length > 0 ? filteredUser.map((user, index) => {                              
+                            {filteredUser.length > 0 ? filteredUser.map((user, index) => {
                                 return (
                                     <StyledTableRow key={user._id}>
                                         <StyledTableCell align="left">{index + 1}</StyledTableCell>

@@ -4,7 +4,9 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { differenceInDays, format, isToday, isYesterday } from "date-fns";
 
-const LoaderCore = ({ loadingStates, value = 0 }) => {
+
+const Notifications = ({ loadingStates, value = 0 }) => {
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         if (isToday(date)) {
@@ -17,13 +19,15 @@ const LoaderCore = ({ loadingStates, value = 0 }) => {
         return `${daysAgo} day${daysAgo > 1 ? 's' : ''} ago`;
     };
 
+    const sortedLoadingStates = [...loadingStates].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+
     return (
         <Box
             className="flex relative justify-start max-w-xl mx-auto flex-col rounded-lg"
             sx={{
                 boxShadow: 24,
                 padding: 1,
-                maxHeight: '500px', 
+                maxHeight: '500px',
                 overflowY: 'auto',
                 '&::-webkit-scrollbar': {
                     width: '4px',
@@ -47,15 +51,15 @@ const LoaderCore = ({ loadingStates, value = 0 }) => {
                     No notifications yet
                 </Typography>
             ) : (
-                loadingStates.map((loadingState, index) => (
+                sortedLoadingStates.map((loadingState, index) => (
                     <motion.div
                         key={index}
                         className={cn("text-left flex gap-2 mb-4 p-1")}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.2 }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                        <Box sx={{ display: 'flex', gap: 2, mb: 0, width: '100%' }}>
+                        <Box sx={{ display: 'flex', gap: 2, mb: 0, width: '100%', background: !loadingState.isRead ? 'lightgrey' : 'none' }} className='rounded-md p-1'>
                             <Avatar src={loadingState.follower.profilePic}>{loadingState.follower.userName}</Avatar>
                             <Box sx={{ flexGrow: 1 }}>
                                 <Box className="flex justify-between items-center">
@@ -63,7 +67,7 @@ const LoaderCore = ({ loadingStates, value = 0 }) => {
                                         {loadingState.follower.userName.split(' ')[0] || loadingState.follower.userName}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary" sx={{ marginLeft: 'auto' }}>
-                                        {formatDate(loadingState.updatedAt)}
+                                        {formatDate(loadingState.createdAt)}
                                     </Typography>
                                 </Box>
                                 <Typography variant="body2" color="text.secondary" className="flex justify-start">
@@ -78,5 +82,5 @@ const LoaderCore = ({ loadingStates, value = 0 }) => {
     );
 };
 
-export default LoaderCore;
+export default Notifications;
 
