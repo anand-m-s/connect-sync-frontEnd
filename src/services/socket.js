@@ -6,7 +6,7 @@ export const useSocket = () => {
 
     useEffect(() => {
         if (!socket) {
-            const newSocket = io('http://localhost:3000');
+            const newSocket = io(import.meta.env.VITE_USER_BASE_URL);
             setSocket(newSocket);
         }
     }, [socket]);
