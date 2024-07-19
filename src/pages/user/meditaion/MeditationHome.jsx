@@ -42,14 +42,14 @@ export default function Meditation() {
 
     const fetchCourses = async () => {
         const res = await userAxios.get(userApi.getCourses)
-        console.log(res.data)
+        // console.log(res.data)
         setCourses(res.data.course)
     }
 
     useEffect(() => {
         fetchCourses()
     }, [])
-    console.log(courses)
+    // console.log(courses)
 
     const filteredCourses = useMemo(() => {
         if (selectedCategory === "All") {

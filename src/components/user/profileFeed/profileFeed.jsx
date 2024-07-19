@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles'
 import { ParallaxScroll } from '../../ui/parallaxScroll';
-import { Avatar, Button, ButtonBase, Divider, Grow, Slide, Typography, Zoom } from '@mui/material';
+import { Avatar, Backdrop, Button, ButtonBase, CircularProgress, Divider, Grow, Slide, Typography, Zoom } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import userApi from '../../../constraints/api/userApi';
@@ -68,7 +68,7 @@ function ProfileFeed() {
   const dispatch = useDispatch()
   const [openModal, setOpenModal] = useState(false);
   const [load, setLoad] = useState(false)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState({
     bio: user.bio || '',
     userName: user.userName || '',
@@ -138,7 +138,8 @@ function ProfileFeed() {
           userAxios.get(`${userApi.following}?userId=${user.id}`),
           userAxios.get(`${userApi.isBlock}?id=${determineUser}`)          
         ]);
-        console.log(isBlocked.data.isBlocked)
+        
+        
         
         if(isBlocked.data.isBlocked.isBlocked==true){
           toast.error(isBlocked.data.isBlocked.message)
@@ -175,6 +176,8 @@ function ProfileFeed() {
           toast.error(error.response.data.error);
         }
 
+      }finally {
+        setLoading(false)
       }
     };
     fetchData();
@@ -325,6 +328,12 @@ function ProfileFeed() {
       flex={5}
       p={2}
     >
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}        
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <Toaster richColors />
       <Stack spacing={1} >
         <Item square elevation={0}>

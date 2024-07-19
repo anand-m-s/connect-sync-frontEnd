@@ -39,7 +39,7 @@ export default function SearchComponent() {
                 const user = await userAxios.get(userApi.getAllUsers, {
                     params: { searchTerm: search }
                 })
-                console.log(user.data)
+                // console.log(user.data)
                 setUsers(user.data)
             } catch (error) {
                 console.error('Error fetching user datas:', error);
