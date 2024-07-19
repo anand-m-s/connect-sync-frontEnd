@@ -14,7 +14,7 @@ function Report() {
                     justifyContent={'space-between'}
                     divider=<Divider orientation="vertical" flexItem /> >
                     <Box
-                        flex={1}
+                        flex={1.2}
                     >
                         <SideBar />
 

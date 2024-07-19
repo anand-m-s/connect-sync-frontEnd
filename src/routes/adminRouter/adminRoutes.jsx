@@ -10,6 +10,7 @@ import { logout } from "../../services/redux/slices/adminAuthSlice";
 import { useDispatch } from "react-redux";
 import { toast, Toaster } from "sonner";
 import AddCourse from "../../pages/admin/addCourse";
+import { SidebarProvider } from "../../context/SideBarHighLight";
 
 
 
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
     return (
         <>
             <Toaster richColors />
+            <SidebarProvider>
             <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="" element={<AdminPrivateRoutes />}>
@@ -33,6 +35,7 @@ const AdminRoutes = () => {
                     <Route path="addcourse" element={<AddCourse />} />
                 </Route>
             </Routes>
+            </SidebarProvider>
         </>
     )
 }
