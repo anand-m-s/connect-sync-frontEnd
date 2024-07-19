@@ -193,6 +193,7 @@ const VideoChat = () => {
     const answerCall = async () => {
         setIncomingCall(false)
         if (callerData) {
+            console.log('inside this')
             await pc.current.setRemoteDescription(new RTCSessionDescription(callerData.offer));
 
             const answerDescription = await pc.current.createAnswer();
@@ -292,12 +293,13 @@ const VideoChat = () => {
                         // boxShadow: 24
                     }}
                 >
-                    {/* <Button variant="contained" color="success" onClick={answerCall}>
+                    <Button variant="contained" color="success" onClick={answerCall}>
                         Answer
-                    </Button> */}
-                    <MovingBorderButton onClick={answerCall} className='text-black  font-light ' >
+                    </Button>
+                    {/* <MovingBorderButton onClick={answerCall} className='text-black  font-light ' >
                         Answer
-                    </MovingBorderButton>
+                    </MovingBorderButton> */}
+                  
                 </Box>
             )}
         </Box>
