@@ -74,9 +74,9 @@ function Signup() {
     }
   }
 
-  const handleKeyPress = (event, submitForm) => {   
+  const handleKeyPress = (event, submitForm) => {
     if (event.key == 'Enter') {
-      console.log('enter')      
+      console.log('enter')
       event.preventDefault();
       submitForm();
     }
@@ -84,8 +84,7 @@ function Signup() {
   return (
     <>
 
-      <Box className='BackgroundGradientAnimation'
-      // sx={{ height: '100vh' }}
+      <Box className='BackgroundGradientAnimation'      
       >
         <BackgroundGradientAnimation />
       </Box>
@@ -99,131 +98,85 @@ function Signup() {
         }}
         className="relative flex flex-col gap-4 items-center justify-center px-4"
       >
-        <Box className='loginOuterBox'>
-          <Paper>
+        <Box className='flex items-center justify-center my-10'>
+          <Paper className="p-1 sm:p-8">
             <Toaster richColors />
-
-            <section className='login-Section '>
+            <section>
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={submit}
-              // onSubmit={(values, { setSubmitting }) => {
-              //   setTimeout(() => {
-              //     setSubmitting(false);
-              //     alert(JSON.stringify(values, null, 2));
-              //   }, 500);
-              // }}
               >
                 {({ submitForm, isSubmitting }) => (
                   <Form onKeyDown={(event) => handleKeyPress(event, submitForm)}>
-
-
-                    {/*                  
-                  <Box className='flex justify-center m-5 '>
-                    <img src="OIG4.svg" alt="favicon" className='w-24 h-24 p-1 rounded-xl' />
-                    <h1 className='text-2xl'>Connect Sync</h1>                    
-                    <p>Build</p>
-                    <FlipWords words={['Connect', 'Network', 'Share', 'Support']} />
-                  </Box> */}
-                    <Box className="flex  justify-around items-center mb-5 ">
-                      <img src="OIG4.svg" alt="favicon" className="w-28 h-28 m-0  rounded-xl" />
-                      <Box className='m-0 p-0'>
-                        <Typography variant="h6" className="text-2xl mt-1">
+                    <Box className="flex flex-col sm:flex-row justify-around items-center ">
+                      <img src="OIG4.svg" alt="favicon" className="w-20 h-20 sm:w-28 sm:h-28 rounded-xl" />
+                      <Box className="mt-4 sm:mt-0">
+                        <Typography variant="h6" className="text-xl sm:text-2xl">
                           Connect Sync
                         </Typography>
                         <Typography variant="body1" className="mt-1">
-                          Build  <FlipWords words={['Connect', 'Network', 'Share', 'Support']} />
+                          Build <FlipWords words={['Connect', 'Network', 'Share', 'Support']} />
                         </Typography>
                       </Box>
-
-                    </Box>
-                    <Box className='flex justify-center'>
                     </Box>
 
-                    <Field
-                      component={TextField}
-                      variant='standard'
-                      name="email"
-                      type="email"
-                      label="Email"
-                      size="small"
-                      autoComplete="off"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    <br />
-                    <Field
-                      component={TextField}
-                      variant='standard'
-                      name="userName"
-                      type="name"
-                      label="User name"
-                      size="small"
-                      autoComplete="off"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    <br />
-                    <Field
-                      component={TextField}
-                      variant='standard'
-                      type="password"
-                      label="Password"
-                      name="password"
-                      size="small"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    <br />
-                    <Field
-                      component={TextField}
-                      variant='standard'
-                      type="password"
-                      label="Confirm Password"
-                      name="confirmPassword"
-                      size="small"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    {/* <Field
-                  component={TextField}
-                  type="text"
-                  label="Phone"
-                  name="phone"
-                  size="small"
-                  autoComplete="off"
-                  sx={{
-                    margin: '.5rem',
-                    width: { sm: 250, md: 350 },
-                    
-                  }}
-                  
-                /> */}
-                    {isSubmitting && <LinearProgress />}
-                    <br />
-                    <Box className='loginBtn'>
+                    <Box className="flex flex-col items-center gap-3 p-5">
+                      <Field
+                        component={TextField}
+                        variant='standard'
+                        name="email"
+                        type="email"
+                        label="Email"
+                        size="small"
+                        autoComplete="off"
+                        className=" w-60 sm:w-80 "
+                      />
+                      <Field
+                        component={TextField}
+                        variant='standard'
+                        name="userName"
+                        type="name"
+                        label="User name"
+                        size="small"
+                        autoComplete="off"
+                        className=" w-60 sm:w-80"
+                      />
+                      <Field
+                        component={TextField}
+                        variant='standard'
+                        type="password"
+                        label="Password"
+                        name="password"
+                        size="small"
+                        className=" w-60 sm:w-80"
+                      />
+                      <Field
+                        component={TextField}
+                        variant='standard'
+                        type="password"
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        size="small"
+                        className=" w-60 sm:w-80"
+                      />
+                    </Box>
+
+                    {isSubmitting && <LinearProgress className="my-2" />}
+
+                    <Box className="flex justify-center mt-1">
                       <Button
                         variant="contained"
                         color="primary"
                         disabled={isSubmitting}
                         onClick={submitForm}
-                        sx={{
-                          margin: '1rem',
-                        }}
+                        className="my-4"
                       >
                         Sign Up
                       </Button>
                     </Box>
-                    <Box className="flex justify-center items-center">
+
+                    <Box className="flex justify-center items-center  mt-3">
                       <GoogleLogin
                         size='medium'
                         onSuccess={handleGoogleLoginSuccess}
@@ -233,8 +186,8 @@ function Signup() {
                       />
                     </Box>
 
-                    <Box className='mt-3' >
-                      <p>Have an account? <Link className='text-blue-500' to={'/login'}> Login</Link></p>
+                    <Box className="text-center my-1">
+                      <p>Have an account? <Link className="text-blue-500" to={'/login'}>Login</Link></p>
                     </Box>
                   </Form>
                 )}

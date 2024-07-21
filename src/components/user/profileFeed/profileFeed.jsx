@@ -26,6 +26,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -117,9 +118,9 @@ function ProfileFeed() {
   const verifiedExpDate = new Date(userData.verifiedExp);
   const isVerifiedWithinYear = (new Date() - verifiedExpDate) < oneYearInMilliseconds;
 
-  const handleBlock = async() => {
+  const handleBlock = async () => {
     const res = await userAxios.post(`${userApi.blockUser}?id=${determineUser}`)
-    if(res.status==200){
+    if (res.status == 200) {
       toast.info(res.data.message)
       navigate('/home')
     }
@@ -131,17 +132,17 @@ function ProfileFeed() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [postRes, userRes, followData, currentUserConnection,isBlocked] = await Promise.all([
+        const [postRes, userRes, followData, currentUserConnection, isBlocked] = await Promise.all([
           userAxios.get(`${userApi.getUserPost}?id=${determineUser}`),
           userAxios.get(`${userApi.getUserDetails}?id=${determineUser}`),
           userAxios.get(`${userApi.following}?userId=${determineUser}`),
           userAxios.get(`${userApi.following}?userId=${user.id}`),
-          userAxios.get(`${userApi.isBlock}?id=${determineUser}`)          
+          userAxios.get(`${userApi.isBlock}?id=${determineUser}`)
         ]);
-        
-        
-        
-        if(isBlocked.data.isBlocked.isBlocked==true){
+
+
+
+        if (isBlocked.data.isBlocked.isBlocked == true) {
           toast.error(isBlocked.data.isBlocked.message)
           navigate('/home')
         }
@@ -161,6 +162,8 @@ function ProfileFeed() {
         setIsFollowing(userData.isFollowing)
         setFollowersCount(userData.followers)
         setFollowingCount(userData.following)
+        await new Promise(res => setTimeout(() => { res() }, 900))
+        setLoading(false)
         if (newPost) {
           dispatch(resetNewPost())
         }
@@ -176,7 +179,8 @@ function ProfileFeed() {
           toast.error(error.response.data.error);
         }
 
-      }finally {
+      } finally {
+        // await new Promise(res => setTimeout(() => { res() }, 200))
         setLoading(false)
       }
     };
@@ -328,13 +332,19 @@ function ProfileFeed() {
       flex={5}
       p={2}
     >
-      <Backdrop
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={loading}        
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
       <Toaster richColors />
+      <Backdrop
+        sx={{
+          color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1,
+          backdropFilter: 'blur(40px)'
+        }}
+        open={loading}
+      // TransitionComponent={Grow}
+      // transitionDuration={3}
+      >
+        <CircularProgress color="info" size={55} thickness={1.1} />
+
+      </Backdrop>
       <Stack spacing={1} >
         <Item square elevation={0}>
           <Box sx={{ padding: 1 }} >
@@ -366,7 +376,7 @@ function ProfileFeed() {
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
               <Box className="mt-10 ">
-                <Box className='flex items-center '>
+                {!loading && <Box className='flex items-center '>
                   <Typography variant="body1" noWrap>
                     {userData.userName || user.userName}
                   </Typography>
@@ -376,8 +386,10 @@ function ProfileFeed() {
                   ) : (
                     user.userName === userData.userName && <RazorpayPayment />
                   )}
-                  {/* <RazorpayPayment />  */}
-                </Box>
+
+
+                </Box>}
+
                 <Box>
                   <Typography>{userData.bio || user.bio}</Typography>
                 </Box>
@@ -481,6 +493,7 @@ function ProfileFeed() {
         <Divider />
         <Item elevation={0} square ><ParallaxScroll determineUser={determineUser} posts={posts} /></Item>
       </Stack>
+
       <Modal
         open={openModal}
         onClose={handleCloseModal}

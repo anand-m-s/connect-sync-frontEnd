@@ -7,10 +7,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUserCredentials } from "../../services/redux/slices/userAuthSlice";
 import { Toaster, toast } from 'sonner';
 import Paper from '@mui/material/Paper';
-import { Box, LinearProgress} from "@mui/material";
+import { Box, LinearProgress, useTheme } from "@mui/material";
 import { TextField } from 'formik-mui';
-import { Formik, Form, Field,} from 'formik';
-import { initialValues,validationSchema } from "../../utils/validation/newPassword";
+import { Formik, Form, Field, } from 'formik';
+import { initialValues, validationSchema } from "../../utils/validation/newPassword";
 
 
 function OtpInput({
@@ -28,6 +28,7 @@ function OtpInput({
   const email = queryParams.get("email") || ""
   const userName = queryParams.get("userName") || ""
   const isForgotPassword = queryParams.get('forgotPassword') === 'true';
+  const theme = useTheme();
 
   const selectUser = (state) => state.userAuth.userInfo
   const user = useSelector(selectUser)
@@ -38,8 +39,8 @@ function OtpInput({
   if (user) {
     return <Navigate to={'/home'} />
   }
-  if(!email){
-    return <Navigate to={'/login'}/>
+  if (!email) {
+    return <Navigate to={'/login'} />
   }
   useEffect(() => {
     let countInterval;
@@ -72,7 +73,7 @@ function OtpInput({
       const res = await userAxios.post(userApi.verifyOtp, datas)
       toast.success(res.data.message)
       if (isForgotPassword) {
-        setShowInput(true)       
+        setShowInput(true)
       } else {
         await new Promise(res => setTimeout(() => { res() }, 500))
         dispatch(setUserCredentials(res.data))
@@ -106,7 +107,7 @@ function OtpInput({
   const handleSubmitForgot = async (values, { setSubmitting }) => {
     try {
       const { newPassword } = values;
-      const response = await userAxios.post(userApi.updatePassword, { newPassword,email });
+      const response = await userAxios.post(userApi.updatePassword, { newPassword, email });
       console.log(response.data)
       toast.success('Password updated successfully');
       await new Promise(res => setTimeout(() => { res() }, 1000))
@@ -150,7 +151,12 @@ function OtpInput({
     <>
       <Toaster richColors />
       {!showInput ? (
-        <Paper className="otp-section p-12 rounded-full ">
+        <Paper className="otp-section p-12 rounded-full"
+          style={{
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary
+          }}
+        >
 
           <Box className="flex justify-center p-4">
             <h1 className="text-2xl ">Enter Otp</h1>
@@ -166,6 +172,11 @@ function OtpInput({
                 className={`flex h-10 w-10 items-center justify-center border border-gray-300 text-center ${inputClassName}`}
                 onChange={(e) => onChange(e, i)}
                 ref={i === 0 ? ref : null}
+                style={{
+                  backgroundColor: theme.palette.background.default,
+                  color: theme.palette.text.primary,
+                  borderColor: theme.palette.divider
+              }}
               />
             ))}
           </Box>
@@ -188,59 +199,59 @@ function OtpInput({
         </Paper>
       ) : (
         <>
-           <Paper className='otp-section flex justify-center items-center p-5'>
-          <section className='forgotPassword-Section'>
-          <Formik
-              initialValues={initialValues}
-              validationSchema={validationSchema}
-              onSubmit={handleSubmitForgot}
-            >
-              {({ submitForm, isSubmitting }) => (
-                <Form>
-                  <Box className='flex justify-center m-5'>
-                    <h1 className='text-2xl'>Forgot Password</h1>
-                  </Box>
+          <Paper className='otp-section flex justify-center items-center p-5'>
+            <section className='forgotPassword-Section'>
+              <Formik
+                initialValues={initialValues}
+                validationSchema={validationSchema}
+                onSubmit={handleSubmitForgot}
+              >
+                {({ submitForm, isSubmitting }) => (
+                  <Form>
+                    <Box className='flex justify-center m-5'>
+                      <h1 className='text-2xl'>Forgot Password</h1>
+                    </Box>
 
-                  <Field
-                    component={TextField}
-                    name="newPassword"
-                    type="password"
-                    label="New Password"
-                    variant="standard"
-                    margin="normal"
-                    fullWidth
-                  />
+                    <Field
+                      component={TextField}
+                      name="newPassword"
+                      type="password"
+                      label="New Password"
+                      variant="standard"
+                      margin="normal"
+                      fullWidth
+                    />
 
-                  <Field
-                    component={TextField}
-                    name="confirmNewPassword"
-                    type="password"
-                    label="Confirm New Password"
-                    variant="standard"
-                    margin="normal"
-                    fullWidth
-                  />
+                    <Field
+                      component={TextField}
+                      name="confirmNewPassword"
+                      type="password"
+                      label="Confirm New Password"
+                      variant="standard"
+                      margin="normal"
+                      fullWidth
+                    />
 
-                  {isSubmitting && <LinearProgress />}
-                  <Box className='forgotPasswordBtn'>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size='small'
-                      disabled={isSubmitting}
-                      onClick={submitForm}
-                      sx={{
-                        margin: '1rem',
-                      }}
-                    >
-                      Change Password
-                    </Button>
-                  </Box>
-                </Form>
-              )}
-            </Formik>
-          </section>
-        </Paper>
+                    {isSubmitting && <LinearProgress />}
+                    <Box className='forgotPasswordBtn'>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size='small'
+                        disabled={isSubmitting}
+                        onClick={submitForm}
+                        sx={{
+                          margin: '1rem',
+                        }}
+                      >
+                        Change Password
+                      </Button>
+                    </Box>
+                  </Form>
+                )}
+              </Formik>
+            </section>
+          </Paper>
         </>
       )}
 

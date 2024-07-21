@@ -1,4 +1,4 @@
-import React, {lazy,Suspense } from 'react'
+import React, { lazy, Suspense } from 'react';
 import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
@@ -9,7 +9,7 @@ import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // import CommentSection from '../user/comment/CommentSection';
-const CommentSection = lazy(()=>import('../user/comment/CommentSection'))
+const CommentSection = lazy(() => import('../user/comment/CommentSection'))
 
 const drawerWidth = 444;
 
@@ -41,7 +41,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     justifyContent: 'flex-start',
 }));
 
-export default function PersistentDrawerRight({ open, handleDrawerClose, postId,comments }) {
+export default function PersistentDrawerRight({ open, handleDrawerClose, postId, comments, postOwnerId }) {
     const theme = useTheme();
     // console.log(comments)
     return (
@@ -79,7 +79,7 @@ export default function PersistentDrawerRight({ open, handleDrawerClose, postId,
                 <Divider />
                 <Box className="drawer-content">
                     <Suspense fallback={<>Loading...</>}>
-                    <CommentSection postId={postId} comments={comments} />
+                        <CommentSection postId={postId} comments={comments} postOwnerId={postOwnerId} />
                     </Suspense>
                 </Box>
             </Drawer>

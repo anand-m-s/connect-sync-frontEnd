@@ -232,7 +232,7 @@ const Post = ({ userName, profilePic, imageUrl, location, description, postId, u
                 </Box>
             </Card>
 
-            <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} />
+            <PersistentDrawerRight open={drawerOpen} comments={comments} handleDrawerClose={handleDrawerClose} postId={postId} postOwnerId={userId} />
 
             <ReportPostModal open={modalOpen} handleClose={handleCloseModal} postId={postId} />
             {/* <SearchComponent source="chat" /> */}

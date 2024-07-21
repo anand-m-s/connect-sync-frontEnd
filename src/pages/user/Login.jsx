@@ -36,30 +36,10 @@ function Login() {
     },
   });
 
-
-  // const submit =  (values) => {
-  //   try {
-  //     // await new Promise(res => setTimeout(() => { res() }, 500))
-  //     const user = userAxios.post(userApi.loginUser, values)
-  //     .then((res)=>{
-        
-  //     })
-  //     // console.log(user.data)
-  //     toast.success('Login success')
-  //     // await new Promise(res => setTimeout(() => { res() }, 1000))
-  //     dispatch(setUserCredentials(user.data))
-  //     navigate('/home')
-  //   } catch (error) {
-  //     if (error.response && error.response.data.error) {
-  //       toast.error(error.response.data.error);
-  //     }
-  //   }
-
-  // }
   const submit = async (values) => {
     try {
       await new Promise(res => setTimeout(() => { res() }, 500))
-      const user = await userAxios.post(userApi.loginUser, values)      
+      const user = await userAxios.post(userApi.loginUser, values)
       toast.success('Login success')
       await new Promise(res => setTimeout(() => { res() }, 1000))
       dispatch(setUserCredentials(user.data))
@@ -97,7 +77,7 @@ function Login() {
   }
 
   const handleKeyPress = (event, submitForm) => {
-    if(event.key=='Enter'){
+    if (event.key == 'Enter') {
       event.preventDefault()
       submitForm()
     }
@@ -116,60 +96,62 @@ function Login() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative flex flex-col gap-4 items-center justify-center px-4"
+        className="relative flex flex-col gap-4 items-center justify-center "
       >
-        <Box className='loginOuterBox '>
+        <Box className="flex justify-center items-center p-5">
           <Toaster richColors />
-          <Paper>
-            <section className='login-Section '>
+          <Paper className="w-full max-w-md p-7">
+            <section>
               <Formik
                 initialValues={initialValues}
                 validationSchema={validationSchema}
                 onSubmit={submit}
               >
                 {({ submitForm, isSubmitting }) => (
-                  <Form onKeyDown={(event) => handleKeyPress(event, submitForm)} >
-                    <Box className="flex  justify-around items-center mb-8 ">
-                      <img src="OIG4.svg" alt="favicon" className="w-36 h-36 m-0  rounded-xl" />
-                      <Box className='m-0 p-0'>
-                        <Typography variant="h6" className="text-2xl mt-1">
+                  <Form onKeyDown={(event) => handleKeyPress(event, submitForm)}>
+                    <Box className="flex flex-col items-center mb-8 text-center">
+                      <img src="OIG4.svg" alt="favicon" className="w-24 h-24 sm:w-36 sm:h-36 rounded-xl" />
+                      <Box className="mt-4">
+                        <Typography variant="h6" className="text-lg sm:text-2xl">
                           Connect Sync
                         </Typography>
-                        <Typography variant="body1" className='flex justify-center mt-1 '>
-                          {/* Build */}
+                        <Typography variant="body1" className="mt-1">
                           <FlipWords words={['Connect', 'Grow', 'Network', 'Share', 'Support']} />
                         </Typography>
                       </Box>
                     </Box>
 
-                    <Field
-                      component={TextField}
-                      name="email"
-                      variant='standard'
-                      type="email"
-                      label="Email"
-                      size="small"
-                      autoComplete="off"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    <br />
-                    <Field
-                      component={TextField}
-                      variant='standard'
-                      type="password"
-                      label="Password"
-                      name="password"
-                      size="small"
-                      sx={{
-                        margin: '.5rem',
-                        width: { sm: 250, md: 350 },
-                      }}
-                    />
-                    {isSubmitting && <LinearProgress />}
-                    <Box className='loginBtn'>
+                    <Box className="flex flex-col items-center">
+                      <Field
+                        component={TextField}
+                        name="email"
+                        variant='standard'
+                        type="email"
+                        label="Email"
+                        size="small"
+                        autoComplete="off"
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
+                      />
+                      <Field
+                        component={TextField}
+                        variant='standard'
+                        type="password"
+                        label="Password"
+                        name="password"
+                        size="small"
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
+                      />
+                    </Box>
+
+                    {isSubmitting && <LinearProgress className="my-4" />}
+
+                    <Box className="flex justify-center">
                       <Button
                         variant="contained"
                         color="primary"
@@ -184,7 +166,7 @@ function Login() {
                       </Button>
                     </Box>
 
-                    <Box className="flex justify-center items-center">
+                    <Box className="flex flex-col items-center mt-4">
                       <GoogleLogin
                         size='medium'
                         onSuccess={handleGoogleLoginSuccess}
@@ -194,14 +176,14 @@ function Login() {
                       />
                     </Box>
 
-                    <br />
-                    <Box >
-                      <p> <Link className='text-blue-500 ' to={'/forgot'}>Forgot Password?</Link></p>
+                    <Box className="mt-4 text-center">
+                      <p>
+                        <Link className='text-blue-500' to={'/forgot'}>Forgot Password?</Link>
+                      </p>
+                      <p className="mt-2">
+                        Don't have an account? <Link className='text-blue-500' to={'/'}>Signup</Link>
+                      </p>
                     </Box>
-                    <Box >
-                      <p>Dont have an account? <Link className='text-blue-500 ' to={'/'}>Signup</Link></p>
-                    </Box>
-
                   </Form>
                 )}
               </Formik>

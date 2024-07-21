@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
 import { useSocket } from '../../../services/socket'
 
-function CommentSection({ postId, comments }) {
+function CommentSection({ postId, comments,postOwnerId}) {
     const user = useSelector((state) => state.userAuth.userInfo)
     const [newComment, setNewComment] = useState('')
     const [postComments, setPostComments] = useState([])
@@ -24,6 +24,7 @@ function CommentSection({ postId, comments }) {
         setPostComments(comments)
     }, [comments])
     
+  
 
     const handleAddComment = async () => {
         console.log('add comment')
@@ -40,7 +41,7 @@ function CommentSection({ postId, comments }) {
             if(socket && user.id!== postOwnerId){
                 socket.emit('comment',{postId,commentedBy:user.userName,postOwnerId})
             }
-            fetchAllMessages()
+            fetchAllComments()
             setNewComment('')
         } catch (error) {
             if (error.response && error.response.data.error) {
@@ -50,7 +51,7 @@ function CommentSection({ postId, comments }) {
     }
 
 
-    const fetchAllMessages = async () => {
+    const fetchAllComments = async () => {
         try {
             const res = await userAxios.get(`${userApi.loadComments}?postId=${postId}`)
             setPostComments(res.data)
@@ -73,7 +74,7 @@ function CommentSection({ postId, comments }) {
             setReplyText('');
             setReplyingTo(null);
             setParentId('')
-            fetchAllMessages();
+            fetchAllComments();
             toast.success(res.data.message)
         } catch (error) {
             if (error.response && error.response.data.error) {
@@ -118,6 +119,7 @@ function CommentSection({ postId, comments }) {
                             content={comment.content}
                             onReply={() => handleReplayInput(comment._id)}
                             userId={comment.userId._id}
+                            postOwnerId={postOwnerId}
                         // onReply={() => setReplyingTo(comment._id)}
                         />
                         {comment.replies && comment.replies.map((rep) => (

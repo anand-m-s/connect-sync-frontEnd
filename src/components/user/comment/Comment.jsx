@@ -7,7 +7,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-function Comment({ avatarSrc, fallback, name, time, content, onReply, userId }) {
+function Comment({ avatarSrc, fallback, name, time, content, onReply, userId, postOwnerId }) {
   const user = useSelector((state) => state.userAuth.userInfo)
   return (
     <Box sx={{ display: 'flex', gap: 2, mb: 0 }}>
@@ -25,9 +25,11 @@ function Comment({ avatarSrc, fallback, name, time, content, onReply, userId }) 
               {/* {user.id == userId && <IconButton >
                 <MoreVertIcon fontSize='small' sx={{ height: '15px', width: '15px' }} />
               </IconButton>} */}
-              <IconButton >
-                <MoreVertIcon fontSize='small' sx={{ height: '15px', width: '15px' }} />
-              </IconButton>
+              {(user.id === userId || user.id === postOwnerId) && (
+                <IconButton>
+                  <MoreVertIcon fontSize="small" sx={{ height: '15px', width: '15px' }} />
+                </IconButton>
+              )}
             </Typography>
           </Box>
         </Box>
