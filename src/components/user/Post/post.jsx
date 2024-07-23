@@ -34,10 +34,10 @@ const Post = ({ userName, profilePic, imageUrl, location, description, postId, u
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [isLiked, setIsLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(0);
-    const [anchorEl, setAnchorEl] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [isSaved, setIsSaved] = useState(false)
     const user = useSelector((state) => state.userAuth.userInfo);
+    const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const { handleOpen, setSource } = useModal()
     const { setSharedPost, sharedPost } = ChatState()
@@ -130,7 +130,7 @@ const Post = ({ userName, profilePic, imageUrl, location, description, postId, u
 
     return (
         <Box className='flex justify-center items-center'>
-            <Card sx={{ marginBottom: 3, borderRadius: '1.2rem', width: { xs: '70%', sm: '80%', md: '90%' } }} elevation={1}>
+            <Card sx={{ borderRadius: '1.2rem', width: { xs: '90%', sm: '80%', md: '90%' } }} elevation={1}>
                 <CardHeader
                     style={{
                         backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,

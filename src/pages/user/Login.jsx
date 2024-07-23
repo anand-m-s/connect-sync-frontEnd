@@ -14,6 +14,8 @@ import { useGoogleOneTapLogin, googleLogout, useGoogleLogin } from '@react-oauth
 import { jwtDecode } from "jwt-decode";
 import { FlipWords } from '../../components/ui/flipWords';
 import { motion } from "framer-motion";
+import useTheme from '@mui/material/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 
 function Login() {
@@ -21,6 +23,8 @@ function Login() {
   const dispatch = useDispatch()
   const selectUser = (state) => state.userAuth.userInfo
   const user = useSelector(selectUser)
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   if (user) {
     return <Navigate to={'/home'} />
@@ -85,9 +89,11 @@ function Login() {
 
   return (
     <>
-      <Box className='BackgroundGradientAnimation'>
-        <BackgroundGradientAnimation />
-      </Box>
+      {!isSmallScreen && (
+        <Box className='BackgroundGradientAnimation'>
+          <BackgroundGradientAnimation />
+        </Box>
+      )}
       <motion.div
         initial={{ opacity: 0.0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -96,11 +102,12 @@ function Login() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative flex flex-col gap-4 items-center justify-center "
+        className="relative  flex flex-col gap-4 items-center justify-center "
       >
-        <Box className="flex justify-center items-center p-5">
           <Toaster richColors />
-          <Paper className="w-full max-w-md p-7">
+        <Box className={`flex justify-center items-center ${isSmallScreen ? 'w-full h-full mt-12' : 'mt-12 p-3'}`}>
+          <Paper className={`w-full max-w-md p-7`} elevation={0}>
+            
             <section>
               <Formik
                 initialValues={initialValues}

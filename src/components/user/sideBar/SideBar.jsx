@@ -1,12 +1,14 @@
 import React from 'react'
 import Box from '@mui/material/Box';
 import Navbar from '../Navbar/Navbar';
+import { useMediaQuery, useTheme } from '@mui/material';
 
 function SideBar() {
-    return (
+      
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));    return (
         <Box
-            flex={.8}
-            // padding={1}
+         sx={{flex:isSmallScreen? 0: 0.8}}
         >
             <Box sx={{ position: 'sticky', top: 0 }}>
                 <Navbar />

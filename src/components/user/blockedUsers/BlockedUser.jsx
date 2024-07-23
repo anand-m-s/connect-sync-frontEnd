@@ -16,7 +16,6 @@ export default function BlockedUsersList() {
             toast.error(error.response.data.error);
         }
     }
-    console.log(blockedUsers)
 
     useEffect(() => {
         fetchBlockedUsers()

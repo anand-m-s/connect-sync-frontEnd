@@ -8,10 +8,12 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-// import CommentSection from '../user/comment/CommentSection';
-const CommentSection = lazy(() => import('../user/comment/CommentSection'))
+import { useMediaQuery } from '@mui/material';
+import SwipeableDrawer from '@mui/material/SwipeableDrawer';
 
-const drawerWidth = 444;
+const CommentSection = lazy(() => import('../user/comment/CommentSection'));
+
+const drawerWidth = 420;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -21,16 +23,16 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
         }),
-        marginRight: -444,
+        marginRight: -drawerWidth,
         ...(open && {
             transition: theme.transitions.create('margin', {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.enteringScreen,
             }),
-            marginRight: -150,
+            marginRight: 0,
         }),
         position: 'relative',
-    }),
+    })
 );
 
 const DrawerHeader = styled('div')(({ theme }) => ({
@@ -39,51 +41,74 @@ const DrawerHeader = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
     justifyContent: 'flex-start',
-}));
+    // backdropFilter: 'blur(33px)', // Apply blur effect
+    // backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+  }));
 
 export default function PersistentDrawerRight({ open, handleDrawerClose, postId, comments, postOwnerId }) {
     const theme = useTheme();
-    // console.log(comments)
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+    const drawerContent = (
+        <>
+            <DrawerHeader
+                style={{ backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main }}
+            >
+                <IconButton onClick={handleDrawerClose}>
+                    {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+                </IconButton>
+                <Typography>Comments</Typography>
+            </DrawerHeader>
+            <Divider />
+            <Box className="drawer-content">
+                <Suspense fallback={<>Loading...</>}>
+                    <CommentSection postId={postId} comments={comments} postOwnerId={postOwnerId} />
+                </Suspense>
+            </Box>
+        </>
+    );
+
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <Main open={open}>
+            <Main open={open} >
                 <DrawerHeader />
             </Main>
-            <Drawer
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    '& .MuiDrawer-paper': {
-                        width: drawerWidth,
-                    },
-                    // zIndex: 1500, 
-                }}
-                variant="persistent"
-                anchor="right"
-                open={open}
-            >
-                <DrawerHeader
-                    style={{
-                        backgroundColor: theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main,
+            {isSmallScreen ? (
+                <SwipeableDrawer
+                    anchor="bottom"
+                    open={open}
+                    onClose={handleDrawerClose}
+                    onOpen={() => { }}
+                    disableSwipeToOpen={false}
+                    ModalProps={{ keepMounted: true }}
+                    sx={{
+                        '& .MuiDrawer-paper': {
+                            width: '100%',
+                            height: '77%',
+                        },
                     }}
                 >
-                    <IconButton onClick={handleDrawerClose} className='justify-start'>
-
-                        {/* {theme.direction === 'rtl' ? <ChevronLeftIcon /> : <ChevronRightIcon />} */}
-                        {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-                        {/* <Typography>Back</Typography> */}
-                    </IconButton>
-                    <Typography className='flex justify-center'>Comments</Typography>
-                </DrawerHeader>
-                <Divider />
-                <Box className="drawer-content">
-                    <Suspense fallback={<>Loading...</>}>
-                        <CommentSection postId={postId} comments={comments} postOwnerId={postOwnerId} />
-                    </Suspense>
-                </Box>
-            </Drawer>
+                    {drawerContent}
+                </SwipeableDrawer>                
+            ) : (
+                <Drawer
+                    sx={{
+                        width: drawerWidth,
+                        flexShrink: 0,
+                        '& .MuiDrawer-paper': {
+                            width: drawerWidth,
+                        },
+                    }}
+                    variant="persistent"
+                    anchor="right"
+                    open={open}
+                >
+                    {drawerContent}
+                </Drawer>
+            )}
         </Box>
     );
 }
+
 

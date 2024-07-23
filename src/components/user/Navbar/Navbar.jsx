@@ -16,8 +16,6 @@ import './Navbar.css';
 import { useEffect } from 'react'
 import CycloneIcon from '@mui/icons-material/Cyclone';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import ExploreOutlinedIcon from '@mui/icons-material/ExploreOutlined';
-import NotificationsNoneOutlinedIcon from '@mui/icons-material/NotificationsNoneOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import AddCircleOutlineOutlinedIcon from '@mui/icons-material/AddCircleOutlineOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
@@ -111,6 +109,9 @@ const Navbar = () => {
     };
 
     const handleClick = (event) => {
+        // toggleDrawer(true)
+        // setState({ left: open });
+
         setAnchorEl(event.currentTarget);
     };
 
@@ -133,12 +134,14 @@ const Navbar = () => {
             p={2}
             // sx={{ width: '16rem' }}
             role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
+            // onClick={toggleDrawer(false)}
+            // onKeyDown={toggleDrawer(false)}
         >
             <List className='grid gap-2'>
 
-                <ListItem disablePadding>
+                <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     <ListItemButton onClick={toggleDrawer(true)}>
                         <ListItemIcon>
                             <CycloneIcon color='info' fontSize='large' />
@@ -148,7 +151,9 @@ const Navbar = () => {
                 </ListItem>
                 <Divider />
 
-                <ListItem disablePadding>
+                <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     <ListItemButton component={Link} to={'/home'}>
                         <ListItemIcon>
                             <HomeIcon color='primary' />
@@ -157,7 +162,9 @@ const Navbar = () => {
                     </ListItemButton>
                 </ListItem>
 
-                <ListItem disablePadding>
+                <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     {/* <ListItemButton onClick={() => handleOpen('search')} > */}
                     <ListItemButton onClick={handleSearchClick} >
                         <ListItemIcon>
@@ -174,7 +181,9 @@ const Navbar = () => {
                         <ListItemText primary={"Explore"} />
                     </ListItemButton>
                 </ListItem> */}
-                <ListItem disablePadding>
+                   <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     <ListItemButton component={Link} to={'/chat'}>
                         <ListItemIcon>
                             <ChatBubbleOutlineOutlinedIcon color='info' />
@@ -190,7 +199,9 @@ const Navbar = () => {
                         <ListItemText primary={"Notification"} />
                     </ListItemButton>
                 </ListItem> */}
-                <ListItem disablePadding>
+                   <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     <ListItemButton onClick={() => handleOpen('create')}>
                         <ListItemIcon>
                             <AddCircleOutlineOutlinedIcon color='primary' />
@@ -198,7 +209,9 @@ const Navbar = () => {
                         <ListItemText primary={"Create"} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding>
+                <ListItem disablePadding 
+                   onClick={toggleDrawer(false)}
+                >
                     <ListItemButton component={Link} to={'/profile'}>
                         <ListItemIcon>
                             <PersonOutlineOutlinedIcon color='primary' />
@@ -222,6 +235,7 @@ const Navbar = () => {
                     anchorEl={anchorEl}
                     open={Boolean(anchorEl)}
                     onClose={handleClose}
+                    onClick={toggleDrawer(false)}
                 >
                     <MenuItem
                         component={Link} to={'/savedPost'}                    
@@ -305,9 +319,17 @@ const Navbar = () => {
             <Toaster richColors />
             {!isSmallScreen ? (
                 <>
+                <Box 
+                className='p-5'
+                >
                     <MenuIcon
+                        className=''
+                        color='inherit'
+                        fontSize='large'
                         onClick={toggleDrawer(true)}
                     />
+                  
+                </Box>
                     <Drawer
                         variant='temporary'
                         anchor={"left"}

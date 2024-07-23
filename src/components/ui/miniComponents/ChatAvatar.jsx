@@ -7,7 +7,6 @@ const ChatAvatar = ({ onlineUsers, user, chat }) => {
   const senderUserName = getSender(user.id, chat.users);
   const isUserOnline = isOnline(onlineUsers, senderUserName);
   const profilePic = getSenderProfilePic(user.id, chat.users);
-
   return (
     isUserOnline ? (
       <StyledBadge
@@ -15,10 +14,10 @@ const ChatAvatar = ({ onlineUsers, user, chat }) => {
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         variant="dot"
       >
-        <Avatar className="h-12 w-12" src={profilePic} alt="Avatar">JD</Avatar>
+        <Avatar className="h-12 w-12" src={profilePic} alt="Avatar">{senderUserName.substring(0,2)}</Avatar>
       </StyledBadge>
     ) : (
-      <Avatar className="h-12 w-12" src={profilePic} alt="Avatar">JD</Avatar>
+      <Avatar className="h-12 w-12" src={profilePic} alt="Avatar">{senderUserName.substring(0,2)}</Avatar>
     )
   );
 };

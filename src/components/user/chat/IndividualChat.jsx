@@ -3,14 +3,14 @@ import Avatar from "@mui/material/Avatar"
 import IconButton from "@mui/material/IconButton"
 import TextField from "@mui/material/TextField"
 import { Send, AttachFile, InsertEmoticon, Clear } from "@mui/icons-material"
-import { Box, Card, CardContent, CardHeader, CardMedia, ClickAwayListener, Dialog, DialogContent, DialogTitle, Typography, useTheme } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, CardMedia, ClickAwayListener, Dialog, DialogContent, DialogTitle, selectClasses, Typography, useTheme } from "@mui/material"
 import ScrollableFeed from 'react-scrollable-feed'
 import { userAxios } from "../../../constraints/axios/userAxios"
 import userApi from "../../../constraints/api/userApi"
 import { ChatState } from "../../../context/ChatProvider"
 import { isLastMessage, isSameSender } from "../../../constraints/config/chatLogic"
 import { useSelector } from "react-redux"
-import { toast, Toaster } from "sonner"
+import { toast } from "sonner"
 import ChatHeader from "./ChatHeader"
 import { format, isToday, isYesterday, isSameDay, isSameWeek } from 'date-fns';
 import TypingIndicator from "./TypingIndicator"
@@ -18,11 +18,9 @@ import { useSocket } from "../../../services/socket"
 import DragNdrop from "../../common/DragAndDrop/DragAndDrop"
 import SharedFiles from "./Files"
 import RecorderJSDemo from "./RecorderJs"
-import { useOnlineUsers } from "../../../context/OnlineUsers"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { MovingBorderButton } from "../../ui/MovingBorderButton"
 
-// const ENDPOINT = "http://localhost:3000";
 let selectedChatCompare;
 
 function IndividualChat({ fetchAgain, setFetchAgain }) {
@@ -37,8 +35,10 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
     const { socket } = useSocket()
     const [showDragNdrop, setShowDragNdrop] = useState(false);
     const [upload, setUpload] = useState(false)
+    const theme = useTheme()
+    const navigate = useNavigate()
 
-    // console.log(sharedPost)
+
 
     const handleFilesSelected = async (files) => {
         console.log('Files selected:', files);
@@ -56,8 +56,6 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
         setShowDragNdrop(false);
     };
 
-    const theme = useTheme()
-    // console.log(messages)
 
     const fetchMessages = async () => {
         if (!selectedChat) return;
@@ -92,33 +90,28 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
             }
         })
     }, [socket, user])
-    // console.log(messages)
+
+    const isBlocked = async () => {
+        const remoteUser = selectedChat.users.filter((u) => u._id !== user.id)
+        // console.log(remoteUser)
+        const res = await userAxios.get(`${userApi.isBlock}?id=${remoteUser[0]._id}`)
+        if (res.data.isBlocked.isBlocked == true) {
+            toast.error('Blocked')
+            setSelectedChat()
+            navigate('/chat')
+        }
+    }
 
     useEffect(() => {
         fetchMessages()
+        if(selectedChat){
+            isBlocked()
+        }
         selectedChatCompare = selectedChat
     }, [selectedChat, upload])
 
-    // const fetchSharedPost = async () => {
-    //     try {
-    //         const res = await userAxios.get(`${userApi.getSharedPost}?postId=${sharedPost}`)
-    //         console.log(res.data)
-    //     } catch (error) {
-    //         if (error.response && error.response.data.error) {
-    //             toast.error(error.response.data.error);
-    //         }
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     console.log('inside shared post')
-    //     if (sharedPost !== null) {
-    //         fetchSharedPost()
-    //     }
-    // }, [sharedPost])
-
-    const sendMessage = async (e) => {
-        if (e.key === 'Enter' && newMessage) {
+    const sendMessage = async () => {
+        if (newMessage) {
             try {
                 socket?.emit('stop typing', selectedChat._id)
                 setNewMessage('')
@@ -136,10 +129,14 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                 }
             }
         }
-        // if (e.key === 'Enter' && sharedPost) {
-
-        // }
     }
+
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            sendMessage();
+        }
+    };
 
     const typingHandler = (e) => {
         setNewMessage(e.target.value)
@@ -185,8 +182,8 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
     }
 
     return (
-        <Box flex={3.5}>
-            <Toaster richColors position="top-center" />
+        <Box >
+            {/* <Toaster richColors position="top-center" /> */}
             {selectedChat ? (
                 <>
                     <ClickAwayListener onClickAway={() => setSharedPost([])}>
@@ -332,7 +329,7 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                                 <Box className="flex-1">
 
                                     <TextField
-                                        onKeyDown={sendMessage}
+                                        onKeyDown={handleKeyPress}
                                         onChange={typingHandler}
                                         value={newMessage}
                                         variant="outlined"
@@ -402,7 +399,7 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    <DragNdrop onFilesSelected={handleFilesSelected} setMessages={setMessages} messages={messages} />
+                    <DragNdrop onFilesSelected={handleFilesSelected} setMessages={setMessages} messages={messages} toggleDragNdrop={toggleDragNdrop} />
                 </DialogContent>
             </Dialog>
         </Box>

@@ -21,16 +21,33 @@ export default function ChatComponent() {
     const user = useSelector((state) => state.userAuth.userInfo)
     const { handleOpen, setSource } = useModal()
     const theme = useTheme()
-    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'))
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [fetchAgain, setFetchAgain] = useState(false)
     const [loading, setLoading] = useState(true)
     const { onlineUsers } = useOnlineUsers()
 
 
+
+
     const fetchChats = useCallback(async () => {
         try {
             const res = await userAxios.get(userApi.loadChat)
-            setChats(res.data)
+            console.log(res.data)
+            // const remoteUserIds = res.data.map(chat => {
+            //     const remoteUser = chat.users.find(u => u._id !== user.id);
+            //     return remoteUser ? remoteUser._id : null;
+            // })
+            // const blockStatusPromises = remoteUserIds.map(id =>
+            //     userAxios.get(`${userApi.isBlock}?id=${id}`)
+            // );
+
+            // const blockStatusResponses = await Promise.all(blockStatusPromises);
+
+            // blockStatusResponses.forEach(response => {
+            //     console.log(response.data.isBlocked.isBlocked);
+            // });
+            const filteredChats = res.data.filter(chat => !chat.isBlocked)
+            setChats(filteredChats)
         } catch (error) {
             if (error.response && error.response.data.error) {
                 toast.error(error.response.data.error)
@@ -74,7 +91,7 @@ export default function ChatComponent() {
             <Box className="overflow-hidden ">
                 <Stack direction='row'>
 
-                    <Box flex={1} className="flex flex-col " sx={{
+                    <Box flex={1} className="flex flex-col" sx={{
                         height: '100vh',
                         borderRight: `1px solid ${theme.palette.divider}`
                     }}>
@@ -96,13 +113,12 @@ export default function ChatComponent() {
                             {chats.map((chat) => (
                                 <Box key={chat._id} className="grid gap-2 p-3">
                                     {loading && <Box className>
-                                        <Skeleton animation='wave' className="p-8"/>
+                                        <Skeleton animation='wave' className="p-8" />
                                     </Box>
                                     }
                                     <ButtonBase>
                                         <Box
-                                            className="flex gap-1 p-3 rounded-md border  transition-colors"
-                                            sx={{ width: '15rem' }}
+                                            className={`flex gap-1 p-3 ${isSmallScreen ? 'rounded-3xl' : 'rounded-md'} border transition-colors`} sx={{ width: isSmallScreen ? '4rem' : '15rem' }}
                                             onClick={() => setSelectedChat(chat)}
                                             style={{
                                                 backgroundColor: selectedChat && selectedChat._id === chat._id ? (theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main) : 'inherit',
@@ -110,7 +126,7 @@ export default function ChatComponent() {
                                             }}
                                         >
                                             <ChatAvatar onlineUsers={onlineUsers} user={user} chat={chat} />
-                                            <Box className="flex-1">
+                                            {!isSmallScreen && <Box className="flex-1">
                                                 <Box className="font-medium flex ml-1">
                                                     {!chat.isGroupChat ? getSender(user.id, chat.users) : chat.chatName}
                                                 </Box>
@@ -124,8 +140,8 @@ export default function ChatComponent() {
                                                         ''
                                                     )}
                                                 </Box>
-                                            </Box>
-                                            <Box className="text-sm opacity-65" sx={{ fontSize: '.75rem' }}>{formatDate(chat.updatedAt)}</Box>
+                                            </Box>}
+                                            {!isSmallScreen && <Box className="text-sm opacity-65" sx={{ fontSize: '.75rem' }}>{formatDate(chat.updatedAt)}</Box>}
                                         </Box>
                                     </ButtonBase>
                                 </Box>
@@ -135,7 +151,10 @@ export default function ChatComponent() {
                         )}
 
                     </Box>
-                    <IndividualChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    <Box flex={3.5}>
+
+                        <IndividualChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
+                    </Box>
 
                 </Stack>
                 <SearchComponent source="chat" />

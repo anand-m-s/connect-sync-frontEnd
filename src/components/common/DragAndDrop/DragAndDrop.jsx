@@ -15,12 +15,12 @@ const Input = styled('input')({
   display: 'none',
 });
 
-const DragNdrop = ({ onFilesSelected, width, height, setMessages,messages }) => {
+const DragNdrop = ({ onFilesSelected, width, height, setMessages, messages, toggleDragNdrop }) => {
   const [files, setFiles] = useState([]);
   const [progress, setProgress] = useState({});
   const { selectedChat } = ChatState();
   const theme = useTheme();
-  const {socket} = useSocket()
+  const { socket } = useSocket()
 
   const handleFileChange = (event) => {
     const selectedFiles = event.target.files;
@@ -59,12 +59,24 @@ const DragNdrop = ({ onFilesSelected, width, height, setMessages,messages }) => 
           signedUrl,
           file,
           contentType,
+          // (progressEvent) => {
+          //   const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          //   setProgress((prevProgress) => ({
+          //     ...prevProgress,
+          //     [index]: progress,
+          //   }));
+          // },
           (progressEvent) => {
             const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setProgress((prevProgress) => ({
-              ...prevProgress,
-              [index]: progress,
-            }));
+            setProgress((prevProgress) => {
+              const newProgress = { ...prevProgress, [index]: progress };
+              const allProgresses = Object.values(newProgress);
+              const allCompleted = allProgresses.every((prog) => prog === 100);
+              if (allCompleted) {
+                toggleDragNdrop();
+              }
+              return newProgress;
+            });
           },
         );
         return { fileLink, contentType };

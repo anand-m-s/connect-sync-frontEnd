@@ -71,10 +71,10 @@ function ProfileFeed() {
   const [load, setLoad] = useState(false)
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState({
-    bio: user.bio || '',
-    userName: user.userName || '',
-    phone: user.phone || '',
-    profilePic: user.profilePic || '',
+    bio: '',
+    userName:'',
+    phone:'',
+    profilePic:'',
     initialPic: '',
     verified: false,
     verifiedExp: ''
@@ -372,13 +372,13 @@ function ProfileFeed() {
                 </Menu>
               </Box>}
               <Avatar
-                src={userData.profilePic || user.profilePic}
+                src={userData.profilePic}
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
               <Box className="mt-10 ">
                 {!loading && <Box className='flex items-center '>
                   <Typography variant="body1" noWrap>
-                    {userData.userName || user.userName}
+                    {userData.userName}
                   </Typography>
 
                   {isVerifiedWithinYear ? (
@@ -391,7 +391,7 @@ function ProfileFeed() {
                 </Box>}
 
                 <Box>
-                  <Typography>{userData.bio || user.bio}</Typography>
+                  <Typography>{userData.bio}</Typography>
                 </Box>
 
               </Box>

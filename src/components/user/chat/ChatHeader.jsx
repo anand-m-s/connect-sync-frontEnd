@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getSenderFull } from '../../../constraints/config/chatLogic';
 import { Avatar, Box, IconButton, useTheme } from '@mui/material';
 import { MoreHoriz, Phone, VideoCall } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSocket } from '../../../services/socket';
 import { useOnlineUsers } from '../../../context/OnlineUsers';
 import StyledBadge from '../../ui/miniComponents/StyledBadge';
@@ -19,6 +19,7 @@ function ChatHeader({ userId, selectedChat }) {
     const isUserOnline = onlineUsers.some((ele) => ele.id === sender._id);
     setIsOnline(isUserOnline);
   };
+
 
   useEffect(() => {
     checkOnline();
@@ -45,7 +46,7 @@ function ChatHeader({ userId, selectedChat }) {
         backgroundColor: theme.palette.selectedChat.main,
       }}
     >
-      <Box className="flex items-center gap-3">
+      <Box className="flex items-center gap-3 cursor-pointer">
         {isOnline ? (<StyledBadge
           overlap="circular"
           anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
@@ -56,20 +57,20 @@ function ChatHeader({ userId, selectedChat }) {
           <Avatar className="h-10 w-10" src={sender.profilePic} alt="Avatar">{sender.userName}</Avatar>
         )}
         <Box>
-          <Box className="font-medium">{sender.userName}</Box>
+          <Box className="font-medium" component={Link} to={`/profile?userId=${sender._id}`}>{sender.userName}</Box>
           <Box className="text-sm text-gray-500 dark:text-gray-400">{isOnline ? 'Online' : 'offline'}</Box>
         </Box>
       </Box>
-      <Box className="flex items-center gap-2">
-        <IconButton size="small" onClick={handleVideoCallClick}>
+      <Box className="flex items-center gap-2 mr-7">
+        <IconButton size="small" className='' onClick={handleVideoCallClick}>
           <VideoCall className="h-5 w-5" />
         </IconButton>
-        <IconButton size="small">
+        {/* <IconButton size="small">
           <Phone className="h-5 w-5" color='success' />
-        </IconButton>
-        <IconButton size="small">
+        </IconButton> */}
+        {/* <IconButton size="small">
           <MoreHoriz className="h-5 w-5" />
-        </IconButton>
+        </IconButton> */}
       </Box>
     </Box>
   );

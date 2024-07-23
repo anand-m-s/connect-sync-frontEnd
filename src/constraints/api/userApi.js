@@ -39,6 +39,6 @@ export default{
     blockUser:'/blockUser',
     isBlock:'isBlock',
     getAllBLockedUsers:'/getAllBlockedUsers',
-    unblockUser:'/unblockUser'
-
+    unblockUser:'/unblockUser',
+    deleteComment:'/deleteComment'
 }

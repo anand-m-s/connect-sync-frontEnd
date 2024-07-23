@@ -72,7 +72,7 @@ export const MovingBorder = ({
   ...otherProps
 }) => {
   const pathRef = useRef(null);
-  const progress = useMotionValue<number>(0);
+  const progress = useMotionValue(0);
 
   useAnimationFrame((time) => {
     const length = pathRef.current?.getTotalLength();

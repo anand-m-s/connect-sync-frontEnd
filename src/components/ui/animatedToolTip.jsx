@@ -7,11 +7,15 @@ import {
     useSpring,
 } from "framer-motion";
 import StyledBadge from "./miniComponents/StyledBadge";
+import { Avatar } from "@mui/material";
+import {useNavigate} from "react-router";
 
 
 
 export const AnimatedTooltip = ({ items }) => {
+
     const [hoveredIndex, setHoveredIndex] = useState(null);
+    const navigate = useNavigate()
     const springConfig = { stiffness: 100, damping: 5 };
     const x = useMotionValue(0);
     const rotate = useSpring(
@@ -31,10 +35,11 @@ export const AnimatedTooltip = ({ items }) => {
         <>
             {items.map((item, idx) => (
                 <div
-                    className="-mr-4 relative group"
+                    className="-mr-4 relative group cursor-pointer"
                     key={idx}
                     onMouseEnter={() => setHoveredIndex(item.id)}
                     onMouseLeave={() => setHoveredIndex(null)}
+                    onClick={()=>navigate(`/profile?userId=${item.id}`)}
                 >
                     {hoveredIndex === item.id && (
                         <motion.div
@@ -70,14 +75,14 @@ export const AnimatedTooltip = ({ items }) => {
                         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         variant="dot"
                     >
-                        <img
-                            onMouseMove={handleMouseMove}
-                            height={100}
-                            width={100}
-                            src={item.profilePic}
+                        <Avatar
+                          sx={{ width: 56, height: 56 }}
+                            onMouseMove={handleMouseMove}                           
+                            src={item.profilePic ? item.profilePic : null}   
                             alt={item.userName}
                             className="object-cover !m-0 !p-0 object-top rounded-full h-14 w-14 border-1 group-hover:scale-105 group-hover:z-30 border-white relative transition duration-500"
-                        />
+                        ><p className="text-sm">{item.userName}</p></Avatar>
+
                     </StyledBadge>
                 </div>
             ))}

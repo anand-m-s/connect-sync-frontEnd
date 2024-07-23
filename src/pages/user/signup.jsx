@@ -14,6 +14,8 @@ import { jwtDecode } from "jwt-decode";
 import { setUserCredentials } from '../../services/redux/slices/userAuthSlice';
 import { FlipWords } from '../../components/ui/flipWords';
 import { motion } from "framer-motion";
+import useTheme from '@mui/material/styles/useTheme';
+import useMediaQuery from '@mui/material/useMediaQuery';
 
 function Signup() {
   const navigate = useNavigate()
@@ -23,6 +25,8 @@ function Signup() {
   if (user) {
     return <Navigate to={'/home'} />
   }
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   useGoogleOneTapLogin({
     onSuccess: credentialResponse => {
@@ -84,10 +88,11 @@ function Signup() {
   return (
     <>
 
-      <Box className='BackgroundGradientAnimation'      
-      >
-        <BackgroundGradientAnimation />
-      </Box>
+      {!isSmallScreen && (
+        <Box className='BackgroundGradientAnimation'>
+          <BackgroundGradientAnimation />
+        </Box>
+      )}
       <motion.div
         initial={{ opacity: 0.0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -96,10 +101,11 @@ function Signup() {
           duration: 0.8,
           ease: "easeInOut",
         }}
-        className="relative flex flex-col gap-4 items-center justify-center px-4"
+        className="relative flex flex-col gap-4 items-center justify-center "
       >
-        <Box className='flex items-center justify-center my-10'>
-          <Paper className="p-1 sm:p-8">
+        {/* <Box className='flex items-center justify-center my-10'> */}
+        <Box className={`flex justify-center items-center ${isSmallScreen ? 'w-full h-full p-2 mt-10' : 'mt-12 '}`}>
+        <Paper className={`w-full max-w-md  ${!isSmallScreen ? 'p-14' : ''}`} elevation={0}>
             <Toaster richColors />
             <section>
               <Formik
@@ -121,7 +127,7 @@ function Signup() {
                       </Box>
                     </Box>
 
-                    <Box className="flex flex-col items-center gap-3 p-5">
+                    <Box className="flex flex-col items-center gap-3 mt-3">
                       <Field
                         component={TextField}
                         variant='standard'
@@ -131,6 +137,10 @@ function Signup() {
                         size="small"
                         autoComplete="off"
                         className=" w-60 sm:w-80 "
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
                       />
                       <Field
                         component={TextField}
@@ -141,6 +151,10 @@ function Signup() {
                         size="small"
                         autoComplete="off"
                         className=" w-60 sm:w-80"
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
                       />
                       <Field
                         component={TextField}
@@ -150,6 +164,10 @@ function Signup() {
                         name="password"
                         size="small"
                         className=" w-60 sm:w-80"
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
                       />
                       <Field
                         component={TextField}
@@ -159,18 +177,22 @@ function Signup() {
                         name="confirmPassword"
                         size="small"
                         className=" w-60 sm:w-80"
+                        sx={{
+                          margin: '.5rem',
+                          width: { xs: '90%', sm: 250, md: 350 },
+                        }}
                       />
                     </Box>
 
                     {isSubmitting && <LinearProgress className="my-2" />}
 
-                    <Box className="flex justify-center mt-1">
+                    <Box className="flex justify-center mt-6">
                       <Button
                         variant="contained"
                         color="primary"
                         disabled={isSubmitting}
                         onClick={submitForm}
-                        className="my-4"
+                        size='small'
                       >
                         Sign Up
                       </Button>
@@ -186,7 +208,7 @@ function Signup() {
                       />
                     </Box>
 
-                    <Box className="text-center my-1">
+                    <Box className="text-center text-sm mt-4">
                       <p>Have an account? <Link className="text-blue-500" to={'/login'}>Login</Link></p>
                     </Box>
                   </Form>

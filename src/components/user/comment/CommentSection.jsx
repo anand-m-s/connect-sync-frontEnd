@@ -23,9 +23,6 @@ function CommentSection({ postId, comments,postOwnerId}) {
     useEffect(() => {
         setPostComments(comments)
     }, [comments])
-    
-  
-
     const handleAddComment = async () => {
         console.log('add comment')
         const commentData = {
@@ -108,9 +105,12 @@ function CommentSection({ postId, comments,postOwnerId}) {
     return (
         <Box
         >
-            <Box sx={{ marginTop: '1rem', marginBottom: '5rem' }} className='p-6'>
+            <Box 
+            sx={{
+                //   marginTop: '1rem',
+             marginBottom: '5rem' }} className='px-11 py-1'>
                 {postComments.map((comment) => (                   
-                    <Box key={comment._id} sx={{ mb: 2 }}>
+                    <Box key={comment._id}  className='shadow-sm'>
                         <Comment
                             avatarSrc={comment.userId.profilePic || "/placeholder.svg"}
                             fallback={comment.userId.userName.charAt(0)}
@@ -120,7 +120,9 @@ function CommentSection({ postId, comments,postOwnerId}) {
                             onReply={() => handleReplayInput(comment._id)}
                             userId={comment.userId._id}
                             postOwnerId={postOwnerId}
-                        // onReply={() => setReplyingTo(comment._id)}
+                            commentId ={comment._id} 
+                            fetchAgain={fetchAllComments}      
+                                                 
                         />
                         {comment.replies && comment.replies.map((rep) => (
                             <Box key={rep._id} sx={{ ml: 3, mb: 2 }}>
@@ -132,11 +134,14 @@ function CommentSection({ postId, comments,postOwnerId}) {
                                     content={rep.reply}
                                     onReply={() => handleReplayInput(comment._id, rep._id)}
                                     userId={rep.userId._id}
+                                    postOwnerId={postOwnerId}
+                                    commentId ={rep._id}     
+                                    fetchAgain={fetchAllComments}  
                                 />
                             </Box>
                         ))}                 
                         {replyingTo === comment._id && (
-                            <Box sx={{ ml: 7, mt: 1, display: 'flex', alignItems: 'center' }}>
+                            <Box sx={{ ml: 7, mt: 2, display: 'flex', alignItems: 'center' }}>
                                 <TextField
                                     onChange={(e) => setReplyText(e.target.value)}
                                     value={replyText}
@@ -179,7 +184,7 @@ function CommentSection({ postId, comments,postOwnerId}) {
 
 
             </Box>
-            <Box className="fixed bottom-0 flex backdrop-filter backdrop-blur-md p-6 w-96  "
+            <Box className="fixed bottom-0 flex backdrop-filter backdrop-blur-md p-6 w-96"
                 // sx={{ border: `1px solid ${theme.palette.divider}` }}
                 style={{ zIndex: 1200 }}
             >
@@ -213,7 +218,7 @@ function CommentSection({ postId, comments,postOwnerId}) {
 
                             },
                         }}
-                        sx={{ zIndex: 2400 }}
+                        // sx={{ zIndex: 2400 }}
                         InputLabelProps={{
                             sx: {
                                 paddingLeft: '15px',
