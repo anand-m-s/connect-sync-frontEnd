@@ -1,6 +1,6 @@
 import IconButton from "@mui/material/IconButton"
 import { Add, Search } from "@mui/icons-material"
-import { Box, ButtonBase, Divider, Stack, useMediaQuery, useTheme, CircularProgress } from "@mui/material"
+import { Box, ButtonBase, Divider, Stack, useMediaQuery, useTheme, CircularProgress, Badge, Collapse } from "@mui/material"
 import IndividualChat from "./IndividualChat"
 import { useCallback, useEffect, useState } from "react"
 import userApi from "../../../constraints/api/userApi"
@@ -14,6 +14,9 @@ import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
 import { useOnlineUsers } from "../../../context/OnlineUsers"
 import ChatAvatar from "../../ui/miniComponents/ChatAvatar"
 import Skeleton from '@mui/material/Skeleton';
+import Navbar from "../Navbar/Navbar"
+import Notifications from "../notification/Notification"
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 
 
 export default function ChatComponent() {
@@ -24,7 +27,8 @@ export default function ChatComponent() {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [fetchAgain, setFetchAgain] = useState(false)
     const [loading, setLoading] = useState(true)
-    const { onlineUsers } = useOnlineUsers()
+    const [checked, setChecked] = useState(false)
+    const { notificationCount, notification, onlineUsers } = useOnlineUsers()
 
 
 
@@ -33,19 +37,6 @@ export default function ChatComponent() {
         try {
             const res = await userAxios.get(userApi.loadChat)
             console.log(res.data)
-            // const remoteUserIds = res.data.map(chat => {
-            //     const remoteUser = chat.users.find(u => u._id !== user.id);
-            //     return remoteUser ? remoteUser._id : null;
-            // })
-            // const blockStatusPromises = remoteUserIds.map(id =>
-            //     userAxios.get(`${userApi.isBlock}?id=${id}`)
-            // );
-
-            // const blockStatusResponses = await Promise.all(blockStatusPromises);
-
-            // blockStatusResponses.forEach(response => {
-            //     console.log(response.data.isBlocked.isBlocked);
-            // });
             const filteredChats = res.data.filter(chat => !chat.isBlocked)
             setChats(filteredChats)
         } catch (error) {
@@ -84,29 +75,50 @@ export default function ChatComponent() {
     return (
         <Box
             flex={5}
-            className=' '
+
         >
 
-            {/* <Box className="grid min-h-screen w-full grid-cols-[300px_1fr] overflow-hidden "> */}
-            <Box className="overflow-hidden ">
+
+            <Box className="overflow-hidden">
+
                 <Stack direction='row'>
 
                     <Box flex={1} className="flex flex-col" sx={{
                         height: '100vh',
                         borderRight: `1px solid ${theme.palette.divider}`
                     }}>
+                        {
+                            isSmallScreen &&
+                            <>
+                                <Box
+                                    className='flex justify-between sticky top-0 z-20 w-full'
+                                    sx={{
+                                        backdropFilter: 'blur(77px)',
+                                        // backgroundColor: 'rgba(255, 255, 255, 0.8)', // Optional: adjust opacity as needed
+                                    }}>
+                                    <Navbar />
+                                    {/* <Box className='p-5'>
+                                        <Badge badgeContent={notificationCount} color="primary">
+                                            <NotificationsNoneIcon fontSize='medium' color={!checked ? 'disabled' : 'error'} onClick={() => setChecked(prev => !prev)} />
+                                        </Badge>
+                                    </Box> */}
+                                </Box>
+                                <Collapse in={checked} className='mt-1 p-2 rounded-xl'
+                                >
+                                    {checked && <Notifications loadingStates={notification} value={0} />}
+                                </Collapse>
+                            </>
+                        }
                         <Box className="sticky top-0 flex h-16 items-center justify-end ">
-                            <Box className="flex items-center gap-2">
-                                Search
-                            </Box>
+                            {!isSmallScreen && <Box className="flex items-center gap-2">
+                                search
+                            </Box>}
                             <Box className="flex items-center gap-2" >
-                                {/* <IconButton size="large" onClick={() => handleOpen('search')}> */}
+                               
                                 <IconButton size="large" onClick={handleSearchClick}>
                                     <Search className="" />
                                 </IconButton>
-                                {/* <IconButton size="large">
-                                    <Add className="" />
-                                </IconButton> */}
+                              
                             </Box>
                         </Box>
                         {chats.length > 0 ? (<Box className="flex-1 overflow-auto">
@@ -118,7 +130,7 @@ export default function ChatComponent() {
                                     }
                                     <ButtonBase>
                                         <Box
-                                            className={`flex gap-1 p-3 ${isSmallScreen ? 'rounded-3xl' : 'rounded-md'} border transition-colors`} sx={{ width: isSmallScreen ? '4rem' : '15rem' }}
+                                            className={`flex gap-1 p-3 ${isSmallScreen ? 'rounded-3xl' : 'rounded-md'} border transition-colors`} sx={{ width: isSmallScreen ? '4.1rem' : '15rem' }}
                                             onClick={() => setSelectedChat(chat)}
                                             style={{
                                                 backgroundColor: selectedChat && selectedChat._id === chat._id ? (theme.palette.mode === 'light' ? theme.palette.selectedChat.main : theme.palette.selectedChat.main) : 'inherit',
@@ -147,11 +159,11 @@ export default function ChatComponent() {
                                 </Box>
                             ))}
                         </Box>) : (
-                            <Box className='className="flex justify-center items-center gap-3 p-5 transition-colors"'>No chats yet...</Box>
+                            <Box className='text-center p-4 font-medium text-lg border rounded-2xl'>No chats yet...</Box>
                         )}
 
                     </Box>
-                    <Box flex={3.5}>
+                    <Box flex={4}>
 
                         <IndividualChat fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />
                     </Box>

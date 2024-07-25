@@ -10,7 +10,7 @@ import { userAxios } from '../../../constraints/axios/userAxios';
 import userApi from '../../../constraints/api/userApi';
 import { useTheme } from '@emotion/react';
 import { Badge, ClickAwayListener } from '@mui/material';
-import {  MeditationCard } from '../meditation/ExploreMeditation';
+import { MeditationCard } from '../meditation/ExploreMeditation';
 
 
 
@@ -44,7 +44,6 @@ function RightBar() {
             console.log(error)
         }
     }
-    // console.log(notification)
 
     const markNotificationAsRead = async () => {
         await userAxios.put(userApi.markNotificationAsRead)
@@ -75,7 +74,7 @@ function RightBar() {
     }
 
     return (
-        <Box className='flex justify-center' flex={1.8}
+        <Box className='flex justify-center' flex={2}
         >
             <ClickAwayListener onClickAway={closeNotification}>
                 <Box
@@ -107,17 +106,17 @@ function RightBar() {
                     </Collapse>
                 </Box>
             </ClickAwayListener>
-            {!checked &&(
+            {!checked && (
                 <Box className='fixed' sx={{ marginTop: '7rem' }} >
                     <Box className='flex justify-center items-center text-blue-400 font-semibold text-lg m-3'>Online</Box>
                     <Box className="flex flex-row items-center justify-center w-full">
                         <AnimatedTooltip items={onlineUsers} />
                     </Box>
                     <Box>
-                    <MeditationCard/>
+                        <MeditationCard />
                     </Box>
                 </Box>
-                
+
             )}
         </Box>
     );

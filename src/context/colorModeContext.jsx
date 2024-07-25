@@ -21,6 +21,10 @@ const getDesignTokens = (mode) => ({
                 },
                 comments:{
                     main:'#E6EBEB'
+                },
+                home:{
+                    main:'#BEE4DF',
+                    text:'#000'
                 }
             }
             : {
@@ -44,6 +48,10 @@ const getDesignTokens = (mode) => ({
                 },
                 comments:{
                     main:'#2C3734'
+                },
+                home:{
+                    main:'#365657',
+                    text:'#000'
                 }
             }),
     },

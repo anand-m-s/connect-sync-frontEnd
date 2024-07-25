@@ -15,11 +15,11 @@ function AddCourse() {
           justifyContent={'space-between'}
           divider=<Divider orientation="vertical" flexItem /> >
           <Box
-          flex={1.2}
+            flex={1.2}
           >
-            <SideBar/>
+            <SideBar />
           </Box>
-          <Course/>       
+          <Course />
         </Stack>
       </Box>
     </>

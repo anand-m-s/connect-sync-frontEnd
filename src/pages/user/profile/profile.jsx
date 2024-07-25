@@ -11,7 +11,7 @@ import Divider from '@mui/material/Divider';
 
 function Profile() {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm' && 'md'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   return (
     <>
       <Toaster />
@@ -21,9 +21,9 @@ function Profile() {
         // divider={isSmallScreen ? <Divider orientation="vertical" flexItem /> : null}
         >
           {/* <Navbar /> */}
-          <SideBar />
+          {!isSmallScreen && <SideBar />}
           <ProfileFeed />
-          {isSmallScreen && <RightBar />}
+          {!isSmallScreen && <RightBar />}
         </Stack>
       </Box>
     </>

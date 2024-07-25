@@ -134,13 +134,13 @@ const Navbar = () => {
             p={2}
             // sx={{ width: '16rem' }}
             role="presentation"
-            // onClick={toggleDrawer(false)}
-            // onKeyDown={toggleDrawer(false)}
+        // onClick={toggleDrawer(false)}
+        // onKeyDown={toggleDrawer(false)}
         >
             <List className='grid gap-2'>
 
-                <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     <ListItemButton onClick={toggleDrawer(true)}>
                         <ListItemIcon>
@@ -151,8 +151,8 @@ const Navbar = () => {
                 </ListItem>
                 <Divider />
 
-                <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     <ListItemButton component={Link} to={'/home'}>
                         <ListItemIcon>
@@ -162,8 +162,8 @@ const Navbar = () => {
                     </ListItemButton>
                 </ListItem>
 
-                <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     {/* <ListItemButton onClick={() => handleOpen('search')} > */}
                     <ListItemButton onClick={handleSearchClick} >
@@ -181,8 +181,8 @@ const Navbar = () => {
                         <ListItemText primary={"Explore"} />
                     </ListItemButton>
                 </ListItem> */}
-                   <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     <ListItemButton component={Link} to={'/chat'}>
                         <ListItemIcon>
@@ -199,8 +199,8 @@ const Navbar = () => {
                         <ListItemText primary={"Notification"} />
                     </ListItemButton>
                 </ListItem> */}
-                   <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     <ListItemButton onClick={() => handleOpen('create')}>
                         <ListItemIcon>
@@ -209,8 +209,8 @@ const Navbar = () => {
                         <ListItemText primary={"Create"} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem disablePadding 
-                   onClick={toggleDrawer(false)}
+                <ListItem disablePadding
+                    onClick={toggleDrawer(false)}
                 >
                     <ListItemButton component={Link} to={'/profile'}>
                         <ListItemIcon>
@@ -238,7 +238,7 @@ const Navbar = () => {
                     onClick={toggleDrawer(false)}
                 >
                     <MenuItem
-                        component={Link} to={'/savedPost'}                    
+                        component={Link} to={'/savedPost'}
                         sx={{
                             padding: '10px 60px',
                         }}
@@ -246,7 +246,7 @@ const Navbar = () => {
                         Saved
                     </MenuItem>
                     <MenuItem
-                        component={Link} to={'/blockedUsers'}                    
+                        component={Link} to={'/blockedUsers'}
                         sx={{
                             padding: '10px 60px',
                         }}
@@ -306,30 +306,24 @@ const Navbar = () => {
 
         </Box>
     );
-    useEffect(() => {
-        if (isSmallScreen) {
-            setState({ left: true });
-        }
-    }, [isSmallScreen]);
 
     return (
-
 
         <Box>
             <Toaster richColors />
             {!isSmallScreen ? (
                 <>
-                <Box 
-                className='p-5'
-                >
-                    <MenuIcon
-                        className=''
-                        color='inherit'
-                        fontSize='large'
-                        onClick={toggleDrawer(true)}
-                    />
-                  
-                </Box>
+                    <Box
+                        className='p-5'
+                    >
+                        <MenuIcon
+                            className=''
+                            color='inherit'
+                            fontSize='large'
+                            onClick={toggleDrawer(true)}
+                        />
+
+                    </Box>
                     <Drawer
                         variant='temporary'
                         anchor={"left"}
@@ -354,7 +348,7 @@ const Navbar = () => {
                     {list()}
                 </Box>
             )}
-            
+
             <SearchComponent />
             <BasicModal />
         </Box>

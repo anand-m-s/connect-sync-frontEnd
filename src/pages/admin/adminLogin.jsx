@@ -1,4 +1,4 @@
-import { Box, Button, LinearProgress, Paper } from '@mui/material';
+import { Box, Button, LinearProgress, Paper, useTheme } from '@mui/material';
 import { Formik, Form, Field } from 'formik';
 import { TextField } from 'formik-mui';
 import { BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation';
@@ -17,6 +17,7 @@ function Login() {
 
   const selectAdmin = (state) => state.adminAuth.adminInfo;
   const admin = useSelector(selectAdmin);
+  const theme = useTheme()
 
   useEffect(() => {
     if (admin) {
@@ -41,68 +42,69 @@ function Login() {
 
   return (
     <>
-    
-      <Box className='BackgroundGradientAnimation'>
+
+      <Toaster richColors />
+      <Box className='BackgroundGradientAnimation' sx={{ height: '100vh' }}>
         <BackgroundGradientAnimation />
       </Box>
-      <Box className='loginOuterBox'>
-        <Toaster richColors />
-        <Paper>
-        <section className='login-Section border'>
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={submit}
-          >
-            {({ submitForm, isSubmitting }) => (
-              <Form>
-                <Box className='flex justify-center m-5'>
-                  <h1 className='text-2xl'>Admin Login</h1>
-                </Box>
-
-                <Field
-                  component={TextField}
-                  name="email"
-                  type="email"
-                  label="Email"
-                  size="small"
-                  autoComplete="off"
-                  sx={{
-                    margin: '.5rem',
-                    width: { sm: 250, md: 350 },
-                  }}
-                />
-                <br />
-                <Field
-                  component={TextField}
-                  type="password"
-                  label="Password"
-                  name="password"
-                  size="small"
-                  sx={{
-                    margin: '.5rem',
-                    width: { sm: 250, md: 350 },
-                  }}
-                />
-                {isSubmitting && <LinearProgress />}
-                <Box className='loginBtn'>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                    onClick={submitForm}
+      <Box className="flex items-center justify-center min-h-screen"
+        sx={{ position: 'relative', zIndex: 10 }}
+      >
+        <Paper sx={{ padding: '2rem', background: theme => theme.palette.background.paper }}>
+          <section className=''>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={submit}
+            >
+              {({ submitForm, isSubmitting }) => (
+                <Form>
+                  <Box className="flex justify-center m-5">
+                    <h1 className="text-2xl">Admin Login</h1>
+                  </Box>
+                  <Field
+                    component={TextField}
+                    name="email"
+                    type="email"
+                    label="Email"
+                    size="small"
+                    autoComplete="off"
                     sx={{
-                      margin: '1rem',
+                      margin: '.5rem',
+                      width: { sm: 250, md: 350 }
                     }}
-                  >
-                    Login
-                  </Button>
-                </Box>
-                <br />
-              </Form>
-            )}
-          </Formik>
-        </section>
+                  />
+                  <br />
+                  <Field
+                    component={TextField}
+                    type="password"
+                    label="Password"
+                    name="password"
+                    size="small"
+                    sx={{
+                      margin: '.5rem',
+                      width: { sm: 250, md: 350 }
+                    }}
+                  />
+                  {isSubmitting && <LinearProgress />}
+                  <Box className="loginBtn">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={isSubmitting}
+                      onClick={submitForm}
+                      sx={{
+                        margin: '1rem'
+                      }}
+                    >
+                      Login
+                    </Button>
+                  </Box>
+                  <br />
+                </Form>
+              )}
+            </Formik>
+          </section>
         </Paper>
       </Box>
     </>

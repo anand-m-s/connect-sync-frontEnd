@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import Box from '@mui/material/Box';
 import List from '@mui/material/List';
@@ -106,14 +104,14 @@ function SideBar() {
               >
                 Logout
               </MenuItem>
-              <MenuItem
+              {/* <MenuItem
                 onClick={handleClose}
                 sx={{
                   padding: '10px 60px',
                 }}
               >
                 Report
-              </MenuItem>
+              </MenuItem> */}
             </Menu>
           </List>
         </Box>

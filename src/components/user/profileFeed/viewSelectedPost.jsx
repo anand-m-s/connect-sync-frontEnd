@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Modal, Box, Typography, Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, CircularProgress, ClickAwayListener } from "@mui/material";
+import { Modal, Box, Typography, Button, Stack, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, CircularProgress, ClickAwayListener, useTheme, useMediaQuery } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import Carousel from "react-material-ui-carousel";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -16,18 +16,7 @@ import Skeleton from '@mui/material/Skeleton';
 import CommentIcon from '@mui/icons-material/Comment';
 import PropTypes from 'prop-types';
 
-const style = {
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    width: 400,
-    bgcolor: 'background.paper',
-    boxShadow: 22,
-    p: 4,
-    borderRadius: 6,
 
-};
 
 const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
     const [comments, setComments] = useState([]);
@@ -45,6 +34,8 @@ const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
     const menuOpen = Boolean(anchorEl);
     const dispatch = useDispatch();
 
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         const fetchPostData = async () => {
@@ -154,91 +145,93 @@ const PostModal = ({ isOpen, onRequestClose, postId, determineUser }) => {
             <ClickAwayListener onClickAway={onRequestClose}>
                 <Box >
                     <Box
-
-                    // open={isOpen}
-                    // onClose={onRequestClose}
-                    // aria-labelledby="post-modal-title"
-                    // aria-describedby="post-modal-description"
+                        sx={
+                            {
+                                position: 'fixed',
+                                top: { md: '50%', xs: '29%',sm:'50%' },
+                                left: { md: '50%', xs: '29%',sm:'50%' },
+                                transform: 'translate(-50%, -50%)',
+                                width: { md: 400, xs: 270,sm:340 },
+                                bgcolor: 'background.paper',
+                                boxShadow: 22,
+                                p: 4,
+                                borderRadius: 2,
+                            }
+                        }
                     >
-                        <Stack direction='row' spacing={0} justifyContent={'space-between'}>
-                            <Box
-                                sx={style}
-                            >
-                                {user.id === determineUser && (
-                                    <Box className='flex justify-end mb-1 '>
-                                        <MoreVertIcon
-                                            id="demo-positioned-button"
-                                            aria-controls={menuOpen ? 'demo-positioned-menu' : undefined}
-                                            aria-haspopup="true"
-                                            aria-expanded={menuOpen ? 'true' : undefined}
-                                            onClick={handleClick}
-                                        />
-                                        <Menu
-                                            id="demo-positioned-menu"
-                                            aria-labelledby="demo-positioned-button"
-                                            anchorEl={anchorEl}
-                                            open={menuOpen}
-                                            onClose={handleClose}
-                                            anchorOrigin={{
-                                                vertical: 'bottom',
-                                                horizontal: 'right',
-                                            }}
-                                            transformOrigin={{
-                                                vertical: 'top',
-                                                horizontal: 'right',
-                                            }}
-                                        >
-                                            <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
-                                            <MenuItem onClick={() => handleDelete(post._id)}>Delete</MenuItem>
-                                        </Menu>
-                                    </Box>
-                                )}
-                                {loading ? (
-                                    <Box height={400}>
-                                        <Skeleton variant="rectangular" className="rounded-xl" width="100%" height={300} />
-                                        <Skeleton variant="text" />
-                                        <Skeleton variant="text" />
-                                    </Box>
-                                ) : (
-                                    <>
-                                        <Carousel
-                                        >
-                                            {Array.isArray(post.imageUrl) ? (
-                                                post.imageUrl.map((url, idx) => (
-                                                    <img
-                                                        key={idx}
-                                                        src={url}
-                                                        className="w-full h-auto object-contain rounded-lg"
-                                                        alt={`Post Image ${idx + 1}`}
-                                                    />
-                                                ))
-                                            ) : (
+
+                        <Box>
+                            {user.id === determineUser && (
+                                <Box className='flex justify-end mb-1'>
+                                    <MoreVertIcon
+                                        id="demo-positioned-button"
+                                        aria-controls={menuOpen ? 'demo-positioned-menu' : undefined}
+                                        aria-haspopup="true"
+                                        aria-expanded={menuOpen ? 'true' : undefined}
+                                        onClick={handleClick}
+                                    />
+                                    <Menu
+                                        id="demo-positioned-menu"
+                                        aria-labelledby="demo-positioned-button"
+                                        anchorEl={anchorEl}
+                                        open={menuOpen}
+                                        onClose={handleClose}
+                                        anchorOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                    >
+                                        <MenuItem onClick={handleEditOpen}>Edit</MenuItem>
+                                        <MenuItem onClick={() => handleDelete(post._id)}>Delete</MenuItem>
+                                    </Menu>
+                                </Box>
+                            )}
+                            {loading ? (
+                                <Box height={400}>
+                                    <Skeleton variant="rectangular" className="rounded-xl" width="100%" height={300} />
+                                    <Skeleton variant="text" />
+                                    <Skeleton variant="text" />
+                                </Box>
+                            ) : (
+                                <>
+                                    <Carousel>
+                                        {Array.isArray(post.imageUrl) ? (
+                                            post.imageUrl.map((url, idx) => (
                                                 <img
-                                                    src={post.imageUrl}
+                                                    key={idx}
+                                                    src={url}
                                                     className="w-full h-auto object-contain rounded-lg"
-                                                    alt="Post"
+                                                    alt={`Post Image ${idx + 1}`}
                                                 />
-                                            )}
-                                        </Carousel>
-                                        <Typography id="post-modal-title" component="h2" mt={1}>
-                                            Location: {post.location}
-                                        </Typography>
-                                        <Typography id="post-modal-description">
-                                            Description: {post.description}
-                                        </Typography>
-                                        <IconButton size='small' aria-label="like" onClick={() => handleLike(post._id)}>
-                                            {isLiked ? <FavoriteIcon color='error' /> : <FavoriteBorderOutlinedIcon />}
-                                            {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
-                                        </IconButton>
-                                        <IconButton size='small' aria-label="comment" onClick={handleCommentClick}>
-                                            {/* <MapsUgcOutlinedIcon /> */}
-                                            <CommentIcon />
-                                        </IconButton>
-                                    </>
-                                )}
-                            </Box>
-                            <Box />
-                        </Stack>
+                                            ))
+                                        ) : (
+                                            <img
+                                                src={post.imageUrl}
+                                                className="w-full h-auto object-contain rounded-lg"
+                                                alt="Post"
+                                            />
+                                        )}
+                                    </Carousel>
+                                    <Typography id="post-modal-title" component="h2" mt={1}>
+                                        Location: {post.location}
+                                    </Typography>
+                                    <Typography id="post-modal-description">
+                                        Description: {post.description}
+                                    </Typography>
+                                    <IconButton size='small' aria-label="like" onClick={() => handleLike(post._id)}>
+                                        {isLiked ? <FavoriteIcon color='error' /> : <FavoriteBorderOutlinedIcon />}
+                                        {likeCount !== 0 && <Typography variant='body2'>{likeCount}</Typography>}
+                                    </IconButton>
+                                    <IconButton size='small' aria-label="comment" onClick={handleCommentClick}>
+                                        <CommentIcon />
+                                    </IconButton>
+                                </>
+                            )}
+                        </Box>
                     </Box>
                     <PersistentDrawerRight open={drawerOpen} handleDrawerClose={handleDrawerClose} postId={post._id} comments={comments} />
                     <Dialog

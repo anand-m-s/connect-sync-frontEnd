@@ -4,12 +4,15 @@ import { cn } from "../../../utils/cn";
 import PsychologyIcon from '@mui/icons-material/Psychology';
 import SelfImprovementIcon from '@mui/icons-material/SelfImprovement';
 import PsychologyAltIcon from '@mui/icons-material/PsychologyAlt';
-import { Box, Button } from "@mui/material";
+import { Box, Button, useTheme, useMediaQuery, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
 export function MeditationCard() {
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+
     return (
-        <Card className='w-72  mt-7'>
+        <Card className={`w-72 mt-7 ${isSmallScreen ? 'w-40 p-4 ml-5' : 'w-56'}`}>
             <CardSkeletonContainer>
                 <Skeleton />
             </CardSkeletonContainer>
@@ -28,63 +31,17 @@ const Skeleton = () => {
     const scale = [1, 1.4, 1];
     const transform = ["translateY(0px)", "translateY(-4px)", "translateY(0px)"];
     const sequence = [
-        [
-            ".circle-1",
-            {
-                scale,
-                transform,
-            },
-            { duration: 0.8 },
-        ],
-        [
-            ".circle-2",
-            {
-                scale,
-                transform,
-            },
-            { duration: 0.8 },
-        ],
-        [
-            ".circle-3",
-            {
-                scale,
-                transform,
-            },
-            { duration: 0.8 },
-        ],
-        [
-            ".circle-4",
-            {
-                scale,
-                transform,
-            },
-            { duration: 0.8 },
-        ],
-        [
-            ".circle-5",
-            {
-                scale,
-                transform,
-            },
-            { duration: 0.8 },
-        ],
+        [".circle-2", { scale, transform }, { duration: 0.8 }],
+        [".circle-3", { scale, transform }, { duration: 0.8 }],
+        [".circle-4", { scale, transform }, { duration: 0.8 }]
     ];
 
     useEffect(() => {
-        // @ts-ignore
-        animate(sequence, {
-            repeat: Infinity,
-            repeatDelay: 1,
-        });
+        animate(sequence, { repeat: Infinity, repeatDelay: 1 });
     }, []);
     return (
-        <div
-            className=" overflow-hidden h-full relative flex items-center justify-center"
-        >
+        <div className="overflow-hidden h-full relative flex items-center justify-center">
             <div className="flex flex-row flex-shrink-0 justify-center items-center gap-2">
-                {/* <Container className="h-8 w-8 circle-1">
-                    <PsychologyIcon fontSize="large" color="primary" />
-                </Container> */}
                 <Container className="h-12 w-12 circle-2">
                     <PsychologyAltIcon fontSize="large" color="primary" />
                 </Container>
@@ -94,11 +51,7 @@ const Skeleton = () => {
                 <Container className="h-12 w-12 circle-4">
                     <PsychologyIcon fontSize="large" color="primary" />
                 </Container>
-                {/* <Container className="h-8 w-8 circle-5">
-                    <SelfImprovementIcon fontSize="large" color="success" />
-                </Container> */}
             </div>
-
             <div className="h-40 w-px absolute top-20 m-auto z-40 bg-gradient-to-b from-transparent via-cyan-500 to-transparent animate-move">
                 <div className="w-10 h-32 top-1/2 -translate-y-1/2 absolute -left-10">
                     <Sparkles />
@@ -144,14 +97,11 @@ const Sparkles = () => {
     );
 };
 
-export const Card = ({
-    className,
-    children,
-}) => {
+export const Card = ({ className, children }) => {
     return (
         <div
             className={cn(
-                "max-w-sm  mx-auto p-4 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] group",
+                "max-w-sm mx-auto p-4 rounded-xl border border-[rgba(255,255,255,0.10)] dark:bg-[rgba(40,40,40,0.70)] bg-gray-100 shadow-[2px_4px_16px_0px_rgba(248,248,248,0.06)_inset] group",
                 className
             )}
         >
@@ -160,47 +110,33 @@ export const Card = ({
     );
 };
 
-export const CardTitle = ({
-    children,
-    className,
-}) => {
+export const CardTitle = ({ children, className }) => {
     return (
-        <h3
-            className={cn(
-                "text-lg font-semibold text-gray-800 dark:text-white ",
-                className
-            )}
+        <Typography
+            variant="h6"
+            className={cn("font-semibold text-gray-800 dark:text-white", className)}
         >
             {children}
-        </h3>
+        </Typography>
     );
 };
 
-export const CardDescription = ({
-    children,
-    className,
-}) => {
+export const CardDescription = ({ children, className }) => {
     return (
-        <p
-            className={cn(
-                "text-sm font-normal text-neutral-600 dark:text-neutral-400 max-w-sm py-2",
-                className
-            )}
+        <Typography
+            variant="body2"
+            className={cn("text-neutral-600 dark:text-neutral-400 max-w-sm py-2", className)}
         >
             {children}
-        </p>
+        </Typography>
     );
 };
 
-export const CardSkeletonContainer = ({
-    className,
-    children,
-    showGradient = true,
-}) => {
+export const CardSkeletonContainer = ({ className, children, showGradient = true }) => {
     return (
         <div
             className={cn(
-                "h-[15rem] md:h-[20rem] rounded-xl z-40",
+                "h-[13rem] md:h-[11rem] rounded-xl",
                 className,
                 showGradient &&
                 "bg-neutral-300 dark:bg-[rgba(40,40,40,0.70)] [mask-image:radial-gradient(50%_50%_at_50%_50%,white_0%,transparent_100%)]"
@@ -211,16 +147,12 @@ export const CardSkeletonContainer = ({
     );
 };
 
-const Container = ({
-    className,
-    children,
-}) => {
+const Container = ({ className, children }) => {
     return (
         <div
             className={cn(
                 `h-16 w-16 rounded-full flex items-center justify-center bg-[rgba(248,248,248,0.01)]
-    shadow-[0px_0px_8px_0px_rgba(248,248,248,0.25)_inset,0px_32px_24px_-16px_rgba(0,0,0,0.40)]
-    `,
+                shadow-[0px_0px_8px_0px_rgba(248,248,248,0.25)_inset,0px_32px_24px_-16px_rgba(0,0,0,0.40)]`,
                 className
             )}
         >
@@ -228,6 +160,7 @@ const Container = ({
         </div>
     );
 };
+
 
 
 

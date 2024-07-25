@@ -72,8 +72,7 @@ export default function SearchComponent() {
         if (source === 'navbar') {
             navigate(`/profile?userId=${userId}`);
         } else if (source === 'chat') {
-            try {
-                console.log('source = chat in search modal')
+            try {             
                 const res = await userAxios.post(userApi.loadChat, { userId });
                 console.log(res.data)
                 const data = res.data

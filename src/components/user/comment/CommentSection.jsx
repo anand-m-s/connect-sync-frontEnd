@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import { format, isToday, differenceInDays, isYesterday } from 'date-fns';
 import { useSocket } from '../../../services/socket'
 
-function CommentSection({ postId, comments,postOwnerId}) {
+function CommentSection({ postId, comments, postOwnerId }) {
     const user = useSelector((state) => state.userAuth.userInfo)
     const [newComment, setNewComment] = useState('')
     const [postComments, setPostComments] = useState([])
@@ -18,7 +18,7 @@ function CommentSection({ postId, comments,postOwnerId}) {
     const [replyingTo, setReplyingTo] = useState(null);
     const [parentId, setParentId] = useState('')
     const theme = useTheme()
-    const {socket} = useSocket()
+    const { socket } = useSocket()
 
     useEffect(() => {
         setPostComments(comments)
@@ -27,7 +27,7 @@ function CommentSection({ postId, comments,postOwnerId}) {
         console.log('add comment')
         const commentData = {
             newComment,
-            postId,            
+            postId,
         }
         try {
             const res = await userAxios.post(userApi.addComment, commentData)
@@ -35,8 +35,8 @@ function CommentSection({ postId, comments,postOwnerId}) {
             console.log(res.data)
             console.log(res.data.post.userId._id)
             const postOwnerId = res.data.post.userId._id
-            if(socket && user.id!== postOwnerId){
-                socket.emit('comment',{postId,commentedBy:user.userName,postOwnerId})
+            if (socket && user.id !== postOwnerId) {
+                socket.emit('comment', { postId, commentedBy: user.userName, postOwnerId })
             }
             fetchAllComments()
             setNewComment('')
@@ -105,12 +105,13 @@ function CommentSection({ postId, comments,postOwnerId}) {
     return (
         <Box
         >
-            <Box 
-            sx={{
-                //   marginTop: '1rem',
-             marginBottom: '5rem' }} className='px-11 py-1'>
-                {postComments.map((comment) => (                   
-                    <Box key={comment._id}  className='shadow-sm'>
+            <Box
+                sx={{
+                    //   marginTop: '1rem',
+                    marginBottom: '5rem'
+                }} className='px-11 py-1'>
+                {postComments.map((comment) => (
+                    <Box key={comment._id} className='shadow-sm'>
                         <Comment
                             avatarSrc={comment.userId.profilePic || "/placeholder.svg"}
                             fallback={comment.userId.userName.charAt(0)}
@@ -120,9 +121,9 @@ function CommentSection({ postId, comments,postOwnerId}) {
                             onReply={() => handleReplayInput(comment._id)}
                             userId={comment.userId._id}
                             postOwnerId={postOwnerId}
-                            commentId ={comment._id} 
-                            fetchAgain={fetchAllComments}      
-                                                 
+                            commentId={comment._id}
+                            fetchAgain={fetchAllComments}
+
                         />
                         {comment.replies && comment.replies.map((rep) => (
                             <Box key={rep._id} sx={{ ml: 3, mb: 2 }}>
@@ -135,11 +136,11 @@ function CommentSection({ postId, comments,postOwnerId}) {
                                     onReply={() => handleReplayInput(comment._id, rep._id)}
                                     userId={rep.userId._id}
                                     postOwnerId={postOwnerId}
-                                    commentId ={rep._id}     
-                                    fetchAgain={fetchAllComments}  
+                                    commentId={rep._id}
+                                    fetchAgain={fetchAllComments}
                                 />
                             </Box>
-                        ))}                 
+                        ))}
                         {replyingTo === comment._id && (
                             <Box sx={{ ml: 7, mt: 2, display: 'flex', alignItems: 'center' }}>
                                 <TextField
@@ -179,7 +180,9 @@ function CommentSection({ postId, comments,postOwnerId}) {
                     </Box>
                 ))}
                 {postComments.length < 1 && (
-                    <Typography>No comments yet...</Typography>
+                    <Box className='p-7 text-center'>
+                        <Typography variant='subtitle1'>No comments yet...</Typography>
+                    </Box>
                 )}
 
 

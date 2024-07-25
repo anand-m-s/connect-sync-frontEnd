@@ -3,7 +3,7 @@ import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles'
 import { ParallaxScroll } from '../../ui/parallaxScroll';
-import { Avatar, Backdrop, Button, ButtonBase, CircularProgress, Divider, Grow, Slide, Typography, Zoom } from '@mui/material';
+import { Avatar, Backdrop, Badge, Button, ButtonBase, CircularProgress, Collapse, Divider, Grow, Slide, Typography, useMediaQuery, useTheme, Zoom } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { userAxios } from '../../../constraints/axios/userAxios';
 import userApi from '../../../constraints/api/userApi';
@@ -25,18 +25,14 @@ import VerifiedIcon from '@mui/icons-material/Verified';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import { Link } from 'react-router-dom';
+import { ChatState } from '../../../context/ChatProvider';
+import Navbar from '../Navbar/Navbar';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import { useOnlineUsers} from '../../../context/OnlineUsers';
+import Notifications from '../notification/Notification';
 
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 800,
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  p: 4,
-};
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -72,9 +68,9 @@ function ProfileFeed() {
   const [loading, setLoading] = useState(true)
   const [userData, setUserData] = useState({
     bio: '',
-    userName:'',
-    phone:'',
-    profilePic:'',
+    userName: '',
+    phone: '',
+    profilePic: '',
     initialPic: '',
     verified: false,
     verifiedExp: ''
@@ -92,6 +88,10 @@ function ProfileFeed() {
   const navigate = useNavigate()
   const { socket } = useSocket()
   const [anchorEl, setAnchorEl] = useState(null);
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const [checked, setChecked] = useState(false)
+  const { notificationCount, notification } = useOnlineUsers()
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -113,6 +113,7 @@ function ProfileFeed() {
   const query = useQuery();
   const userId = query.get('userId');
   const determineUser = userId || user.id
+  const { setSelectedChat, chats, setChats } = ChatState()
 
   const oneYearInMilliseconds = 365 * 24 * 60 * 60 * 1000;
   const verifiedExpDate = new Date(userData.verifiedExp);
@@ -292,7 +293,21 @@ function ProfileFeed() {
   }
 
   const handleDirectMessage = async (userId) => {
-    navigate(`/chat?id=${userId}`)
+    try {
+      const res = await userAxios.post(userApi.loadChat, { userId });
+      const data = res.data
+      if (!Array.isArray(chats)) {
+        setChats([]);
+      }
+      if (!chats.find((c) => c._id === data._id)) {
+        setChats([data, ...chats]);
+      }
+      setSelectedChat(data)
+      navigate('/chat')
+
+    } catch (error) {
+      console.error('Error fetching chat data:', error);
+    }
   }
 
   const showFollowers = () => {
@@ -330,8 +345,30 @@ function ProfileFeed() {
   return (
     <Box
       flex={5}
-      p={2}
+      // p={2}
     >
+      {
+        isSmallScreen &&
+        <>
+          <Box
+            className='flex justify-between sticky top-0 z-20'
+            sx={{
+              backdropFilter: 'blur(77px)',
+              // backgroundColor: 'rgba(255, 255, 255, 0.8)', // Optional: adjust opacity as needed
+            }}>
+            <Navbar />
+            <Box className='p-5'>
+              <Badge badgeContent={notificationCount} color="primary">
+                <NotificationsNoneIcon fontSize='medium' color={!checked ? 'disabled' : 'error'} onClick={() => setChecked(prev => !prev)} />
+              </Badge>
+            </Box>
+          </Box>
+          <Collapse in={checked} className='mt-1 p-2 rounded-xl'
+          >
+            {checked && <Notifications loadingStates={notification} value={0} />}
+          </Collapse>
+        </>
+      }
       <Toaster richColors />
       <Backdrop
         sx={{
@@ -347,9 +384,10 @@ function ProfileFeed() {
       </Backdrop>
       <Stack spacing={1} >
         <Item square elevation={0}>
-          <Box sx={{ padding: 1 }} >
+          <Box sx={{ padding:4 }} >
             <Box className="flex flex-wrap">
-              {user.id !== determineUser && <Box className='flex justify-end w-full mt-4 cursor-pointer'>
+              {user.id !== determineUser &&
+               <Box className='flex justify-end w-full cursor-pointer'>
                 <Box
                   id="basic-button"
                   aria-controls={open ? 'basic-menu' : undefined}
@@ -375,8 +413,8 @@ function ProfileFeed() {
                 src={userData.profilePic}
                 sx={{ width: 130, height: 130, marginRight: 5, marginLeft: 10 }}
               />
-              <Box className="mt-10 ">
-                {!loading && <Box className='flex items-center '>
+              <Box className="mt-10" sx={{marginLeft:isSmallScreen?13:0}}>
+                {!loading && <Box className='flex items-center  '>
                   <Typography variant="body1" noWrap>
                     {userData.userName}
                   </Typography>
@@ -415,7 +453,7 @@ function ProfileFeed() {
                     }} onClick={showFollowers} ref={followersRef}>
                     <Typography variant="h6">{followingCount}</Typography>
                     <Typography variant="subtitle2" color="textSecondary">Followers</Typography>
-                    <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                    <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: { md: '25rem', xs: '18rem', sm: '22rem' } }}>
                       {followers && followingCount > 0 && (
                         <Zoom in={followers} container={followersRef.current} style={{ transitionDelay: followers ? '300ms' : '0ms' }}>
                           <Paper elevation={5}>
@@ -443,7 +481,7 @@ function ProfileFeed() {
                     }} onClick={showFollowing} ref={followingRef}>
                     <Typography variant="h6">{followersCount}</Typography>
                     <Typography variant="subtitle2" color="textSecondary">Following</Typography>
-                    <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: '25rem' }}>
+                    <Box sx={{ position: 'absolute', top: 55, left: '50%', transform: 'translateX(-50%)', zIndex: '2', width: { md: '25rem', xs: '18rem', sm: '22rem' } }}>
                       {following && followersCount > 0 && (
                         <Zoom in={following} container={followingRef.current} style={{ transitionDelay: following ? '300ms' : '0ms' }}>
                           <Paper elevation={5}>
@@ -465,8 +503,8 @@ function ProfileFeed() {
                 <Button variant="contained" color="info" size="small" onClick={handleOpenModal}>
                   Edit profile
                 </Button>
-                <Button variant="contained" color="info" size="small">
-                  Share profile
+                <Button component={Link} to={'/savedPost'} variant="contained" color="info" size="small">
+                  SavedPost
                 </Button>
               </Box>
             ) : (
@@ -500,7 +538,16 @@ function ProfileFeed() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { md: '50rem', sm: '30rem', xs: '20rem' },
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+        }}>
           <Stack spacing={3}>
             <TextField
               label="User name"

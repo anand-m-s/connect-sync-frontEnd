@@ -3,7 +3,7 @@ import Avatar from "@mui/material/Avatar"
 import IconButton from "@mui/material/IconButton"
 import TextField from "@mui/material/TextField"
 import { Send, AttachFile, InsertEmoticon, Clear } from "@mui/icons-material"
-import { Box, Card, CardContent, CardHeader, CardMedia, ClickAwayListener, Dialog, DialogContent, DialogTitle, selectClasses, Typography, useTheme } from "@mui/material"
+import { Box, Card, CardContent, CardHeader, CardMedia, ClickAwayListener, Dialog, DialogContent, DialogTitle, useMediaQuery, useTheme } from "@mui/material"
 import ScrollableFeed from 'react-scrollable-feed'
 import { userAxios } from "../../../constraints/axios/userAxios"
 import userApi from "../../../constraints/api/userApi"
@@ -37,6 +37,7 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
     const [upload, setUpload] = useState(false)
     const theme = useTheme()
     const navigate = useNavigate()
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
 
 
@@ -187,7 +188,9 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
             {selectedChat ? (
                 <>
                     <ClickAwayListener onClickAway={() => setSharedPost([])}>
-                        <Box className="flex flex-col" sx={{ height: '100vh' }}>
+                        <Box className="flex flex-col "
+                         sx={{ height:isSmallScreen?'100vh': '100vh' }}
+                         >
                             {/* chat header */}
                             <ChatHeader userId={user.id} selectedChat={selectedChat.users} />
                             <ScrollableFeed>
@@ -324,7 +327,9 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
 
 
                             <Box className="sticky bottom-0 flex h-16 items-center justify-between p-8 "
-                                sx={{ border: `1px solid ${theme.palette.divider}` }}
+                                sx={{ border: `1px solid ${theme.palette.divider}`,
+                                // marginTop:isSmallScreen?'25.6rem':''
+                             }}
                             >
                                 <Box className="flex-1">
 
@@ -379,7 +384,11 @@ function IndividualChat({ fetchAgain, setFetchAgain }) {
                         </Box>
                     </ClickAwayListener>
                 </>
-            ) : null}
+            ) : (
+                <Box className='flex justify-center items-center'>
+                    
+                </Box>
+            )}
             {/* todo ui */}
             {/* drag and drop */}
             <Dialog open={showDragNdrop} onClose={handleClose} fullWidth maxWidth="sm">
