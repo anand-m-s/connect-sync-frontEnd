@@ -219,6 +219,18 @@ const Navbar = () => {
                         <ListItemText primary={"Profile"} />
                     </ListItemButton>
                 </ListItem>
+                {!isSmallScreen && 
+                <ListItem disablePadding
+                  
+                >
+                    <ListItemButton component={Link} to={'/meditation'}>
+                        <ListItemIcon>
+                            <PersonOutlineOutlinedIcon color='primary' />
+                        </ListItemIcon>
+                        <ListItemText primary={"Meditation"} />
+                    </ListItemButton>
+                </ListItem>
+                }
 
             </List>
             <Divider />

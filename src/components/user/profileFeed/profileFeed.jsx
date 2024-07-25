@@ -226,16 +226,10 @@ function ProfileFeed() {
         toast.error("Username cannot be empty");
         return;
       }
-      const hasSymbols = /[^a-zA-Z0-9]/.test(userData.userName);
-      if (hasSymbols) {
-        toast.error("Username cannot contain symbols");
-        return;
-      }
-      if (!/^\d{10}$/.test(userData.phone)) {
+      if (userData.phone.length > 0 && !/^\d{10}$/.test(userData.phone)) {
         toast.error("Phone number must be 10 digits");
         return;
       }
-      console.log('inside submit for edit save')
       setLoad(true)
       let uploadedProfilePic = userData.profilePic
       if (userData.profilePic !== userData.initialPic) {
