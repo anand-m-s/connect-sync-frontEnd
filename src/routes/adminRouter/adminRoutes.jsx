@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { toast, Toaster } from "sonner";
 import AddCourse from "../../pages/admin/addCourse";
 import { SidebarProvider } from "../../context/SideBarHighLight";
+import NotFound from "../../components/common/notFound/NotFound";
 
 
 
@@ -28,6 +29,7 @@ const AdminRoutes = () => {
             <SidebarProvider>
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/*" element={<NotFound/>} />
                 <Route path="" element={<AdminPrivateRoutes />}>
                     <Route index element={<AdminDashboard />} />
                     <Route path="user-management" element={<ManageUser />} />

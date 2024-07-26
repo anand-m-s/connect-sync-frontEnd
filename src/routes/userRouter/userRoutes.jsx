@@ -22,6 +22,7 @@ import { ColorModeProvider } from '../../context/colorModeContext';
 import ChatProvider from '../../context/ChatProvider';
 import Meditation from '../../pages/user/meditaion/MeditationHome';
 import BlockedUsers from '../../pages/user/blockedUsers/BlockedUsers';
+import NotFound from '../../components/common/notFound/NotFound';
 
 
 const UserRoutes = () => {
@@ -46,14 +47,15 @@ const UserRoutes = () => {
                                         <Route path='/login' element={<Login />} />
                                         <Route path='/forgot' element={<ForgotPassword />} />
                                         <Route path='/otp' element={<OtpInput />} />
+                                        <Route path="/*" element={<NotFound />} />
                                         <Route path='' element={<UserPrivateRoutes />}>
                                             <Route path='/home' element={<Home />} />
                                             <Route path='/profile' element={<Profile />} />
-                                            <Route path='/chat' element={<Chat />} />                                            
+                                            <Route path='/chat' element={<Chat />} />
                                             <Route path="/video-call/:roomId" element={<VideoChat />} />
                                             <Route path="/savedPost" element={<SavedPost />} />
                                             <Route path="/meditation" element={<Meditation />} />
-                                            <Route path="/blockedUsers" element={<BlockedUsers/>} />
+                                            <Route path="/blockedUsers" element={<BlockedUsers />} />
 
                                         </Route>
                                     </Routes>
